@@ -11,7 +11,6 @@
             color: white;
             text-align: center;
             font-weight: normal;
-
         }
 
         .box {
@@ -141,24 +140,24 @@
     <div class="dws-menu">
         <ul class="dws-ul">
             <li class="dws-li">
-                <a href="/">
+                <a href="/home">
                     <input style="border-radius: 20px 0 0 20px !important;" type="button" value="Home"/>
                 </a>
             </li>
-            <li class="dws-li"><a href="/home"><input type="button" value="Expenses"/></a></li>
+            <li class="dws-li"><a href="/expenses"><input type="button" value="Expenses"/></a></li>
             <li class="dws-li"><a href="/graphs"><input type="button" value="Graphs"/></a></li>
             <li class="dws-li">
-                <form th:action="@{/logout}" method="post">
+                <form method="post" th:action="@{/logout}">
                     <input style="border-radius: 0px 20px 20px 0px !important;" type="submit" value="Sign Out"/>
                 </form>
             </li>
         </ul>
     </div>
-    <form  th:action="@{/graphsMoney}" method="post">
-        <h1>Enter the amount of money for a month</h1>
-        <input type="text" name="budget" placeholder="budget"/>
+    <form  th:action="@{/expenses}" method="post">
+        <p>Add purchase</p>
+        <input type="text" name="amount" placeholder="amount"/>
+        <input type="text" name="type" placeholder="type"/>
         <input type="submit" value="submit"/>
-        <a href="/registration"><input type="button" value="New Account"/></a>
     </form>
 
     <!--    <div class="left-box">-->

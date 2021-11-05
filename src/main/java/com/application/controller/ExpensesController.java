@@ -13,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 
@@ -26,13 +28,21 @@ public class ExpensesController {
 
     @GetMapping("/expenses")
     public String expenses(@AuthenticationPrincipal User user,
-                       Model model,
-                       @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
+                           Model model,
+                           @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<Purchases> page;
         page = purchasesRepo.findAllByUser_id(user.getId(), pageable);
 
         model.addAttribute("purchases", page);
+        model.addAttribute("budget", user.getBudget());
+        return "expenses";
+    }
+
+    @PostMapping("/expenses")
+    public String putBudget(@AuthenticationPrincipal User user,
+                            @RequestParam(required = false) Long budget,
+                            Model model) {
         return "expenses";
     }
 }
