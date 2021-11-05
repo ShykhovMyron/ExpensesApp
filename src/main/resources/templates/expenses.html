@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+>
 <head>
-    <title>Spring Security Example</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css"/>
+    <title>Hello World!</title>
     <style>
         body {
             font-family: sans-serif;
@@ -48,38 +50,40 @@
             background: #2ecc71;
         }
 
-        .box a{
+        .box a {
             text-decoration: none;
             color: white;
         }
 
-        .dws-menu{
-            position: absolute ;
+        .dws-menu {
+            position: absolute;
             top: 0px;
             width: 93%;
         }
-        ul.dws-ul{
+
+        ul.dws-ul {
             display: flex;
             padding: 0;
             justify-content: center;
         }
+
         li.dws-li {
             list-style: none;
         }
-        li.dws-li a i{
+
+        li.dws-li a i {
             margin-right: 10px;
         }
 
-        li.dws-li a::before{
-        ...
-        position: absolute;
+        li.dws-li a::before {
+        . . . position: absolute;
             top: 100%;
             left: 0;
             transition: .5s;
             mix-blend-mode: multiply;
         }
 
-        li.dws-li a input[type = "button"]{
+        li.dws-li a input[type = "button"] {
             background: none;
             display: block;
             text-align: center;
@@ -94,7 +98,8 @@
             border-radius: 0 0 0 0;
 
         }
-        li.dws-li input[type = "submit"]{
+
+        li.dws-li input[type = "submit"] {
             background: none;
             display: block;
             text-align: center;
@@ -109,38 +114,61 @@
             border-radius: 0 0 0 0;
 
         }
-        li.dws-li a input[type = "button"]:hover{
+
+        li.dws-li a input[type = "button"]:hover {
             background: white;
             color: #191919;
         }
-        li.dws-li input[type = "submit"]:hover{
+
+        li.dws-li input[type = "submit"]:hover {
             background: white;
             color: #191919;
+        }
+        .left-box {
+            width: 400px;
+            padding: 40px;
+            position: absolute;
+            top: 20%;
+            left: 17%;
+            border-radius: 24px;
+            transform: translate(-50%, -50%);
+            background: #3498db;
         }
     </style>
 </head>
 <body>
 <div class="box">
-        <div class="dws-menu">
-            <ul class="dws-ul">
-                <li class="dws-li">
-                    <a href="/">
-                    <input style="border-radius: 20px 0 0 20px !important;"  type="button" value="Home"/>
-                    </a>
-                </li>
-                <li class="dws-li"><a href="/expenses"><input type="button" value="Expenses"/></a></li>
-                <li class="dws-li"><a href="/graphs"><input type="button" value="Graphs"/></a></li>
-                <li class="dws-li">
-                    <form th:action="@{/logout}" method="post">
-                        <input style="border-radius: 0px 20px 20px 0px !important;" type="submit" value="Sign Out"/>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    <h1 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]!<br>This is my first project 🙂</h1>
-    <p>It was created to help you manage your finances </p>
+    <div class="dws-menu">
+        <ul class="dws-ul">
+            <li class="dws-li">
+                <a href="/">
+                    <input style="border-radius: 20px 0 0 20px !important;" type="button" value="Home"/>
+                </a>
+            </li>
+            <li class="dws-li"><a href="/home"><input type="button" value="Expenses"/></a></li>
+            <li class="dws-li"><a href="/graphs"><input type="button" value="Graphs"/></a></li>
+            <li class="dws-li">
+                <form th:action="@{/logout}" method="post">
+                    <input style="border-radius: 0px 20px 20px 0px !important;" type="submit" value="Sign Out"/>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <form  th:action="@{/graphsMoney}" method="post">
+        <h1>Enter the amount of money for a month</h1>
+        <input type="text" name="budget" placeholder="budget"/>
+        <input type="submit" value="submit"/>
+        <a href="/registration"><input type="button" value="New Account"/></a>
+    </form>
 
-    <a href="/expenses"><input type="button" value="Click to start"/></a>
+    <!--    <div class="left-box">-->
+<!--        <tr th:each="purchase: ${purchases}">-->
+<!--            <td th:text="${purchase.getType()}"></td>-->
+<!--            <td th:text="${purchase.getAmount()}"></td>-->
+<!--            <br>-->
+<!--        </tr>-->
+<!--    </div>-->
+    <!--    <a href="/home"><input type="button" value="Click to start"/></a>-->
 </div>
 </body>
 </html>
