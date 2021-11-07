@@ -123,15 +123,66 @@
             background: white;
             color: #191919;
         }
+
         .left-box {
+
             width: 400px;
             padding: 40px;
             position: absolute;
-            top: 20%;
-            left: 17%;
+            top: 50%;
+            left: 50%;
             border-radius: 24px;
             transform: translate(-50%, -50%);
             background: #3498db;
+        }
+
+        .lineNumbersPage {
+            display: inline-block;
+        }
+
+        .right-box {
+            width: 63%;
+            height: 86%;
+            padding: 7px;
+            position: absolute;
+            left: 35%;
+            top: 11%;
+            background: #ece9e0;
+            border-radius: 24px;
+            font-family: sans-serif;
+            text-align: left;
+            color: #656665;
+        }
+
+        .right-box-bottom {
+            width: 82%;
+            height: 3%;
+            padding: 7px;
+            position: absolute;
+            left: 11px;
+            top: 93%;
+            background: #f5d7bf;
+            font-weight: bold;
+        }
+
+        .right-box table {
+            border-collapse: separate;
+            border-spacing: 5px;
+            background: none;
+            border: 5px;
+            border-bottom: 35px;
+            border-right: 70px;
+            border-radius: 20px;
+        }
+
+        .right-box tr {
+            font-size: 17px;
+            padding: 10px;
+        }
+
+        .right-box td {
+            background: #f5d7bf;
+            padding: 10px;
         }
     </style>
 </head>
@@ -153,21 +204,39 @@
             </li>
         </ul>
     </div>
-    <form  th:action="@{/expenses}" method="post">
-        <p>Add purchase</p>
-        <input type="text" name="amount" placeholder="amount"/>
-        <input type="text" name="type" placeholder="type"/>
-        <input type="submit" value="submit"/>
-    </form>
+    <!--    <form th:action="@{/expenses}" method="post">-->
+    <!--        <p>Add purchase</p>-->
+    <!--        <input type="text" name="amount" placeholder="amount"/>-->
+    <!--        <input type="text" name="type" placeholder="type"/>-->
+    <!--        <input type="submit" value="submit"/>-->
+    <!--    </form>-->
 
-    <!--    <div class="left-box">-->
-<!--        <tr th:each="purchase: ${purchases}">-->
-<!--            <td th:text="${purchase.getType()}"></td>-->
-<!--            <td th:text="${purchase.getAmount()}"></td>-->
-<!--            <br>-->
-<!--        </tr>-->
-<!--    </div>-->
-    <!--    <a href="/home"><input type="button" value="Click to start"/></a>-->
+    <div class="right-box">
+        <table>
+            <tr style="font-weight: bold;">
+                <td style="width: 6%">№</td>
+                <td>Amount</td>
+                <td>Type</td>
+                <td>Date</td>
+            </tr>
+            <tr th:with="pageNum=${counter.incrementAndGet()}" th:each="purchase: ${purchases}">
+                <td th:text="${pageNum}"></td>
+                <td th:text="${purchase.getAmount()}"></td>
+                <td th:text="${purchase.getType()}"></td>
+                <td></td>
+            </tr>
+        </table>
+        <div class="right-box-bottom">
+            <td>Total:</td>
+            <td th:text="${purchases.getTotalElements()}"/>
+        </div>
+
+                <div class="lineNumbersPage">
+                    <tr th:each="i: ${#numbers.sequence(1, totalPages)}">
+                        <a th:href="@{'expenses?page='+${i-1}}" methods="get" ><td th:text="${i}"></td></a>
+                    </tr>
+                </div>
+    </div>
 </div>
 </body>
 </html>

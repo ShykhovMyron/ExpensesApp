@@ -14,18 +14,27 @@ public class Purchases {
     private Type type;
     @Column(name = "amount")
     private Long amount;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Purchases( Type type, Long amount, User user) {
+    public Purchases( Long amount,Type type, User user) {
         this.type = type;
         this.amount = amount;
         this.user = user;
     }
 
     public Purchases() {
+    }
+
+    @Override
+    public String toString() {
+        return "Purchases{" +
+                "id=" + id +
+                ", type=" + type +
+                ", amount=" + amount +
+                ", user=" + user +
+                '}';
     }
 
     public User getUser() {

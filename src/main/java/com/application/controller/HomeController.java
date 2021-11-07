@@ -1,7 +1,9 @@
 package com.application.controller;
 
 import com.application.entity.User;
+import com.application.repository.UserRepo;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
+    @Autowired
+    private UserRepo userRepo;
+
     final static Logger logger = Logger.getLogger(HomeController.class);
 
     @GetMapping()
@@ -34,6 +39,7 @@ public class HomeController {
                             Model model) {
         if (budget != null) {
             user.setBudget(budget);
+            userRepo.save(user);
         }
         model.addAttribute("budget", user.getBudget());
         return "home";
