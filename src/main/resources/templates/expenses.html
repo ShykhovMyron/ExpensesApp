@@ -9,7 +9,6 @@
             font-family: sans-serif;
             background: #34495e;
             color: white;
-            text-align: center;
             font-weight: normal;
         }
 
@@ -49,7 +48,7 @@
             background: #2ecc71;
         }
 
-        .box a {
+        .box-a {
             text-decoration: none;
             color: white;
         }
@@ -136,33 +135,17 @@
             background: #3498db;
         }
 
-        .lineNumbersPage {
-            display: inline-block;
-        }
-
         .right-box {
             width: 63%;
             height: 86%;
             padding: 7px;
             position: absolute;
-            left: 35%;
+            left: 20%;
             top: 11%;
             background: #ece9e0;
             border-radius: 24px;
             font-family: sans-serif;
-            text-align: left;
             color: #656665;
-        }
-
-        .right-box-bottom {
-            width: 82%;
-            height: 3%;
-            padding: 7px;
-            position: absolute;
-            left: 11px;
-            top: 93%;
-            background: #f5d7bf;
-            font-weight: bold;
         }
 
         .right-box table {
@@ -173,6 +156,7 @@
             border-bottom: 35px;
             border-right: 70px;
             border-radius: 20px;
+            text-align: left;
         }
 
         .right-box tr {
@@ -184,6 +168,53 @@
             background: #f5d7bf;
             padding: 10px;
         }
+
+        .right-box input{
+            height: 10px;
+        }
+
+        .right-box-bottom {
+            width: 95.4%;
+            height: 3%;
+            padding: 7px;
+            position: absolute;
+            left: 11px;
+            top: 93%;
+            background: #f5d7bf;
+            font-weight: bold;
+            text-align: center;
+        }
+
+
+        .right-box-bottom a {
+            text-align: center;
+            width: 30px;
+            text-decoration: none;
+            color: white;
+            border: 1px solid #333;
+            display: inline-block;
+            border-radius: 10px;
+            background: black;
+            cursor: pointer;
+        }
+
+        .right-box-bottom a:hover {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to bottom, #fcfff4, #e9e9ce);
+            background: #4e555b;
+        }
+
+        .right-box-bottom a.disabled {
+
+            color: #656665;
+            pointer-events: none;
+        }
+
+        .right-box-bottom a.active {
+
+            color: #28a745;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -191,12 +222,12 @@
     <div class="dws-menu">
         <ul class="dws-ul">
             <li class="dws-li">
-                <a href="/home">
+                <a class="box-a" href="/home">
                     <input style="border-radius: 20px 0 0 20px !important;" type="button" value="Home"/>
                 </a>
             </li>
-            <li class="dws-li"><a href="/expenses"><input type="button" value="Expenses"/></a></li>
-            <li class="dws-li"><a href="/graphs"><input type="button" value="Graphs"/></a></li>
+            <li class="dws-li"><a class="box-a" href="/expenses"><input type="button" value="Expenses"/></a></li>
+            <li class="dws-li"><a class="box-a" href="/graphs"><input type="button" value="Graphs"/></a></li>
             <li class="dws-li">
                 <form method="post" th:action="@{/logout}">
                     <input style="border-radius: 0px 20px 20px 0px !important;" type="submit" value="Sign Out"/>
@@ -214,28 +245,52 @@
     <div class="right-box">
         <table>
             <tr style="font-weight: bold;">
-                <td style="width: 6%">№</td>
-                <td>Amount</td>
-                <td>Type</td>
-                <td>Date</td>
+                <td style="width: 80px" th:text="'№ ('+${purchases.getTotalElements()}+')'"
+                </td>
+                <td style="width: 158px">Amount</td>
+                <td style="width: 150px">Type</td>
+                <td style="width: 180px">Date</td>
             </tr>
-            <tr th:with="pageNum=${counter.incrementAndGet()}" th:each="purchase: ${purchases}">
-                <td th:text="${pageNum}"></td>
-                <td th:text="${purchase.getAmount()}"></td>
+            <tr th:with="ourchaseNum=${counter.incrementAndGet()}" th:each="purchase: ${purchases}">
+                <td th:text="${ourchaseNum}"></td>
+                <td th:text="${purchase.getAmount()+' $'}"></td>
                 <td th:text="${purchase.getType()}"></td>
                 <td></td>
+                <td style="width: 40px" >
+                    <form th:href="@{'/expenses/' + ${purchase.getId()}}" method="post"><input type="image" src="/images/blog/72/button.png" alt=" " ></form>
+                </td>
+                <td style="width: 40px">
+                    <form th:href="@{'/expenses/' + ${purchase.getId()}}" method="post"><input type="image" src="/images/blog/72/button.png" alt=" " ></form>
+                </td>
             </tr>
         </table>
         <div class="right-box-bottom">
-            <td>Total:</td>
-            <td th:text="${purchases.getTotalElements()}"/>
+            <!--            <td>Total:</td>-->
+            <!--            <td  th:text="${purchases.getTotalElements()}" />-->
+            <tr th:if="${purchases.getTotalPages() > 1}">
+                <td>
+                    <a th:classappend="${!isPrevEnabled? 'disabled' : ''}"
+                       th:href="@{'/expenses?page=' + ${purchases.getPageable().getPageNumber() - 1}}"
+                       tabindex="-1"><</a>
+                </td>
+                <th:block th:each="index: ${#numbers.sequence(0, purchases.getTotalPages()-1)}">
+                    <td th:if="${pagesMustBeShow.contains(index) ||
+                     index == 0 ||
+                      index+1 == purchases.getTotalPages()}">
+                        <a th:classappend="${index == purchases.getPageable().getPageNumber()? 'active' : ''}"
+                           th:href="@{'/expenses?page=' + ${index}}"
+                           th:text="${index+1}"></a>
+                    </td>
+                    <td th:if="${pagesMustBeConvert.contains(index)}">
+                        <a th:classappend="${'disabled'}" href="#">...</a>
+                    </td>
+                </th:block>
+                <td>
+                    <a th:classappend="${!isNextEnabled? 'disabled' : ''}"
+                       th:href="@{'/expenses?page=' + ${purchases.getPageable().getPageNumber() + 1}}"> > </a>
+                </td>
+            </tr>
         </div>
-
-                <div class="lineNumbersPage">
-                    <tr th:each="i: ${#numbers.sequence(1, totalPages)}">
-                        <a th:href="@{'expenses?page='+${i-1}}" methods="get" ><td th:text="${i}"></td></a>
-                    </tr>
-                </div>
     </div>
 </div>
 </body>

@@ -9,6 +9,7 @@ import com.application.service.PurchasesService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @Transactional
@@ -35,12 +39,34 @@ public class ExpensesController {
     @GetMapping("/expenses")
     public String expenses(@AuthenticationPrincipal User user,
                            Model model,
-                           @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
+                           @PageableDefault(sort = {"id"},
+                                   direction = Sort.Direction.DESC) Pageable pageable
     ) {
         logger.info("come to expenses");
-
         Page<Purchases> page = purchasesRepo.findAllByUser_id(user.getId(), pageable);
 
+        List<Integer> pagesMustBeShowList = new ArrayList<>();
+        List<Integer> pagesMustBeConvert = new ArrayList<>();
+        int startPage;
+        if (((page.getTotalPages() - 1) - pageable.getPageNumber()) < 5)  startPage
+                = (page.getTotalPages() - 1) - 10;
+       else startPage = Math.max((pageable.getPageNumber() - 5), 0);
+        for (int i = startPage; i <= startPage + 10; i++) {
+            pagesMustBeShowList.add(i);
+        }
+        if (Collections.min(pagesMustBeShowList) - 1 > 0) {
+            pagesMustBeShowList.remove(0);
+            pagesMustBeConvert.add(Collections.min(pagesMustBeShowList) - 1);
+        }
+        if (Collections.max(pagesMustBeShowList) + 1 < page.getTotalPages() - 1) {
+            pagesMustBeShowList.remove(pagesMustBeShowList.size() - 1);
+            pagesMustBeConvert.add(Collections.max(pagesMustBeShowList) + 1);
+        }
+        model.addAttribute("pagesMustBeConvert", pagesMustBeConvert);
+        model.addAttribute("pagesMustBeShow", pagesMustBeShowList);
+        model.addAttribute("isPrevEnabled", pageable.getPageNumber() > 0);
+        model.addAttribute("isNextEnabled",
+                pageable.getPageNumber() < page.getTotalPages() - 1);
         model.addAttribute("counter", new Counter(pageable.getPageNumber() * 10));
         model.addAttribute("purchases", page);
         model.addAttribute("budget", user.getBudget());
@@ -52,7 +78,8 @@ public class ExpensesController {
                             @RequestParam(required = false) Long amount,
                             @RequestParam(defaultValue = "FOOD") Type type,
                             Model model,
-                            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
+                            @PageableDefault(sort = {"id"},
+                                    direction = Sort.Direction.DESC) Pageable pageable
     ) {
         logger.info(amount + "  " + type.toString());
         Purchases purchases = new Purchases(amount, type, user);
