@@ -63,6 +63,8 @@ public class ExpensesController {
             pagesMustBeShowList.remove(pagesMustBeShowList.size() - 1);
             pagesMustBeConvert.add(Collections.max(pagesMustBeShowList) + 1);
         }
+
+        model.addAttribute("types",Type.values());
         model.addAttribute("pagesMustBeConvert", pagesMustBeConvert);
         model.addAttribute("pagesMustBeShow", pagesMustBeShowList);
         model.addAttribute("isPrevEnabled", pageable.getPageNumber() > 0);
@@ -74,30 +76,26 @@ public class ExpensesController {
         return "expenses";
     }
 
-    @PostMapping("/expenses")
-    public String putBudget(@AuthenticationPrincipal User user,
-                            @RequestParam(required = false) Long amount,
-                            @RequestParam(defaultValue = "FOOD") Type type,
-                            Model model,
-                            @PageableDefault(sort = {"id"},
-                                    direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        logger.info(amount + "  " + type.toString());
-        Purchases purchases = new Purchases(amount, type, user);
-        purchasesRepo.save(purchases);
-        Page<Purchases> page = purchasesRepo.findAllByUser_id(user.getId(), pageable);
-
-        model.addAttribute("counter", new Counter(pageable.getPageNumber() * 10));
-        model.addAttribute("purchases", page);
-        model.addAttribute("budget", user.getBudget());
-        return "expenses";
-    }
-
     @GetMapping("/expenses/{id}")
-    public String category(@AuthenticationPrincipal User user,
-                           @PathVariable Long categoryId,
-                           Model model){
-        model.addAttribute("purchase",purchasesRepo.findAllByUser_id(user.getId()));
-        return "expenses-edit";
+    public String putBudget(@PathVariable Integer id,
+                            @RequestParam(required = false) Long amount,
+                            @RequestParam(required = false) Type type) {
+         logger.info("get: /expenses/"+id+" amount:"+amount+" type"+type);
+//        Purchases purchases = new Purchases(amount, type, user);
+//        purchasesRepo.save(purchases);
+//        Page<Purchases> page = purchasesRepo.findAllByUser_id(user.getId(), pageable);
+//
+//        model.addAttribute("counter", new Counter(pageable.getPageNumber() * 10));
+//        model.addAttribute("purchases", page);
+//        model.addAttribute("budget", user.getBudget());
+        return "redirect:/expenses?page=0";
     }
+
+//    @GetMapping("/expenses/{id}")
+//    public String category(@AuthenticationPrincipal User user,
+//                           @PathVariable Long categoryId,
+//                           Model model){
+//        model.addAttribute("purchase",purchasesRepo.findAllByUser_id(user.getId()));
+//        return "expenses-edit";
+//    }
 }

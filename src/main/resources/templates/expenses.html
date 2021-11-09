@@ -73,7 +73,8 @@
                 <a data-toggle="modal" data-target="#editModal"
                    th:data-id="${purchase.getId()}"
                    th:data-amount="${purchase.getAmount()}"
-                   th:data-type="${purchase.getType()}">
+                   th:data-type="${purchase.getType()}"
+                   th:data-typeArray="${types}">
                     Edit
                 </a>
                 <!--                <form th:href="@{'/expenses/' + ${purchase.getId()}}" method="post">-->
@@ -128,7 +129,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLongTitle">Edit</h5>
             </div>
-            <form method="post">
+            <form id="edit-post" method="get">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit-amount" class="col-form-label">Amount</label>
@@ -136,14 +137,20 @@
                                name="amount">
                     </div>
                     <div class="form-group">
-                        <label for="edit-type" class="col-form-label" id="typePurchase">Type</label>
-                        <input type="text" class="form-control" id="edit-type" placeholder="Type"
-                               name="type">
+                        <label class="col-form-label">Type</label>
+                        <select id="selectType" name="type" class="form-select form-select-sm"
+                                aria-label=".form-select-sm example">
+                            <option id="edit-type" selected></option>
+                            <option  th:each="type : ${types}"
+                                    th:text="${type}"
+                                    th:value="${type}">
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="edit-date" class="col-form-label" id="dataPurchase">Data</label>
                         <input type="text" class="form-control" id="edit-date" placeholder="Data"
-                        name="data">
+                               name="data">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -175,6 +182,8 @@
         var modal = $(this)
         modal.find('#edit-amount').val(amount)
         modal.find('#edit-type').val(type)
+        modal.find('#edit-type').text(type+'(selected)')
+        modal.find('#edit-post').attr('action','expenses/'+id);
     })
 </script>
 </body>
