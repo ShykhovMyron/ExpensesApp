@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -90,5 +91,13 @@ public class ExpensesController {
         model.addAttribute("purchases", page);
         model.addAttribute("budget", user.getBudget());
         return "expenses";
+    }
+
+    @GetMapping("/expenses/{id}")
+    public String category(@AuthenticationPrincipal User user,
+                           @PathVariable Long categoryId,
+                           Model model){
+        model.addAttribute("purchase",purchasesRepo.findAllByUser_id(user.getId()));
+        return "expenses-edit";
     }
 }
