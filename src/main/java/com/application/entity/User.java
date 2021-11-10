@@ -1,9 +1,12 @@
 package com.application.entity;
 
+import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -17,14 +20,23 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Integer id;
 
+    @NotEmpty
+    @Size(min = 1,max = 30)
     @Column(name = "username")
     private String username;
+
+    @NotEmpty
+    @Size(min = 1,max = 30)
     @Column(name = "password")
     private String password;
+
     @Column(name = "enabled")
     private boolean enabled;
+
+    @NotNull
     @Column(name = "budget")
     private Long budget;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Purchases> purchases = new LinkedHashSet<>();
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

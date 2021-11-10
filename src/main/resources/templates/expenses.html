@@ -5,11 +5,10 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Hello World!</title>
     <style>
+        td {
+            padding: 5px;
+            text-align: center;
 
-        tr {
-            line-height: 25px;
-            min-height: 25px;
-            height: 25px;
         }
     </style>
 </head>
@@ -59,7 +58,12 @@
             <td>Amount</td>
             <td>Type</td>
             <td>Date</td>
-            <td>Actions</td>
+            <td>
+                <input  data-toggle="modal"
+                        data-target="#createModel"
+                        style="font-weight: bold;" type="button" class="btn btn-outline-dark btn-sm"
+                       value="Add new purchase">
+            </td>
         </tr>
         <tr th:with="ourchaseNum=${counter.incrementAndGet()}" th:each="purchase: ${purchases}">
             <td th:text="${ourchaseNum}"></td>
@@ -70,17 +74,22 @@
                 <!--                <input data-toggle="modal"-->
                 <!--                       data-target="#editPurchaseModal"-->
                 <!--                       type="image" src="/images/blog/72/button.png" alt="123"/>-->
-                <a data-toggle="modal" data-target="#editModal"
-                   th:data-id="${purchase.getId()}"
-                   th:data-amount="${purchase.getAmount()}"
-                   th:data-type="${purchase.getType()}"
-                   th:data-typeArray="${types}">
-                    Edit
-                </a>
-                <!--                <form th:href="@{'/expenses/' + ${purchase.getId()}}" method="post">-->
-                <!--                    <input type="image" src="/images/blog/72/button.png"-->
-                <!--                           alt=" ">-->
-                <!--                </form>-->
+                <div class="btn-group">
+                    <button style="margin-right: 10px; border-radius: 5px;" class="btn btn-primary btn-sm"
+                            data-toggle="modal"
+                            data-target="#editModal"
+                            th:data-id="${purchase.getId()}"
+                            th:data-amount="${purchase.getAmount()}"
+                            th:data-type="${purchase.getType()}"
+                            th:data-typeArray="${types}">
+                        Edit
+                    </button>
+                    <form th:action="@{'/expenses/'+${purchase.getId()}}" method="post">
+                        <button style="border-radius: 5px;" type="submit" class="btn btn-danger btn-sm">
+                            Delete
+                        </button>
+                    </form>
+                </div>
             </td>
         </tr>
     </table>
@@ -107,7 +116,9 @@
                        th:href="@{'/expenses?page=' + ${index}}"
                        th:text="${index+1}"></a>
                 </li>
-                <li class="page-item" th:classappend="${'disabled'}" th:if="${pagesMustBeConvert.contains(index)}">
+                <li class="page-item" th:classappend="${'disabled'}"
+
+                    th:if="${pagesMustBeConvert.contains(index)}">
                     <a class="page-link" href="#">...</a>
                 </li>
             </th:block>
@@ -121,7 +132,7 @@
     </nav>
 </div>
 
-<!--Modal-->
+<!--Modal-edit-->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -141,7 +152,7 @@
                         <select id="selectType" name="type" class="form-select form-select-sm"
                                 aria-label=".form-select-sm example">
                             <option id="edit-type" selected></option>
-                            <option  th:each="type : ${types}"
+                            <option th:each="type : ${types}"
                                     th:text="${type}"
                                     th:value="${type}">
                             </option>
@@ -161,6 +172,47 @@
         </div>
     </div>
 </div>
+
+<!--Modal-create-->
+<div class="modal fade" id="createModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Edit</h5>
+            </div>
+            <form th:action="@{/createExpenses}" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit-amount" class="col-form-label">Amount</label>
+                        <input type="text" class="form-control" placeholder="Amount"
+                               name="amount">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Type</label>
+                        <select name="type" class="form-select form-select-sm"
+                                aria-label=".form-select-sm example">
+                            <option th:each="type : ${types}"
+                                    th:text="${type}"
+                                    th:value="${type}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-date" class="col-form-label">Data</label>
+                        <input type="text" class="form-control"  placeholder="Data"
+                               name="data">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -182,9 +234,11 @@
         var modal = $(this)
         modal.find('#edit-amount').val(amount)
         modal.find('#edit-type').val(type)
-        modal.find('#edit-type').text(type+'(selected)')
-        modal.find('#edit-post').attr('action','expenses/'+id);
+        modal.find('#edit-type').text(type + '(selected)')
+        modal.find('#edit-post').attr('action', 'editExpenses/' + id);
     })
+
+    $('#createModel').on('show.bs.modal', function (event) {})
 </script>
 </body>
 </html>

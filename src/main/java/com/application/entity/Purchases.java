@@ -9,11 +9,14 @@ public class Purchases {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private Type type;
+
     @Column(name = "amount")
     private Long amount;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
