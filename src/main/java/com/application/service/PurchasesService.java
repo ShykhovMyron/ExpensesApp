@@ -91,8 +91,8 @@ public class PurchasesService {
         purchasesRepo.delete(purchasesRepo.findById(id).get());
     }
 
-    public void createPurchase(User user, Long amount, Type type) {
-        Purchases purchases = new Purchases(amount, type, user);
+    public void createPurchase(User user, Purchases purchases) {
+        purchases.setUser(user);
         logger.info("Create:" + purchases.toString());
         purchasesRepo.save(purchases);
     }

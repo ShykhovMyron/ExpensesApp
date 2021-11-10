@@ -1,6 +1,8 @@
 package com.application.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "purchases")
@@ -14,6 +16,8 @@ public class Purchases {
     @Column(name = "type")
     private Type type;
 
+    @NotNull
+    @Min(value = 0)
     @Column(name = "amount")
     private Long amount;
     

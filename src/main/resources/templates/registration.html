@@ -3,34 +3,35 @@
 <head>
     <title>registration</title>
     <style>
-        body{
+        body {
             margin: 0;
             padding: 0;
-            font-family: sans-serif ;
+            font-family: sans-serif;
             background: #34495e;
         }
-        .box{
+
+        .box {
             width: 300px;
             padding: 40px;
             position: absolute;
             top: 50%;
             left: 50%;
             border-radius: 24px;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             background: #191919;
             text-align: center;
         }
 
-        .box h1{
+        .box h1 {
             color: white;
             text-transform: uppercase;
             font-weight: 500;
         }
 
-        .box h2{
+        .box h2 {
             font-weight: normal;
             font-size: small;
-            background:  none;
+            background: none;
             display: block;
             margin: 0px auto;
             text-align: center;
@@ -45,12 +46,12 @@
             user-select: none;
         }
 
-        .box h2:hover{
+        .box h2:hover {
             background: #2ecc71;
         }
 
-        .box input[type = "text"],.box input[type = "password"]{
-            background:  none;
+        .box input[type = "text"], .box input[type = "password"] {
+            background: none;
             display: block;
             margin: 20px auto;
             text-align: center;
@@ -63,19 +64,19 @@
             transition: 0.25s;
         }
 
-        .box input[type = "text"]:focus,.box input[type = "password"]:focus{
+        .box input[type = "text"]:focus, .box input[type = "password"]:focus {
             width: 280px;
             border-color: #2ecc71;
         }
 
-        .box a{
+        .box a {
             text-decoration: none;
             color: white;
         }
 
-        .box input[type = "submit"]{
+        .box input[type = "submit"] {
 
-            background:  none;
+            background: none;
             display: block;
             margin: 7px auto;
             text-align: center;
@@ -89,13 +90,13 @@
             cursor: pointer;
         }
 
-        .box input[type = "submit"]:hover{
+        .box input[type = "submit"]:hover {
             background: #2ecc71;
         }
 
-        .box input[type = "button"]{
+        .box input[type = "button"] {
 
-            background:  none;
+            background: none;
             display: block;
             margin: 7px auto;
             text-align: center;
@@ -109,9 +110,10 @@
             cursor: pointer;
         }
 
-        .box input[type = "button"]:hover{
+        .box input[type = "button"]:hover {
             background: #2ecc71;
         }
+
         .top {
             border-radius: 14px;
             text-align: center;
@@ -122,25 +124,52 @@
             margin: 7px auto;
             width: 300px;
         }
-        .left{
+
+        .left {
 
 
         }
-        .right{
+
+        .right {
 
         }
     </style>
 </head>
 <body>
 <div class="top" th:if="${message}">
-    User already exist
+    <p>User already exist</p>
 </div>
-<form class="box" th:action="@{/registration}" method="post">
+<div th:if="${errors}" class="top">
+    <th:block th:each="error : ${errors}">
+        <p th:text="${error}"></p>
+    </th:block>
+</div>
+<form class="box" th:action="@{/registration}" th:object="${user}" method="post">
     <h1>New user</h1>
-    <input type="text" name="username" placeholder="Username"/>
-    <input type="password" name="password" placeholder="Password"/>
+    <input type="text"  th:field="*{username}" id="username" placeholder="Username"/>
+    <div class="alert alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+
+    <input type="password" th:field="*{password}" id="password" placeholder="Password"/>
+    <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+
     <input type="submit" value="Create"/>
+
     <a href="/login"><input type="button" value="Login"/></a>
 </form>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script>
+
+
+</script>
 </body>
 </html>
