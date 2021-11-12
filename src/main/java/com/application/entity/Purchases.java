@@ -3,6 +3,7 @@ package com.application.entity;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "purchases")
@@ -12,20 +13,21 @@ public class Purchases {
     @Column(name = "id")
     private Integer id;
 
+    @NotNull(message = "Type must not be empty")
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private Type type;
 
-    @NotNull
-    @Min(value = 0)
+    @NotNull(message = "Amount must not be empty")
+    @Min(value = 0, message = "Amount must be ≧ 0")
     @Column(name = "amount")
     private Long amount;
-    
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Purchases( Long amount,Type type, User user) {
+    public Purchases(Long amount, Type type, User user) {
         this.type = type;
         this.amount = amount;
         this.user = user;

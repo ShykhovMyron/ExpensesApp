@@ -37,27 +37,32 @@ public class ExpensesController {
     public String getPurchases(Purchases purchases,
                                @AuthenticationPrincipal User user,
                                Model model,
+                               @RequestParam(required = false) Type type,
                                @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
         logger.info("come to expenses ");
-        model = purchasesService.getPurchases(user, model, pageable);
+        model = purchasesService.getPurchases(user, model, pageable, type);
         if (errors != null) {
-            model.addAttribute("errors", errors.getAllErrors());
+            model.addAttribute("errors", errors.getFieldErrors());
             errors = null;
         }
-        logger.info(model.getAttribute("errors"));
         return "expenses";
     }
 
     @GetMapping("/editExpenses/{id}")
-    public String editPurchase(@PathVariable Integer id,
-                               @RequestParam(defaultValue = "0") Long amount,
-                               @RequestParam Type type) {
+    public String editPurchase(@Valid Purchases purchases,
+                               BindingResult result,
+                               @PathVariable Integer id) {
 
-        logger.info("get: /expenses/" + id + " amount:" + amount + " type" + type);
-
-        purchasesService.savePurchase(id, amount, type);
+        logger.info("getToEdit: /expenses/" + id + " amount:" + purchases.getAmount()
+                + " type" + purchases.getType());
+        if (result.hasErrors()) {
+            logger.info("Error  create:" + purchases.toString());
+            errors = result;
+            return "redirect:/expenses";
+        }
+        purchasesService.savePurchase(id, purchases);
         return "redirect:/expenses";
     }
 

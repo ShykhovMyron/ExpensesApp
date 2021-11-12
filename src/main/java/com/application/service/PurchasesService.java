@@ -21,7 +21,7 @@ public class PurchasesService {
 
     final static Logger logger = Logger.getLogger(PurchasesService.class);
 
-
+    private Type fitterByType;
     private Model model;
 
     @Autowired
@@ -31,7 +31,7 @@ public class PurchasesService {
 
         List<Integer> pagesMustBeShowList = new ArrayList<>();
         List<Integer> pagesMustBeConvert = new ArrayList<>();
-        Page<Purchases> page = purchasesRepo.findAllByUser_id(user.getId(), pageable);
+        Page<Purchases> page = getPurchases(user, pageable);
         int startPage;
         if (((page.getTotalPages() - 1) - pageable.getPageNumber()) < 5) startPage
                 = (page.getTotalPages() - 1) - 10;
@@ -55,7 +55,7 @@ public class PurchasesService {
     }
 
     public void addPurchasesToModel(User user, Pageable pageable) {
-        model.addAttribute("purchases", purchasesRepo.findAllByUser_id(user.getId(), pageable));
+        model.addAttribute("purchases", getPurchases(user, pageable));
     }
 
 
@@ -67,8 +67,16 @@ public class PurchasesService {
         model.addAttribute("budget", user.getBudget());
     }
 
-    public Model getPurchases(User user, Model model, Pageable pageable) {
+    private Page<Purchases> getPurchases(User user, Pageable pageable) {
+        if (fitterByType == null)
+            return purchasesRepo.findAllByUser_id(user.getId(), pageable);
+        else
+            return purchasesRepo.findAllByUser_idAndType(user.getId(), fitterByType, pageable);
+    }
+
+    public Model getPurchases(User user, Model model, Pageable pageable, Type fitterByType) {
         this.model = model;
+        this.fitterByType = fitterByType;
         addPaginationInfoToModel(user, pageable);
         addPurchasesToModel(user, pageable);
         addTypesToModel();
@@ -76,14 +84,13 @@ public class PurchasesService {
         return this.model;
     }
 
-    public void savePurchase(Integer id, Long amount, Type type) {
+    public void savePurchase(Integer id, Purchases purchases) {
         Purchases purchase = purchasesRepo.findById(id).get();
-        purchase.setAmount(amount);
-        purchase.setType(type);
-        purchasesRepo.save(purchase);
-
+        purchase.setAmount(purchases.getAmount());
+        purchase.setType(purchases.getType());
         logger.info("Edit:" + purchasesRepo.findById(id).get() +
                 "\n\t to:" + purchase);
+        purchasesRepo.save(purchase);
 
     }
 

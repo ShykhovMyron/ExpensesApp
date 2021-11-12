@@ -1,6 +1,5 @@
 package com.application.entity;
 
-import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,29 +13,22 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
-
-    @NotEmpty
-    @Size(min = 1,max = 30)
+    @NotEmpty(message = "Username must not be empty")
+    @Size(min = 6, max = 30, message = "Username size must be between 6 and 30")
     @Column(name = "username")
     private String username;
-
-    @NotEmpty(message = "Password")
-    @Size(min = 1,max = 30)
+    @NotEmpty(message = "Password must not be empty")
+    @Size(min = 6, max = 30, message = "Password size must be between 6 and 50")
     @Column(name = "password")
     private String password;
-
     @Column(name = "enabled")
     private boolean enabled;
-
-    @NotNull
     @Column(name = "budget")
     private Long budget;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Purchases> purchases = new LinkedHashSet<>();
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -44,7 +36,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Set<Role> role;
-
     public User(String username, String password, boolean enabled, Long budget, Set<Purchases> purchases, Set<Role> role) {
         this.username = username;
         this.password = password;
@@ -54,8 +45,17 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-
     public User() {
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", budget=" + budget +
+                '}';
     }
 
     public Long getBudget() {

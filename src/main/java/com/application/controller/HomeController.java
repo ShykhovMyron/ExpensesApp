@@ -1,7 +1,7 @@
 package com.application.controller;
 
 import com.application.entity.User;
-import com.application.repository.UserRepo;
+import com.application.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,23 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
-    @Autowired
-    private UserRepo userRepo;
-
     final static Logger logger = Logger.getLogger(HomeController.class);
 
-    @GetMapping()
-    public String greeting(@AuthenticationPrincipal User user,Model model) {
-        logger.info("Come to main-page");
-        model.addAttribute("budget", user.getBudget());
-        return "home";
-    }
+    @Autowired
+    private UserService userService;
 
-
-    @GetMapping("home")
-    public String greetingHome(@AuthenticationPrincipal User user,Model model) {
-        logger.info("Come to main-page");
-        model.addAttribute("budget", user.getBudget());
+    @GetMapping({"", "home"})
+    public String getBudgetInfo(@AuthenticationPrincipal User user, Model model) {
+        logger.info("Come to main-page: " + user.toString());
+        model = userService.getBudgetInfo(user, model);
         return "home";
     }
 
@@ -39,10 +31,15 @@ public class HomeController {
                             Model model) {
         if (budget != null) {
             user.setBudget(budget);
-            userRepo.save(user);
         }
         model.addAttribute("budget", user.getBudget());
         return "home";
+    }
+
+    @PostMapping("deleteExpenses")
+    private String deleteExpenses(@AuthenticationPrincipal User user){
+        userService.deleteExpenses(user);
+        return "redirect:/home";
     }
 
 }

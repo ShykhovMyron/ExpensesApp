@@ -10,6 +10,18 @@
             text-align: center;
 
         }
+
+        .modal-header-danger {
+            color: #fff;
+            padding: 9px 15px;
+            background-color: #d9534f;
+            -webkit-border-top-left-radius: 5px;
+            -webkit-border-top-right-radius: 5px;
+            -moz-border-radius-topleft: 5px;
+            -moz-border-radius-topright: 5px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
     </style>
 </head>
 <body style="background: #e2e3e5">
@@ -49,7 +61,21 @@
         <tr style="font-weight: bold;">
             <td th:text="'№ ('+${purchases.getTotalElements()}+')'"></td>
             <td>Amount</td>
-            <td>Type</td>
+            <td>
+                <div class="align-items-center">
+                    <form th:action="@{/expenses}" method="get">
+                        <select style="width: auto;     text-align-last:right;"
+                                class="form-select form-select-sm"
+                                name="type">
+                            <option th:value="${null}" selected>None</option>
+                            <option th:each="type : ${types}"
+                                    th:text="${type}"
+                                    th:value="${type}">
+                            </option>
+                        </select>
+                    </form>
+                </div>
+            </td>
             <td>Date</td>
             <td>
                 <input data-toggle="modal"
@@ -128,17 +154,18 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLongTitle">Edit</h5>
             </div>
-            <form id="edit-post" method="get">
+            <form id="edit-post" th:object="${purchases}" method="get">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit-amount" class="col-form-label">Amount</label>
                         <input type="text" class="form-control" id="edit-amount" placeholder="Amount"
-                               name="amount">
+                               field="*{amount}" name="amount">
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Type</label>
-                        <select id="selectType" name="type" class="form-select form-select-sm"
-                                aria-label=".form-select-sm example">
+                        <select id="selectType" class="form-select form-select-sm"
+                                aria-label=".form-select-sm example"
+                                field="*{type}" name="type">
                             <option id="edit-type" selected></option>
                             <option th:each="type : ${types}"
                                     th:text="${type}"
@@ -207,12 +234,16 @@
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content panel-warning">
-            <div class="modal-header">
-                <h4 id="alert-modal-title" class="modal-title"></h4>
+            <div class="modal-header modal-header-danger">
+                <h4 id="alert-modal-title" class="modal-title"><strong class="mx-2">Error!</strong></h4>
             </div>
-            <div id="alert-modal-body" class="modal-body"></div>
+            <div id="alert-modal-body" class="modal-body text-center">
+                <th:block th:each="error:${errors}">
+                    <p th:text="${error.getDefaultMessage()}"/>
+                </th:block>
+            </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
