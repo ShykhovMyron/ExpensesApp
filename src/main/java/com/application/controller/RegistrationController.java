@@ -30,19 +30,19 @@ public class RegistrationController {
                              Model model) {
         if (result.hasErrors()) {
 
-            logger.info("User username:" + user.getUsername() + " password:" + user.getPassword() + " valid  error");
+            logger.info("User username:" + user.toString() + " valid  error");
 
-            model.addAttribute("message","Incorrect username or password");
+            model.addAttribute("message", "Incorrect username or password");
             return "registration";
         }
         if (userService.createUser(user)) {
 
-            logger.info("User username:" + user.getUsername() + " password:" + user.getPassword() + " created");
+            logger.info("User username:" + user.toString() + " created");
 
             return "redirect:/login";
         } else {
 
-            logger.info("User username:" + user.getUsername() + " password:" + user.getPassword() + " already  exist");
+            logger.info("User username:" + user.toString() + " already  exist");
 
             model.addAttribute("message", "User already exist!");
             return "registration";
