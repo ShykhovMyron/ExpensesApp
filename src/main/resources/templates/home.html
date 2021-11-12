@@ -8,6 +8,7 @@
         body {
             background: #3a3f42;
         }
+
         .modal-header-danger {
             color: #fff;
             padding: 9px 15px;
@@ -60,7 +61,7 @@
         <span class="fst-italic" th:text="${user.getUsername()}"/>
     </h1>
     <p th:inline="text" class="lead align-">
-        Your current budget:
+        Your budget:
         <span style="color: limegreen;" th:text="${user.getBudget()}"/>
         $
     </p>
@@ -70,7 +71,10 @@
         $
     </p>
     <p class="lead">
-        <a href="#" class="btn btn-lg btn-primary">Change budget</a>
+        <button data-toggle="modal"
+                data-target="#changeBudget"
+                class="btn btn-lg btn-primary">Change budget
+        </button>
     </p>
     <p class="lead fixed-bottom text-center ">
         <button data-toggle="modal"
@@ -78,6 +82,32 @@
                 class="btn btn-lg btn-danger">Delete expenses
         </button>
     </p>
+</div>
+
+<!--changeBudget Modal-->
+<div class="modal fade" id="changeBudget" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change budget</h5>
+            </div>
+            <form th:action="@{/changeBudget}" th:object="${expectedUser}" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" field="*{username}" name="username" value="ignore">
+                        <input type="hidden" field="*{password}" name="password" value="ignore">
+                        <input type="text" class="form-control" placeholder="Budget" field="*{budget}"
+                               name="budget" th:value="${user.getBudget()}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!--confirmDeleteModal-->
@@ -93,8 +123,27 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                 <form th:action="@{/deleteExpenses}" method="post">
-                    <button type="submit" class="btn btn-success" >Yes</button>
+                    <button type="submit" class="btn btn-success">Yes</button>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--errorModel-->
+<div class="modal fade" id="errorModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content panel-warning">
+            <div class="modal-header modal-header-danger">
+                <h4 class="modal-title"><strong class="mx-2">Error!</strong></h4>
+            </div>
+            <div id="alert-modal-body" class="modal-body text-center">
+                <th:block th:each="error:${errors}">
+                    <p th:text="${error.getDefaultMessage()}"/>
+                </th:block>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -110,11 +159,24 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
+<th:block th:if="${errors}">
+    <script type="text/javascript">
+        $(window).on('load', function () {
+            $('#errorModel').modal('show');
+        });
+    </script>
+</th:block>
+
 <script>
 
     $('#confirmDeleteModal').on('show.bs.modal', function (event) {
     })
 
+    $('#changeBudget').on('show.bs.modal', function (event) {
+    })
+
+    $('#errorModel').on('show.bs.modal', function (event) {
+    })
 </script>
 </body>
 </html>

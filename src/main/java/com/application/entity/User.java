@@ -4,7 +4,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -17,18 +19,25 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
+
     @NotEmpty(message = "Username must not be empty")
     @Size(min = 6, max = 30, message = "Username size must be between 6 and 30")
     @Column(name = "username")
     private String username;
+
     @NotEmpty(message = "Password must not be empty")
     @Size(min = 6, max = 30, message = "Password size must be between 6 and 50")
     @Column(name = "password")
     private String password;
+
     @Column(name = "enabled")
     private boolean enabled;
+
+    @NotNull(message = "Budget must not be empty")
+    @Min(value = 0, message = "Budget must be ≧ 0")
     @Column(name = "budget")
     private Long budget;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Purchases> purchases = new LinkedHashSet<>();
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -36,6 +45,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Set<Role> role;
+
     public User(String username, String password, boolean enabled, Long budget, Set<Purchases> purchases, Set<Role> role) {
         this.username = username;
         this.password = password;

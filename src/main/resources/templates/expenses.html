@@ -61,8 +61,8 @@
         <tr style="font-weight: bold;">
             <td th:text="'№ ('+${purchases.getTotalElements()}+')'"></td>
             <td>Amount</td>
-            <td>
-                <div class="align-items-center">
+            <td>Type
+               <!-- <div class="align-items-center">
                     <form th:action="@{/expenses}" method="get">
                         <select style="width: auto;     text-align-last:right;"
                                 class="form-select form-select-sm"
@@ -74,7 +74,7 @@
                             </option>
                         </select>
                     </form>
-                </div>
+                </div>-->
             </td>
             <td>Date</td>
             <td>
@@ -194,7 +194,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit</h5>
+                <h5 class="modal-title">Create</h5>
             </div>
             <form th:action="@{/createExpenses}" th:object="${purchases}" method="post">
                 <div class="modal-body">
