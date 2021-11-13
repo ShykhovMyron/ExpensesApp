@@ -18,7 +18,8 @@ create table purchases
     amount  bigint,
     type    varchar(50),
     user_id integer not null,
-    primary key (id)
+    dateAdded date not null;
+primary key (id)
 ) engine=InnoDB;
 create table role
 (

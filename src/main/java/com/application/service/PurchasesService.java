@@ -12,9 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class PurchasesService {
@@ -74,6 +73,15 @@ public class PurchasesService {
             return purchasesRepo.findAllByUser_idAndType(user.getId(), fitterByType, pageable);
     }
 
+    private void addDateFormatToModel() {
+        model.addAttribute("dateFormat", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
+    }
+
+    private void addTodayDateToModel() {
+        model.addAttribute("todayDate", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH)
+                .format(new Date()));
+    }
+
     public Model getPurchases(User user, Model model, Pageable pageable, Type fitterByType) {
         this.model = model;
         this.fitterByType = fitterByType;
@@ -81,6 +89,8 @@ public class PurchasesService {
         addPurchasesToModel(user, pageable);
         addTypesToModel();
         addBudgetToModel(user);
+        addDateFormatToModel();
+        addTodayDateToModel();
         return this.model;
     }
 

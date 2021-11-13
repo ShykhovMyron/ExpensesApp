@@ -38,7 +38,7 @@ public class ExpensesController {
                                @AuthenticationPrincipal User user,
                                Model model,
                                @RequestParam(required = false) Type type,
-                               @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
+                               @PageableDefault(sort = {"dateAdded"}, direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
         logger.info("come to expenses ");

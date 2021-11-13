@@ -3,6 +3,7 @@ package com.application.entity;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Table(name = "purchases")
@@ -11,20 +12,20 @@ public class Purchases {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
-
     @NotNull(message = "Type must not be empty")
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private Type type;
-
     @NotNull(message = "Amount must not be empty")
     @Min(value = 0, message = "Amount must be ≧ 0")
     @Column(name = "amount")
     private Long amount;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_added")
+    Date dateAdded;
 
     public Purchases(Long amount, Type type, User user) {
         this.type = type;
@@ -43,6 +44,14 @@ public class Purchases {
                 ", amount=" + amount +
                 ", user=" + user +
                 '}';
+    }
+
+    public Date getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(Date dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
     public User getUser() {

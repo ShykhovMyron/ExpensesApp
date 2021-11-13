@@ -3,6 +3,8 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="jquery/jquery.js"></script>
+    <script src="bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
     <title>Hello World!</title>
     <style>
         td {
@@ -62,21 +64,21 @@
             <td th:text="'№ ('+${purchases.getTotalElements()}+')'"></td>
             <td>Amount</td>
             <td>Type
-               <!-- <div class="align-items-center">
-                    <form th:action="@{/expenses}" method="get">
-                        <select style="width: auto;     text-align-last:right;"
-                                class="form-select form-select-sm"
-                                name="type">
-                            <option th:value="${null}" selected>None</option>
-                            <option th:each="type : ${types}"
-                                    th:text="${type}"
-                                    th:value="${type}">
-                            </option>
-                        </select>
-                    </form>
-                </div>-->
+                <!-- <div class="align-items-center">
+                     <form th:action="@{/expenses}" method="get">
+                         <select style="width: auto;     text-align-last:right;"
+                                 class="form-select form-select-sm"
+                                 name="type">
+                             <option th:value="${null}" selected>None</option>
+                             <option th:each="type : ${types}"
+                                     th:text="${type}"
+                                     th:value="${type}">
+                             </option>
+                         </select>
+                     </form>
+                 </div>-->
             </td>
-            <td>Date</td>
+            <td>Date(<span class="fst-italic" th:text="${todayDate}"/>)</td>
             <td>
                 <input data-toggle="modal"
                        data-target="#createModel"
@@ -88,7 +90,7 @@
             <td th:text="${ourchaseNum}"></td>
             <td th:text="${purchase.getAmount()+' $'}"></td>
             <td th:text="${purchase.getType()}"></td>
-            <td></td>
+            <td th:text="${dateFormat.format(purchase.getDateAdded())}"></td>
             <td>
                 <div class="btn-group">
                     <button style="margin-right: 10px; border-radius: 5px;" class="btn btn-primary btn-sm"
@@ -216,17 +218,24 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-date" class="col-form-label">Data</label>
-                        <input type="text" class="form-control" placeholder="Data"
-                               name="data">
+                        <!--                        <input type="text" class="form-control" placeholder="Data"-->
+                        <!--                               name="data">-->
+                        <div class="well">
+                            <div class="input-append date" id="dp" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+                                <input class="span2" size="16" type="text" value="12-02-2012" readonly>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
         </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+        </form>
     </div>
+</div>
 </div>
 
 <!--errorModel-->
@@ -285,6 +294,12 @@
 
     $('#errorModel').on('show.bs.modal', function (event) {
     })
+
+    $(function () {
+        $('#dp').datepicker();
+    });
+
+
 </script>
 </body>
 </html>
