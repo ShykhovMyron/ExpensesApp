@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -77,9 +78,16 @@ public class PurchasesService {
         model.addAttribute("dateFormat", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
     }
 
+    private void addInputDateFormatToModel() {
+        model.addAttribute("inputModalFormat", getInputDateFormat());
+    }
+
+    private SimpleDateFormat getInputDateFormat() {
+        return new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH);
+    }
+
     private void addTodayDateToModel() {
-        model.addAttribute("todayDate", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH)
-                .format(new Date()));
+        model.addAttribute("todayDate", new Date());
     }
 
     public Model getPurchases(User user, Model model, Pageable pageable, Type fitterByType) {
@@ -91,6 +99,7 @@ public class PurchasesService {
         addBudgetToModel(user);
         addDateFormatToModel();
         addTodayDateToModel();
+        addInputDateFormatToModel();
         return this.model;
     }
 
@@ -108,8 +117,13 @@ public class PurchasesService {
         purchasesRepo.delete(purchasesRepo.findById(id).get());
     }
 
-    public void createPurchase(User user, Purchases purchases) {
+    public void createPurchase(User user, Purchases purchases, String date) {
         purchases.setUser(user);
+        try {
+            purchases.setDateAdded(getInputDateFormat().parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         logger.info("Create:" + purchases.toString());
         purchasesRepo.save(purchases);
     }

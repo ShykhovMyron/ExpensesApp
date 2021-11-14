@@ -42,7 +42,8 @@ public class Purchases {
                 "id=" + id +
                 ", type=" + type +
                 ", amount=" + amount +
-                ", user=" + user +
+                ", userId=" + user.getId() +
+                ", dateAdded=" + dateAdded +
                 '}';
     }
 

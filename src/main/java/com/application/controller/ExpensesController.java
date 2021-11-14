@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.Date;
 
 @Controller
 @Transactional
@@ -78,14 +79,14 @@ public class ExpensesController {
     @PostMapping("/createExpenses")
     public String createExpenses(@Valid Purchases purchases,
                                  BindingResult result,
+                                 @RequestParam String  date,
                                  @AuthenticationPrincipal User user) {
-        logger.info("Validate:" + purchases.toString());
         if (result.hasErrors()) {
-            logger.info("Error  create:" + purchases.toString());
+            logger.info("Error create:" + purchases.toString());
             errors = result;
             return "redirect:/expenses";
         }
-        purchasesService.createPurchase(user, purchases);
+        purchasesService.createPurchase(user, purchases,date);
         return "redirect:/expenses";
     }
 }
