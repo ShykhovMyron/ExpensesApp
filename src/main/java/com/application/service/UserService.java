@@ -1,25 +1,34 @@
 package com.application.service;
 
-import com.application.entity.Purchases;
+import com.application.entity.Purchase;
 import com.application.entity.Role;
 import com.application.entity.User;
 import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 
 @Service
 public class UserService implements UserDetailsService {
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private PurchasesRepo purchasesRepo;
+    private final UserRepo userRepo;
+    private final PurchasesRepo purchasesRepo;
+
+    public UserService(UserRepo userRepo, PurchasesRepo purchasesRepo) {
+        this.userRepo = userRepo;
+        this.purchasesRepo = purchasesRepo;
+    }
+
+    private void addDecimalFormatToModel(Model model) {
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalSeparatorAlwaysShown(false);
+        model.addAttribute("decimalFormat", format);
+    }
 
     public boolean createUser(User user) {
         User userFromDb = userRepo.findByUsername(user.getUsername());
@@ -39,15 +48,17 @@ public class UserService implements UserDetailsService {
         return userRepo.findByUsername(username);
     }
 
-
+    // в сервис который касается бюджетов который работает с новым репо бюджетов и тд
     public Model getBudgetInfo(User user, Model model) {
-        Long costs = 0L;
-        for (Purchases purchase : purchasesRepo.findAllByUser_id(user.getId())) {
-            costs += purchase.getAmount();
+        Double purchaseValue = 0.0;
+        for (Purchase purchase : purchasesRepo.findAllByUser_id(user.getId())) {
+            purchaseValue += purchase.getAmount();
         }
-        Long balance = user.getBudget() - costs;
+        Double balance = user.getBudget() - purchaseValue;
         model.addAttribute("user", user);
         model.addAttribute("balance", balance);
+        addDecimalFormatToModel(model);
+        // что нахуй делает эт
         return model;
     }
 

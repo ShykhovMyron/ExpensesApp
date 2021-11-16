@@ -25,6 +25,18 @@
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
+        .modal-header-warning {
+            color:#fff;
+            padding:9px 15px;
+            border-bottom:1px solid #eee;
+            background-color: #f0ad4e;
+            -webkit-border-top-left-radius: 5px;
+            -webkit-border-top-right-radius: 5px;
+            -moz-border-radius-topleft: 5px;
+            -moz-border-radius-topright: 5px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -67,12 +79,12 @@
     </h1>
     <p th:inline="text" class="lead align-">
         Your budget:
-        <span style="color: limegreen;" th:text="${user.getBudget()}"/>
+        <span style="color: limegreen;" th:text="${decimalFormat.format(user.getBudget())}"/>
         $
     </p>
     <p th:inline="text" class="lead">
         Balance:
-        <span style="color: limegreen;" th:text="${balance}"/>
+        <span  style="color: limegreen;" th:text="${decimalFormat.format(balance)}"/>
         $
     </p>
     <p class="lead">

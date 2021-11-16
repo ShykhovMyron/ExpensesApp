@@ -36,17 +36,17 @@ public class User implements UserDetails {
     @NotNull(message = "Budget must not be empty")
     @Min(value = 0, message = "Budget must be ≧ 0")
     @Column(name = "budget")
-    private Long budget;
+    private Double budget = 0.0;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Purchases> purchases = new LinkedHashSet<>();
+    private Set<Purchase> purchases = new LinkedHashSet<>();
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Set<Role> role;
 
-    public User(String username, String password, boolean enabled, Long budget, Set<Purchases> purchases, Set<Role> role) {
+    public User(String username, String password, boolean enabled, Double budget, Set<Purchase> purchases, Set<Role> role) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -68,11 +68,11 @@ public class User implements UserDetails {
                 '}';
     }
 
-    public Long getBudget() {
+    public Double getBudget() {
         return budget;
     }
 
-    public void setBudget(Long budget) {
+    public void setBudget(Double budget) {
         this.budget = budget;
     }
 
@@ -84,11 +84,11 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public Set<Purchases> getPurchases() {
+    public Set<Purchase> getPurchases() {
         return purchases;
     }
 
-    public void setPurchases(Set<Purchases> purchases) {
+    public void setPurchases(Set<Purchase> purchases) {
         this.purchases = purchases;
     }
 

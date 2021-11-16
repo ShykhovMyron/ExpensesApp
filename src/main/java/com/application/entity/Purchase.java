@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "purchases")
-public class Purchases {
+public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -19,7 +19,7 @@ public class Purchases {
     @NotNull(message = "Amount must not be empty")
     @Min(value = 0, message = "Amount must be ≧ 0")
     @Column(name = "amount")
-    private Long amount;
+    private Double amount;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
@@ -27,13 +27,13 @@ public class Purchases {
     @Column(name = "date_added")
     Date dateAdded;
 
-    public Purchases(Long amount, Type type, User user) {
+    public Purchase(Double amount, Type type, User user) {
         this.type = type;
         this.amount = amount;
         this.user = user;
     }
 
-    public Purchases() {
+    public Purchase() {
     }
 
     @Override
@@ -42,7 +42,6 @@ public class Purchases {
                 "id=" + id +
                 ", type=" + type +
                 ", amount=" + amount +
-                ", userId=" + user.getId() +
                 ", dateAdded=" + dateAdded +
                 '}';
     }
@@ -79,11 +78,11 @@ public class Purchases {
         this.type = type;
     }
 
-    public Long getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 }

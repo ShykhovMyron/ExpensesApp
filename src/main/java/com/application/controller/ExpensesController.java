@@ -1,6 +1,6 @@
 package com.application.controller;
 
-import com.application.entity.Purchases;
+import com.application.entity.Purchase;
 import com.application.entity.Type;
 import com.application.entity.User;
 import com.application.repository.PurchasesRepo;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.Date;
 
 @Controller
 @Transactional
@@ -35,7 +34,7 @@ public class ExpensesController {
     private PurchasesService purchasesService;
 
     @GetMapping("/expenses")
-    public String getPurchases(Purchases purchases,
+    public String getPurchases(Purchase purchase,
                                @AuthenticationPrincipal User user,
                                Model model,
                                @RequestParam(required = false) Type type,
@@ -52,18 +51,17 @@ public class ExpensesController {
     }
 
     @GetMapping("/editExpenses/{id}")
-    public String editPurchase(@Valid Purchases purchases,
+    public String editPurchase(@Valid Purchase purchase,
                                BindingResult result,
                                @PathVariable Integer id) {
 
-        logger.info("getToEdit: /expenses/" + id + " amount:" + purchases.getAmount()
-                + " type" + purchases.getType());
+        logger.info("comeToEditExpenses: "+ purchase.toString());
         if (result.hasErrors()) {
-            logger.info("Error  create:" + purchases.toString());
+            logger.info("Error  create:" + purchase.toString());
             errors = result;
             return "redirect:/expenses";
         }
-        purchasesService.savePurchase(id, purchases);
+        purchasesService.editPurchase(id, purchase);
         return "redirect:/expenses";
     }
 
@@ -77,16 +75,17 @@ public class ExpensesController {
     }
 
     @PostMapping("/createExpenses")
-    public String createExpenses(@Valid Purchases purchases,
+    public String createExpenses(@Valid Purchase purchase,
                                  BindingResult result,
                                  @RequestParam String  date,
                                  @AuthenticationPrincipal User user) {
         if (result.hasErrors()) {
-            logger.info("Error create:" + purchases.toString());
+            logger.info("Error create:" + purchase.toString());
             errors = result;
             return "redirect:/expenses";
         }
-        purchasesService.createPurchase(user, purchases,date);
+        purchasesService.createPurchase(user, purchase,date);
         return "redirect:/expenses";
     }
+
 }

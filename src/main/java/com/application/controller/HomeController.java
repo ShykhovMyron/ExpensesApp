@@ -36,6 +36,7 @@ public class HomeController {
         return "home";
     }
 
+    // експенсесконтроллер, и переименоват этот на баджетконтроллер который будет вызыватьбаджетсервис
     @PostMapping("deleteExpenses")
     public String deleteExpenses(@AuthenticationPrincipal User user) {
         userService.deleteExpenses(user);
@@ -46,7 +47,7 @@ public class HomeController {
     public String changeBudget(@AuthenticationPrincipal User user,
                                @Valid User expectedUser,
                                BindingResult result,
-                               @RequestParam(required = false) Long budget) {
+                               @RequestParam(required = false) Double budget) {
         if (result.hasErrors()) {
             logger.info("Error  create:" + expectedUser.toString());
             errors = result;
