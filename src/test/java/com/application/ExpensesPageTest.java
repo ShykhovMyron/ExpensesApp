@@ -32,6 +32,7 @@ public class ExpensesPageTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("errorsValid"))
                 .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))

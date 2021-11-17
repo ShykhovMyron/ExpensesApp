@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"create-user-before.sql", "create-expenses-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"create-expenses-after.sql", "create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 
-public class DeletePurchaseTest {
+public class DeleteExpensesTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,6 +43,7 @@ public class DeletePurchaseTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("errorsValid"))
                 .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))

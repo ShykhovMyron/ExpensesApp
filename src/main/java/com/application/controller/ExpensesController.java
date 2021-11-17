@@ -4,7 +4,7 @@ import com.application.entity.Purchase;
 import com.application.entity.Type;
 import com.application.entity.User;
 import com.application.repository.PurchasesRepo;
-import com.application.service.PurchasesService;
+import com.application.service.PurchaseService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -31,44 +31,35 @@ public class ExpensesController {
     private PurchasesRepo purchasesRepo;
 
     @Autowired
-    private PurchasesService purchasesService;
+    private PurchaseService purchasesService;
 
     @GetMapping("/expenses")
-    public String getPurchases(Purchase purchase,
-                               @AuthenticationPrincipal User user,
-                               Model model,
-                               @RequestParam(required = false) Type type,
-                               @PageableDefault(sort = {"dateAdded"}, direction = Sort.Direction.DESC) Pageable pageable
+    public String getExpensesPageInfo(Purchase purchase,
+                                      @AuthenticationPrincipal User user,
+                                      Model model,
+                                      @RequestParam(required = false) Type type,
+                                      @PageableDefault(sort = {"dateAdded"},
+                                              direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
-        logger.info("come to expenses ");
-        model = purchasesService.getPurchases(user, model, pageable, type);
-        if (errors != null) {
-            model.addAttribute("errors", errors.getFieldErrors());
-            errors = null;
-        }
+        model = purchasesService.getPurchases(user.getId(), model, pageable, type);
         return "expenses";
     }
 
     @GetMapping("/editExpenses/{id}")
-    public String editPurchase(@Valid Purchase purchase,
-                               BindingResult result,
+    public String editExpenses(@AuthenticationPrincipal User user,
+                               @Valid Purchase purchase,
+                               BindingResult validResult,
                                @PathVariable Integer id) {
 
-        logger.info("comeToEditExpenses: "+ purchase.toString());
-        if (result.hasErrors()) {
-            logger.info("Error  create:" + purchase.toString());
-            errors = result;
-            return "redirect:/expenses";
-        }
-        purchasesService.editPurchase(id, purchase);
+        logger.info("comeToEditExpenses: " + purchase.toString());
+        purchasesService.editPurchase(id, purchase, user.getId(), validResult);
         return "redirect:/expenses";
     }
 
 
     @PostMapping("/expenses/{id}")
-    public String deletePurchase(@PathVariable Integer id) {
-        logger.info("Delete:" + purchasesRepo.findById(id).get());
+    public String deleteExpenses(@PathVariable Integer id) {
 
         purchasesService.deletePurchase(id);
         return "redirect:/expenses";
@@ -76,15 +67,11 @@ public class ExpensesController {
 
     @PostMapping("/createExpenses")
     public String createExpenses(@Valid Purchase purchase,
-                                 BindingResult result,
-                                 @RequestParam String  date,
+                                 BindingResult validResult,
+                                 @RequestParam String date,
                                  @AuthenticationPrincipal User user) {
-        if (result.hasErrors()) {
-            logger.info("Error create:" + purchase.toString());
-            errors = result;
-            return "redirect:/expenses";
-        }
-        purchasesService.createPurchase(user, purchase,date);
+
+        purchasesService.createPurchase(user.getId(), purchase, date,validResult);
         return "redirect:/expenses";
     }
 

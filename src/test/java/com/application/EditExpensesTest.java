@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"create-user-before.sql", "create-expenses-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"create-expenses-after.sql", "create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 
-public class EditPurchaseTest {
+public class EditExpensesTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -45,6 +45,7 @@ public class EditPurchaseTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("errorsValid"))
                 .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))
@@ -61,8 +62,8 @@ public class EditPurchaseTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(1000,purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.FOOD,purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(1000, purchasesRepo.findById(10).get().getAmount());
+        Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -79,7 +80,8 @@ public class EditPurchaseTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("errors"))
+                .andExpect(model().attributeExists("errorsValid"))
+                .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))
                 .andExpect(model().attributeExists("isNextEnabled"))
@@ -94,8 +96,8 @@ public class EditPurchaseTest {
                 .andExpect(model().attributeExists("decimalFormat"));
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15,purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT,purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
+        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -112,7 +114,8 @@ public class EditPurchaseTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("errors"))
+                .andExpect(model().attributeExists("errorsValid"))
+                .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))
                 .andExpect(model().attributeExists("isNextEnabled"))
@@ -127,8 +130,8 @@ public class EditPurchaseTest {
                 .andExpect(model().attributeExists("decimalFormat"));
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15,purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT,purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
+        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -145,7 +148,8 @@ public class EditPurchaseTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("errors"))
+                .andExpect(model().attributeExists("errorsValid"))
+                .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))
                 .andExpect(model().attributeExists("isNextEnabled"))
@@ -160,8 +164,8 @@ public class EditPurchaseTest {
                 .andExpect(model().attributeExists("decimalFormat"));
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15,purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT,purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
+        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -178,6 +182,7 @@ public class EditPurchaseTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("errorsValid"))
                 .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeExists("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))
