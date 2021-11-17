@@ -30,7 +30,7 @@ class LoginTest {
             "stalker,123456",
             "phantom,654321"
     })
-    public void correctLoginTest(String username,String password) throws Exception {
+    public void correctLoginTest(String username, String password) throws Exception {
         this.mockMvc.perform(formLogin().user(username).password(password))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())

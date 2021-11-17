@@ -55,7 +55,7 @@ public class RegistrationTest {
                         .param("username", username)
                         .param("password", password)
                         .with(csrf()))
-                .andExpect(model().attribute("message","Incorrect username or password"))
+                .andExpect(model().attribute("message", "Incorrect username or password"))
                 .andExpect(status().isOk());
         Assertions.assertNull(userRepo.findByUsername(username));
     }
@@ -69,7 +69,7 @@ public class RegistrationTest {
                         .param("username", username)
                         .param("password", password)
                         .with(csrf()))
-                .andExpect(model().attribute("message","Incorrect username or password"))
+                .andExpect(model().attribute("message", "Incorrect username or password"))
                 .andExpect(status().isOk());
         Assertions.assertNull(userRepo.findByUsername(username));
     }
@@ -84,7 +84,7 @@ public class RegistrationTest {
                         .param("username", username)
                         .param("password", password)
                         .with(csrf()))
-                .andExpect(model().attribute("message","User already exist!"))
+                .andExpect(model().attribute("message", "User already exist!"))
                 .andExpect(status().isOk());
         Assertions.assertNotNull(userRepo.findByUsername(username));
         Assertions.assertEquals(userRepo.findByUsername(username).getUsername(), username);
@@ -100,7 +100,7 @@ public class RegistrationTest {
                         .param("username", username)
                         .param("password", password)
                         .with(csrf()))
-                .andExpect(model().attribute("message","Incorrect username or password"))
+                .andExpect(model().attribute("message", "Incorrect username or password"))
                 .andExpect(status().isOk());
         Assertions.assertNull(userRepo.findByUsername(username));
     }
@@ -114,7 +114,7 @@ public class RegistrationTest {
                         .param("username", username)
                         .param("password", password)
                         .with(csrf()))
-                .andExpect(model().attribute("message","Incorrect username or password"))
+                .andExpect(model().attribute("message", "Incorrect username or password"))
                 .andExpect(status().isOk());
         Assertions.assertNull(userRepo.findByUsername(username));
     }

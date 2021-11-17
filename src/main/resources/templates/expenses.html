@@ -89,7 +89,7 @@
                        value="Add new purchase">
             </td>
         </tr>
-        <tr th:with="ourchaseNum=${counter.incrementAndGet()}" th:each="purchase: ${purchases}">
+        <tr th:with="ourchaseNum=${purchaseNumberOnPage.incrementAndGet()}" th:each="purchase: ${purchases}">
             <td th:text="${ourchaseNum}"></td>
             <td th:text="${decimalFormat.format(purchase.getAmount())+' $'}"></td>
             <td th:text="${purchase.getType()}"></td>
@@ -128,7 +128,7 @@
             <th:block th:each="index: ${#numbers.sequence(0, purchases.getTotalPages()-1)}">
                 <li class="page-item"
                     th:classappend="${index == purchases.getPageable().getPageNumber()? 'active' : ''}"
-                    th:if="${pagesMustBeShow.contains(index) ||
+                    th:if="${pageNumbersToShow.contains(index) ||
                                         index == 0 ||
                                         index+1 == purchases.getTotalPages()}">
                     <a class="page-link"
@@ -137,7 +137,7 @@
                 </li>
                 <li class="page-item" th:classappend="${'disabled'}"
 
-                    th:if="${pagesMustBeConvert.contains(index)}">
+                    th:if="${pageNumbersToHide.contains(index)}">
                     <a class="page-link" href="#">...</a>
                 </li>
             </th:block>

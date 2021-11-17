@@ -1,6 +1,6 @@
 package com.application.service;
 
-import com.application.entity.Counter;
+import com.application.entity.PurchaseNumberOnPage;
 import com.application.entity.Purchase;
 import com.application.entity.Type;
 import com.application.entity.User;
@@ -60,9 +60,9 @@ public class PurchasesService {
         model.addAttribute("isPrevEnabled", pageable.getPageNumber() > 0);
         model.addAttribute("isNextEnabled", pageable.getPageNumber() < page.getTotalPages() - 1);
         // Поменять имена в соответствии с новым именем переменной
-        model.addAttribute("pagesMustBeConvert", pageNumbersToHide);
-        model.addAttribute("pagesMustBeShow", pageNumbersToShow);
-        model.addAttribute("counter", new Counter(pageable.getPageNumber() * 10));
+        model.addAttribute("pageNumbersToHide", pageNumbersToHide);
+        model.addAttribute("pageNumbersToShow", pageNumbersToShow);
+        model.addAttribute("purchaseNumberOnPage", new PurchaseNumberOnPage(pageable.getPageNumber() * 10));
     }
 
     public void addPurchasesToModel(User user, Pageable pageable) {
@@ -71,10 +71,6 @@ public class PurchasesService {
 
     private void addTypesToModel() {
         model.addAttribute("types", Type.values());
-    }
-
-    private void addBudgetToModel(User user) {
-        model.addAttribute("budget", user.getBudget());
     }
 
     private Page<Purchase> getPurchases(User user, Pageable pageable) {
@@ -133,7 +129,6 @@ public class PurchasesService {
         addPaginationInfoToModel(user, pageable);
         addPurchasesToModel(user, pageable);
         addTypesToModel();
-        addBudgetToModel(user);
         addDateFormatToModel();
         addTodayDateToModel();
         addInputDateFormatToModel();
@@ -162,6 +157,8 @@ public class PurchasesService {
         purchasesRepo.delete(purchasesRepo.findById(id).get());
     }
 
+
+    //обработка ошибок
     public void createPurchase(User user, Purchase purchase,String  date) {
         try {
             purchase.setDateAdded(getInputDateFormat().parse(date));

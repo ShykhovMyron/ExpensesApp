@@ -1,6 +1,5 @@
 package com.application;
 
-import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -35,7 +33,7 @@ public class HomeTest {
 
     @Test
     @WithUserDetails("stalker")
-    public void getHomePageUser1Test() throws Exception {
+    public void homePageUser1Test() throws Exception {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
@@ -47,7 +45,7 @@ public class HomeTest {
 
     @Test
     @WithUserDetails("phantom")
-    public void getHomePageUser2Test() throws Exception {
+    public void homePageUser2Test() throws Exception {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
@@ -71,7 +69,7 @@ public class HomeTest {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", (double) 100))
+                .andExpect(model().attribute("balance", userRepo.findByUsername("stalker").getBudget()))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
         Assertions.assertEquals(userRepo.findByUsername("stalker").getBudget(), 100);
@@ -111,7 +109,8 @@ public class HomeTest {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", (double) 0))
+                .andExpect(model().attribute("balance", userRepo
+                        .findByUsername("stalker").getBudget()))
                 .andExpect(model().attributeExists("errors"));
 
         Assertions.assertEquals(userRepo.findByUsername("stalker").getBudget(), 0);
@@ -119,7 +118,7 @@ public class HomeTest {
 
     @Test
     @WithUserDetails("stalker")
-    public void changeUserBudgetToMinusTest() throws Exception {
+    public void changeUserBudgetToNegativeTest() throws Exception {
         this.mockMvc.perform(post("/changeBudget")
                         .param("username", "ignore")
                         .param("password", "ignore")
@@ -131,7 +130,8 @@ public class HomeTest {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", (double) 0))
+                .andExpect(model().attribute("balance", userRepo
+                        .findByUsername("stalker").getBudget()))
                 .andExpect(model().attributeExists("errors"));
 
         Assertions.assertEquals(userRepo.findByUsername("stalker").getBudget(), 0);
