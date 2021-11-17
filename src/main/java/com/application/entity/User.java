@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -26,16 +27,18 @@ public class User implements UserDetails {
     private String username;
 
     @NotEmpty(message = "Password must not be empty")
-    @Size(min = 6, max = 30, message = "Password size must be between 6 and 50")
+    @Size(min = 6, max = 50, message = "Password size must be between 6 and 50")
     @Column(name = "password")
     private String password;
 
     @Column(name = "enabled")
-    private boolean enabled;
+    private boolean enabled = true;
 
     @NotNull(message = "Budget must not be empty")
     @Min(value = 0, message = "Budget must be ≧ 0")
     @Column(name = "budget")
+    // почитать про хренение денег в джаве и вынести все что не касается юзера из сущьности и таблицыюзера
+    // в дабл хранить деньги нельзя
     private Double budget = 0.0;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
@@ -44,19 +47,7 @@ public class User implements UserDetails {
     @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private Set<Role> role;
-
-    public User(String username, String password, boolean enabled, Double budget, Set<Purchase> purchases, Set<Role> role) {
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.budget = budget;
-        this.purchases = purchases;
-        this.role = role;
-    }
-
-    public User() {
-    }
+    private Set<Role> role = Collections.singleton(Role.USER);
 
     @Override
     public String toString() {

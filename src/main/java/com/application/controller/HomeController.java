@@ -1,6 +1,7 @@
 package com.application.controller;
 
 import com.application.entity.User;
+import com.application.repository.UserRepo;
 import com.application.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @GetMapping({"", "home"})
     public String getBudgetInfo(@AuthenticationPrincipal User user,
@@ -46,14 +50,14 @@ public class HomeController {
     @PostMapping("changeBudget")
     public String changeBudget(@AuthenticationPrincipal User user,
                                @Valid User expectedUser,
-                               BindingResult result,
-                               @RequestParam(required = false) Double budget) {
+                               BindingResult result) {
         if (result.hasErrors()) {
             logger.info("Error  create:" + expectedUser.toString());
             errors = result;
             return "redirect:/home";
         }
-        user.setBudget(budget);
+        user.setBudget(expectedUser.getBudget());
+        userRepo.save(user);
         return "redirect:/home";
     }
 }

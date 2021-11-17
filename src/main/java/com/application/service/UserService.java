@@ -36,8 +36,6 @@ public class UserService implements UserDetailsService {
             return false;
         }
 
-        user.setEnabled(true);
-        user.setRole(Collections.singleton(Role.USER));
         userRepo.save(user);
         return true;
 
