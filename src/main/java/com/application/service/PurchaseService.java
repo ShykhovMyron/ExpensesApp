@@ -29,7 +29,7 @@ public class PurchaseService {
 
     // cначала публичные функции потом протектед потом приватные
     // переделать этот и другие методы чтоб они принимали юзерайди а неюзера целиком, он тут не нужен
-    public Model getPurchases(Integer userId, Model model, Pageable pageable, Type fitterByType) {
+    public void getPurchases(Integer userId, Model model, Pageable pageable, Type fitterByType) {
 
         Page<Purchase> purchases;
         if (fitterByType == null) {
@@ -37,7 +37,7 @@ public class PurchaseService {
         } else {
              purchases = purchasesRepo.findAllByUser_idAndType(userId, fitterByType, pageable);
         }
-        return PurchaseUtils.addExpensesPageInfoToModel(userId,model,pageable,fitterByType,purchases);
+        PurchaseUtils.addExpensesPageInfoToModel(userId,model,pageable,fitterByType,purchases);
     }
 
     public void editPurchase(Integer purchaseId, Purchase newPurchaseInfo, Integer userId,

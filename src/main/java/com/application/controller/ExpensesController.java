@@ -42,7 +42,7 @@ public class ExpensesController {
                                               direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
-        model = purchasesService.getPurchases(user.getId(), model, pageable, type);
+        purchasesService.getPurchases(user.getId(), model, pageable, type);
         return "expenses";
     }
 
@@ -66,10 +66,10 @@ public class ExpensesController {
     }
 
     @PostMapping("/createExpenses")
-    public String createExpenses(@Valid Purchase purchase,
+    public String createExpenses(@AuthenticationPrincipal User user,
+                                 @Valid Purchase purchase,
                                  BindingResult validResult,
-                                 @RequestParam String date,
-                                 @AuthenticationPrincipal User user) {
+                                 @RequestParam String date) {
 
         purchasesService.createPurchase(user.getId(), purchase, date,validResult);
         return "redirect:/expenses";

@@ -60,6 +60,35 @@ public class DeleteExpensesTest {
 
         Assertions.assertTrue(purchasesRepo.findById(10).isEmpty());
     }
-    //nonexistent id,not this user
+
+    @Test
+    @WithUserDetails("technology")
+    public void deletePurchaseNonexistentIdTest() throws Exception {
+        this.mockMvc.perform(post("/expenses/1000")
+                        .with(csrf()))
+                .andExpect(authenticated())
+                .andExpect(status().is3xxRedirection());
+
+        this.mockMvc.perform(get("/expenses")
+                        .with(csrf()))
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("errorsValid"))
+                .andExpect(model().attributeExists("errors"))
+                .andExpect(model().attributeDoesNotExist("lowBudget"))
+                .andExpect(model().attributeExists("isPrevEnabled"))
+                .andExpect(model().attributeExists("isNextEnabled"))
+                .andExpect(model().attributeExists("pageNumbersToHide"))
+                .andExpect(model().attributeExists("pageNumbersToShow"))
+                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("purchases"))
+                .andExpect(model().attributeExists("types"))
+                .andExpect(model().attributeExists("dateFormat"))
+                .andExpect(model().attributeExists("todayDate"))
+                .andExpect(model().attributeExists("inputModalFormat"))
+                .andExpect(model().attributeExists("decimalFormat"));
+
+        Assertions.assertFalse(purchasesRepo.findById(10).isEmpty());
+    }
 
 }

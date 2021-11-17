@@ -201,7 +201,74 @@ public class EditExpensesTest {
         Assertions.assertEquals(3000, purchasesRepo.findById(10).get().getAmount());
         Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
     }
-    //nonexistent id,nonexistent type,not this user
+
+    @Test
+    @WithUserDetails("technology")
+    public void editPurchaseNonexistentIdTest() throws Exception {
+        this.mockMvc.perform(get("/editExpenses/1000")
+                        .param("amount", "3000")
+                        .param("type", "FOOD")
+                        .with(csrf()))
+                .andExpect(authenticated())
+                .andExpect(status().is3xxRedirection());
+
+        this.mockMvc.perform(get("/expenses")
+                        .with(csrf()))
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("errorsValid"))
+                .andExpect(model().attributeExists("errors"))
+                .andExpect(model().attributeDoesNotExist("lowBudget"))
+                .andExpect(model().attributeExists("isPrevEnabled"))
+                .andExpect(model().attributeExists("isNextEnabled"))
+                .andExpect(model().attributeExists("pageNumbersToHide"))
+                .andExpect(model().attributeExists("pageNumbersToShow"))
+                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("purchases"))
+                .andExpect(model().attributeExists("types"))
+                .andExpect(model().attributeExists("dateFormat"))
+                .andExpect(model().attributeExists("todayDate"))
+                .andExpect(model().attributeExists("inputModalFormat"))
+                .andExpect(model().attributeExists("decimalFormat"));
+
+        Assertions.assertNotNull(purchasesRepo.findById(10));
+        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
+        Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
+    }
+
+    @Test
+    @WithUserDetails("technology")
+    public void editPurchaseNonexistentTypeTest() throws Exception {
+        this.mockMvc.perform(get("/editExpenses/10")
+                        .param("amount", "3000")
+                        .param("type", "asdasdasd")
+                        .with(csrf()))
+                .andExpect(authenticated())
+                .andExpect(status().is3xxRedirection());
+
+        this.mockMvc.perform(get("/expenses")
+                        .with(csrf()))
+                .andExpect(authenticated())
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("errorsValid"))
+                .andExpect(model().attributeDoesNotExist("errors"))
+                .andExpect(model().attributeDoesNotExist("lowBudget"))
+                .andExpect(model().attributeExists("isPrevEnabled"))
+                .andExpect(model().attributeExists("isNextEnabled"))
+                .andExpect(model().attributeExists("pageNumbersToHide"))
+                .andExpect(model().attributeExists("pageNumbersToShow"))
+                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("purchases"))
+                .andExpect(model().attributeExists("types"))
+                .andExpect(model().attributeExists("dateFormat"))
+                .andExpect(model().attributeExists("todayDate"))
+                .andExpect(model().attributeExists("inputModalFormat"))
+                .andExpect(model().attributeExists("decimalFormat"));
+
+        Assertions.assertNotNull(purchasesRepo.findById(10));
+        Assertions.assertEquals(3000, purchasesRepo.findById(10).get().getAmount());
+        Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
+    }
 
 
 }
