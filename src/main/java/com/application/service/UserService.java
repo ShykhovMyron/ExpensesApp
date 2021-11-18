@@ -5,6 +5,7 @@ import com.application.entity.Role;
 import com.application.entity.User;
 import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
+import com.application.utils.PurchaseUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,15 +49,11 @@ public class UserService implements UserDetailsService {
 
     // в сервис который касается бюджетов который работает с новым репо бюджетов и тд
     public Model getBudgetInfo(User user, Model model) {
-        Double purchaseValue = 0.0;
-        for (Purchase purchase : purchasesRepo.findAllByUser_id(user.getId())) {
-            purchaseValue += purchase.getAmount();
-        }
+        Double purchaseValue = PurchaseUtils.getPurchasesValue(user);
         Double balance = user.getBudget() - purchaseValue;
         model.addAttribute("user", user);
         model.addAttribute("balance", balance);
-        addDecimalFormatToModel(model);
-        // что нахуй делает эт
+        PurchaseUtils.addFormatDisplayDataOnPageToModel(model);
         return model;
     }
 

@@ -233,7 +233,7 @@ public class EditExpensesTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -266,8 +266,8 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("decimalFormat"));
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(3000, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
+        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
 

@@ -142,7 +142,7 @@ public class PurchaseUtils {
         }
     }
 
-    private static Double getPurchasesValue(User user) {
+    public static Double getPurchasesValue(User user) {
         Double purchasesValue = 0.0;
         for (Purchase purchase : purchasesRepo.findAllByUser_id(user.getId())) {
             purchasesValue += purchase.getAmount();
@@ -183,7 +183,7 @@ public class PurchaseUtils {
         model.addAttribute("inputModalFormat", getInputDateFormat());
     }
 
-    private static void addFormatDisplayDataOnPageToModel(Model model) {
+    public static void addFormatDisplayDataOnPageToModel(Model model) {
         DecimalFormat format = new DecimalFormat();
         format.setDecimalSeparatorAlwaysShown(false);
         model.addAttribute("decimalFormat", format);
