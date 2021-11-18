@@ -3,7 +3,7 @@ from role;
 delete
 from user;
 
-insert into user(id, enabled, password, username, budget)
+insert into user(id, enabled, password, username, wallet)
 values (1, true, 123456, 'stalker', 0),
        (2, true, 654321, 'phantom', 1000),
        (5, true, 111111, 'technology', 10000);

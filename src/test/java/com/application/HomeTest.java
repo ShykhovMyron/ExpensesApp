@@ -11,6 +11,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,7 +42,8 @@ public class HomeTest {
                 .andExpect(model().attribute("balance", (double) 0))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-        Assertions.assertEquals(userRepo.findByUsername("stalker").getBudget(), 0);
+        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
+                BigDecimal.valueOf(0));
     }
 
     @Test
@@ -49,10 +52,11 @@ public class HomeTest {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", (double) 335))
+                .andExpect(model().attribute("balance", BigDecimal.valueOf(335)))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-        Assertions.assertEquals(userRepo.findByUsername("phantom").getBudget(), 1000);
+        Assertions.assertEquals(userRepo.findByUsername("phantom").getWallet().getBudget(),
+                BigDecimal.valueOf(1000));
     }
 
     @Test
@@ -69,10 +73,12 @@ public class HomeTest {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", userRepo.findByUsername("stalker").getBudget()))
+                .andExpect(model().attribute("balance", userRepo
+                        .findByUsername("stalker").getWallet().getBudget()))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-        Assertions.assertEquals(userRepo.findByUsername("stalker").getBudget(), 100);
+        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
+                BigDecimal.valueOf(100));
     }
 
     @Test
@@ -89,10 +95,12 @@ public class HomeTest {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", (double) 235))
+                .andExpect(model().attribute("balance", BigDecimal.valueOf(235)))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-        Assertions.assertEquals(userRepo.findByUsername("phantom").getBudget(), 900);
+        Assertions.assertEquals(userRepo.findByUsername("phantom").getWallet().getBudget(),
+                BigDecimal.valueOf(900));
+
     }
 
     @Test
@@ -110,10 +118,11 @@ public class HomeTest {
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("balance", userRepo
-                        .findByUsername("stalker").getBudget()))
+                        .findByUsername("stalker").getWallet().getBudget()))
                 .andExpect(model().attributeExists("errors"));
 
-        Assertions.assertEquals(userRepo.findByUsername("stalker").getBudget(), 0);
+        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
+                BigDecimal.valueOf(0));
     }
 
     @Test
@@ -131,10 +140,11 @@ public class HomeTest {
                 .andExpect(authenticated())
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("balance", userRepo
-                        .findByUsername("stalker").getBudget()))
+                        .findByUsername("stalker").getWallet().getBudget()))
                 .andExpect(model().attributeExists("errors"));
 
-        Assertions.assertEquals(userRepo.findByUsername("stalker").getBudget(), 0);
+        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
+                BigDecimal.valueOf(0));
     }
 
     @Test
@@ -147,9 +157,10 @@ public class HomeTest {
                 .andExpect(redirectedUrl("/home"));
         this.mockMvc.perform(get(("/home")))
                 .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", (double) 1000))
+                .andExpect(model().attribute("balance", BigDecimal.valueOf(10000)))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-        Assertions.assertEquals(userRepo.findByUsername("phantom").getBudget(), 1000);
+        Assertions.assertEquals(userRepo.findByUsername("phantom").getWallet().getBudget(),
+                BigDecimal.valueOf(1000));
     }
 }

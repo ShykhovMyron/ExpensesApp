@@ -32,7 +32,7 @@ create table user
     enabled  bit,
     password varchar(50),
     username varchar(30),
-    budget double not null ,
+    wallet double not null ,
     primary key (id)
 ) engine=InnoDB;
 alter table purchase

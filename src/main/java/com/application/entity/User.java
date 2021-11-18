@@ -4,9 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,12 +32,12 @@ public class User implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled = true;
 
-    @NotNull(message = "Budget must not be empty")
-    @Min(value = 0, message = "Budget must be ≧ 0")
-    @Column(name = "budget")
-    // почитать про хренение денег в джаве и вынести все что не касается юзера из сущьности и таблицыюзера
-    // в дабл хранить деньги нельзя
-    private Double budget = 0.0;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_wallet",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="wallet_id")
+    )
+    private Wallet wallet;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Purchase> purchases = new LinkedHashSet<>();
@@ -55,16 +53,17 @@ public class User implements UserDetails {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", budget=" + budget +
+                ", budget=" + wallet +
                 '}';
     }
 
-    public Double getBudget() {
-        return budget;
+
+    public Wallet getWallet() {
+        return wallet;
     }
 
-    public void setBudget(Double budget) {
-        this.budget = budget;
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     public Integer getId() {

@@ -88,7 +88,7 @@
         </tr>
         <tr th:with="ourchaseNum=${purchaseNumberOnPage.incrementAndGet()}" th:each="purchase: ${purchases}">
             <td th:text="${ourchaseNum}"></td>
-            <td th:text="${decimalFormat.format(purchase.getAmount())+' $'}"></td>
+            <td th:text="${purchase.getAmount()+' $'}"></td>
             <td th:text="${purchase.getType()}"></td>
             <td th:text="${dateFormat.format(purchase.getDateAdded())}"></td>
             <td>
@@ -274,7 +274,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content panel-warning">
             <div class="modal-header modal-header-warning">
-                <h4 class="modal-title"><strong class="mx-2">Less than 10 percent of the budget left!</strong></h4>
+                <h4 class="modal-title"><strong class="mx-2">Less than 10 percent of the wallet left!</strong></h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

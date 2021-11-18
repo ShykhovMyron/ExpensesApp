@@ -3,6 +3,7 @@ package com.application.entity;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -19,22 +20,13 @@ public class Purchase {
     @NotNull(message = "Amount must not be empty")
     @Min(value = 0, message = "Amount must be ≧ 0")
     @Column(name = "amount")
-    private Double amount;
+    private BigDecimal amount;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
     @Temporal(TemporalType.DATE)
     @Column(name = "date_added")
     Date dateAdded;
-
-    public Purchase(Double amount, Type type, User user) {
-        this.type = type;
-        this.amount = amount;
-        this.user = user;
-    }
-
-    public Purchase() {
-    }
 
     @Override
     public String toString() {
@@ -78,11 +70,11 @@ public class Purchase {
         this.type = type;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 }

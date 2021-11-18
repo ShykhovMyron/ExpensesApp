@@ -13,6 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -74,7 +75,7 @@ public class CreateExpensesTest {
         Assertions.assertEquals(11, purchasesRepo.findAllByUser_id(5).size());
 
 
-        Purchase purchase = listPurchases.stream().filter(s -> s.getAmount() == 1000 &&
+        Purchase purchase = listPurchases.stream().filter(s -> s.getAmount().equals(BigDecimal.valueOf(1000)) &&
                 s.getType() == Type.FOOD).findAny().get();
 
         Assertions.assertEquals(purchase.getDateAdded()

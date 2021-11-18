@@ -1,11 +1,9 @@
 package com.application.utils;
 
-import com.application.entity.Purchase;
-import com.application.entity.PurchaseNumberOnPage;
-import com.application.entity.Type;
-import com.application.entity.User;
+import com.application.entity.*;
 import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
+import com.application.repository.WalletRepo;
 import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +12,7 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,18 +24,20 @@ public class PurchaseUtils {
 
     public static Model modelErrors = new ExtendedModelMap();
 
-    private static Double budgetBeforeSaving;
+    private static BigDecimal balanseBeforeSaving;
 
+    private static WalletRepo walletRepo;
     private static UserRepo userRepo;
     private static PurchasesRepo purchasesRepo;
 
-    public PurchaseUtils(PurchasesRepo purchasesRepo, UserRepo userRepo) {
+    public PurchaseUtils(PurchasesRepo purchasesRepo, UserRepo userRepo, WalletRepo walletRepo) {
         PurchaseUtils.purchasesRepo = purchasesRepo;
         PurchaseUtils.userRepo = userRepo;
+        PurchaseUtils.walletRepo = walletRepo;
     }
 
-    public static Model addExpensesPageInfoToModel(Integer userId, Model model, Pageable pageable,
-                                                   Page<Purchase> purchases) {
+    public static void addExpensesPageInfoToModel(Integer userId, Model model, Pageable pageable,
+                                                  Page<Purchase> purchases) {
 
         model.addAttribute("purchases", purchases);
 
@@ -44,12 +45,10 @@ public class PurchaseUtils {
         addDateFormatToModel(model);
         addTodayDateToModel(model);
         addInputDateFormatToModel(model);
-        addFormatDisplayDataOnPageToModel(model);
         addPaginationInfoToModel(pageable, model, purchases);
         checkErrorsAndAddToModel(model);
         warnIfLowBudget(userId, model);
 
-        return model;
     }
 
     public static Purchase getPurchaseOrNull(Integer purchaseId) {
@@ -74,7 +73,7 @@ public class PurchaseUtils {
             modelErrors.addAttribute("errorsValid", validResult.getFieldErrors());
             return null;
         }
-        checkBudgetBeforeSaving(userRepo.getById(userId));
+        checkBudgetBeforeSaving(userId);
         return purchaseOptional.get();
     }
 
@@ -91,7 +90,7 @@ public class PurchaseUtils {
             modelErrors.addAttribute("errorsValid", validResult.getFieldErrors());
             return null;
         }
-        checkBudgetBeforeSaving(userRepo.getById(userId));
+        checkBudgetBeforeSaving(userId);
         return purchase;
     }
 
@@ -130,31 +129,30 @@ public class PurchaseUtils {
         model.addAttribute("purchaseNumberOnPage", new PurchaseNumberOnPage(pageable.getPageNumber() * 10));
     }
 
-    private static void checkBudgetBeforeSaving(User user) {
-        Double tenPercentOfBudget = user.getBudget() * 0.1;
-        Double balance = user.getBudget() - getPurchasesValue(user);
-        if (balance >= tenPercentOfBudget) {
-            budgetBeforeSaving = getPurchasesValue(user);
+    private static void checkBudgetBeforeSaving(Integer userId) {
+        Wallet userWallet = walletRepo.findByUserId(userId);
+        BigDecimal tenPercentOfBudget = userWallet.getBudget().multiply(BigDecimal.valueOf(0.1));
+
+        if (userWallet.getBalance().compareTo(tenPercentOfBudget) >= 0) {
+            balanseBeforeSaving = userWallet.getBudget();
         }
     }
 
-    public static Double getPurchasesValue(User user) {
-        Double purchasesValue = 0.0;
-        for (Purchase purchase : purchasesRepo.findAllByUser_id(user.getId())) {
-            purchasesValue += purchase.getAmount();
+    public static BigDecimal getPurchasesValue(Integer userId) {
+        BigDecimal purchasesValue = new BigDecimal(0);
+        for (Purchase purchase : purchasesRepo.findAllByUser_id(userId)) {
+            purchasesValue = purchasesValue.add(purchase.getAmount());
         }
         return purchasesValue;
     }
 
     private static void warnIfLowBudget(Integer userId, Model model) {
-        User user = userRepo.getById(userId);
-        Double tenPercentOfBudget = user.getBudget() * 0.1;
-        Double balance = user.getBudget() - getPurchasesValue(user);
-        if (budgetBeforeSaving != null &&
-                balance < tenPercentOfBudget) {
+        Wallet userWallet = walletRepo.findByUserId(userId);
+        BigDecimal tenPercentOfBudget = userWallet.getBudget().multiply(BigDecimal.valueOf(0.1));
+        if (balanseBeforeSaving != null &&
+                userWallet.getBalance().compareTo(tenPercentOfBudget) < 0) {
             model.addAttribute("lowBudget", true);
-            budgetBeforeSaving = null;
-            logger.info("lowBudget = true");
+            balanseBeforeSaving = null;
         }
     }
 

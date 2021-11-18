@@ -21,14 +21,6 @@ public class PurchaseService {
         PurchaseService.userRepo = userRepo;
     }
 
-    // отету хуйню логически разбить на подчасти и вынести в отдельные методы
-    // PurchaseModelService создать и засунуть туда вввсе методы
-    //      касающиеся создания и наполнения модели пурчейза.
-    //    А лучше даже PurchaseUtils и туда засунуть все статические методы которые
-    //    засовывают, проверяют и валидируют пурчейз
-
-    // cначала публичные функции потом протектед потом приватные
-    // переделать этот и другие методы чтоб они принимали юзерайди а неюзера целиком, он тут не нужен
     public void getExpensesPageInfo(Integer userId, Model model, Pageable pageable, Type fitterByType) {
 
         Page<Purchase> purchases = getPurchases(userId, fitterByType, pageable);

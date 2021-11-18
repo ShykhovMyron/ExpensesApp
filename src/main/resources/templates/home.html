@@ -72,22 +72,22 @@
             color: white">
     <h1 class="cover-heading">
         Welcome
-        <span class="fst-italic" th:text="${user.getUsername()}"/>
+        <span class="fst-italic" th:text="${username}"/>
     </h1>
     <p th:inline="text" class="lead align-">
         Your budget:
-        <span style="color: limegreen;" th:text="${decimalFormat.format(user.getBudget())}"/>
+        <span style="color: limegreen;" th:text="${userWallet.getBudget()}"/>
         $
     </p>
     <p th:inline="text" class="lead">
         Balance:
-        <span  style="color: limegreen;" th:text="${decimalFormat.format(balance)}"/>
+        <span  style="color: limegreen;" th:text="${userWallet.getBalance()}"/>
         $
     </p>
     <p class="lead">
         <button data-toggle="modal"
                 data-target="#changeBudget"
-                class="btn btn-lg btn-primary">Change budget
+                class="btn btn-lg btn-primary">Change wallet
         </button>
     </p>
     <p class="lead fixed-bottom text-center ">
@@ -104,15 +104,13 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Change budget</h5>
+                <h5 class="modal-title">Change wallet</h5>
             </div>
-            <form th:action="@{/changeBudget}" th:object="${expectedUser}" method="post">
+            <form th:action="@{/changeBudget}" th:object="${wallet}" method="post">
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="hidden" field="*{username}" name="username" value="ignore">
-                        <input type="hidden" field="*{password}" name="password" value="ignore">
                         <input type="text" class="form-control" placeholder="Budget" field="*{budget}"
-                               name="budget" th:value="${user.getBudget()}">
+                               name="budget" th:value="${userWallet.getBudget()}">
                     </div>
                 </div>
                 <div class="modal-footer">
