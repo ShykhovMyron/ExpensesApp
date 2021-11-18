@@ -84,6 +84,7 @@ public class RegistrationTest {
                         .param("username", username)
                         .param("password", password)
                         .with(csrf()))
+                .andExpect(model().attributeExists("message"))
                 .andExpect(model().attribute("message", "User already exist!"))
                 .andExpect(status().isOk());
         Assertions.assertNotNull(userRepo.findByUsername(username));

@@ -3,10 +3,8 @@ package com.application.controller;
 import com.application.entity.Purchase;
 import com.application.entity.Type;
 import com.application.entity.User;
-import com.application.repository.PurchasesRepo;
 import com.application.service.PurchaseService;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.application.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -25,13 +23,13 @@ import javax.validation.Valid;
 @Controller
 @Transactional
 public class ExpensesController {
-    final static Logger logger = Logger.getLogger(ExpensesController.class);
-    private static BindingResult errors;
-    @Autowired
-    private PurchasesRepo purchasesRepo;
+    private final PurchaseService purchasesService;
+    private final UserService userService;
 
-    @Autowired
-    private PurchaseService purchasesService;
+    public ExpensesController(PurchaseService purchasesService, UserService userService) {
+        this.purchasesService = purchasesService;
+        this.userService = userService;
+    }
 
     @GetMapping("/expenses")
     public String getExpensesPageInfo(Purchase purchase,
@@ -42,7 +40,7 @@ public class ExpensesController {
                                               direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
-        purchasesService.getPurchases(user.getId(), model, pageable, type);
+        purchasesService.getExpensesPageInfo(user.getId(), model, pageable, type);
         return "expenses";
     }
 
@@ -52,7 +50,6 @@ public class ExpensesController {
                                BindingResult validResult,
                                @PathVariable Integer id) {
 
-        logger.info("comeToEditExpenses: " + purchase.toString());
         purchasesService.editPurchase(id, purchase, user.getId(), validResult);
         return "redirect:/expenses";
     }
@@ -71,8 +68,13 @@ public class ExpensesController {
                                  BindingResult validResult,
                                  @RequestParam String date) {
 
-        purchasesService.createPurchase(user.getId(), purchase, date,validResult);
+        purchasesService.createPurchase(user.getId(), purchase, date, validResult);
         return "redirect:/expenses";
     }
 
+    @PostMapping("/deleteExpenses")
+    public String deleteExpenses(@AuthenticationPrincipal User user) {
+        userService.deleteExpenses(user);
+        return "redirect:/home";
+    }
 }

@@ -19,32 +19,17 @@ public class RegistrationController {
     private UserService userService;
 
     @GetMapping("/registration")
-    public String registration(User user) {
-        logger.info("Come to registration");
+    public String getRegistrationPageInfo(User user) {
         return "registration";
     }
 
     @PostMapping("/registration")
     public String createUser(@Valid User user,
-                             BindingResult result,
+                             BindingResult validResult,
                              Model model) {
-        if (result.hasErrors()) {
-
-            logger.info("User username:" + user.toString() + " valid  error");
-
-            model.addAttribute("message", "Incorrect username or password");
-            return "registration";
-        }
-        if (userService.createUser(user)) {
-
-            logger.info("User username:" + user.toString() + " created");
-
+        if (userService.createUser(user, validResult, model)) {
             return "redirect:/login";
         } else {
-
-            logger.info("User username:" + user.toString() + " already  exist");
-
-            model.addAttribute("message", "User already exist!");
             return "registration";
         }
     }

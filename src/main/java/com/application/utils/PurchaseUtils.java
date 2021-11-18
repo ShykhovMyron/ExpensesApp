@@ -36,7 +36,7 @@ public class PurchaseUtils {
     }
 
     public static Model addExpensesPageInfoToModel(Integer userId, Model model, Pageable pageable,
-                                                   Type fitterByType, Page<Purchase> purchases) {
+                                                   Page<Purchase> purchases) {
 
         model.addAttribute("purchases", purchases);
 
@@ -45,9 +45,9 @@ public class PurchaseUtils {
         addTodayDateToModel(model);
         addInputDateFormatToModel(model);
         addFormatDisplayDataOnPageToModel(model);
-        warnIfLowBudget(userId, model);
-        addPaginationInfoToModel(userId, pageable, model, purchases);
+        addPaginationInfoToModel(pageable, model, purchases);
         checkErrorsAndAddToModel(model);
+        warnIfLowBudget(userId, model);
 
         return model;
     }
@@ -71,7 +71,6 @@ public class PurchaseUtils {
             return null;
         }
         if (validResult.hasErrors()) {
-            logger.info("Error edit");
             modelErrors.addAttribute("errorsValid", validResult.getFieldErrors());
             return null;
         }
@@ -89,7 +88,6 @@ public class PurchaseUtils {
             return null;
         }
         if (validResult.hasErrors()) {
-            logger.info("Error edit");
             modelErrors.addAttribute("errorsValid", validResult.getFieldErrors());
             return null;
         }
@@ -102,16 +100,14 @@ public class PurchaseUtils {
         modelErrors = new ExtendedModelMap();
     }
 
-    private static void addPaginationInfoToModel(Integer userId, Pageable pageable, Model model,
+    private static void addPaginationInfoToModel(Pageable pageable, Model model,
                                                  Page<Purchase> purchases) {
-        User user = userRepo.getById(userId);
 
         List<Integer> pageNumbersToShow = new ArrayList<>();
         List<Integer> pageNumbersToHide = new ArrayList<>();
-        Page<Purchase> page = purchases;
         int startPage;
-        if (((page.getTotalPages() - 1) - pageable.getPageNumber()) < 5) {
-            startPage = (page.getTotalPages() - 1) - 10;
+        if (((purchases.getTotalPages() - 1) - pageable.getPageNumber()) < 5) {
+            startPage = (purchases.getTotalPages() - 1) - 10;
         } else {
             startPage = Math.max((pageable.getPageNumber() - 5), 0);
         }
@@ -122,12 +118,12 @@ public class PurchaseUtils {
             pageNumbersToShow.remove(0);
             pageNumbersToHide.add(Collections.min(pageNumbersToShow) - 1);
         }
-        if (Collections.max(pageNumbersToShow) + 1 < page.getTotalPages() - 1) {
+        if (Collections.max(pageNumbersToShow) + 1 < purchases.getTotalPages() - 1) {
             pageNumbersToShow.remove(pageNumbersToShow.size() - 1);
             pageNumbersToHide.add(Collections.max(pageNumbersToShow) + 1);
         }
         model.addAttribute("isPrevEnabled", pageable.getPageNumber() > 0);
-        model.addAttribute("isNextEnabled", pageable.getPageNumber() < page.getTotalPages() - 1);
+        model.addAttribute("isNextEnabled", pageable.getPageNumber() < purchases.getTotalPages() - 1);
         // Поменять имена в соответствии с новым именем переменной
         model.addAttribute("pageNumbersToHide", pageNumbersToHide);
         model.addAttribute("pageNumbersToShow", pageNumbersToShow);

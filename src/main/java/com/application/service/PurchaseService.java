@@ -13,12 +13,12 @@ import org.springframework.validation.BindingResult;
 
 @Service
 public class PurchaseService {
-    private final UserRepo userRepo;
-    private final PurchasesRepo purchasesRepo;
+    private static UserRepo userRepo;
+    private static PurchasesRepo purchasesRepo;
 
     public PurchaseService(PurchasesRepo purchasesRepo, UserRepo userRepo) {
-        this.purchasesRepo = purchasesRepo;
-        this.userRepo = userRepo;
+        PurchaseService.purchasesRepo = purchasesRepo;
+        PurchaseService.userRepo = userRepo;
     }
 
     // отету хуйню логически разбить на подчасти и вынести в отдельные методы
@@ -29,15 +29,11 @@ public class PurchaseService {
 
     // cначала публичные функции потом протектед потом приватные
     // переделать этот и другие методы чтоб они принимали юзерайди а неюзера целиком, он тут не нужен
-    public void getPurchases(Integer userId, Model model, Pageable pageable, Type fitterByType) {
+    public void getExpensesPageInfo(Integer userId, Model model, Pageable pageable, Type fitterByType) {
 
-        Page<Purchase> purchases;
-        if (fitterByType == null) {
-            purchases = purchasesRepo.findAllByUser_id(userId, pageable);
-        } else {
-             purchases = purchasesRepo.findAllByUser_idAndType(userId, fitterByType, pageable);
-        }
-        PurchaseUtils.addExpensesPageInfoToModel(userId,model,pageable,fitterByType,purchases);
+        Page<Purchase> purchases = getPurchases(userId, fitterByType, pageable);
+
+        PurchaseUtils.addExpensesPageInfoToModel(userId,model,pageable,purchases);
     }
 
     public void editPurchase(Integer purchaseId, Purchase newPurchaseInfo, Integer userId,
@@ -57,9 +53,18 @@ public class PurchaseService {
     }
 
     public void createPurchase(Integer userId, Purchase purchase, String date, BindingResult validResult) {
-        Purchase purchaseWithDate = PurchaseUtils.getPurchaseWithDateOrNull(userId, purchase, date, validResult);
+        Purchase purchaseWithDate = PurchaseUtils.getPurchaseWithDateOrNull(userId, purchase,
+                date, validResult);
         if (purchaseWithDate == null) return;
         purchase.setUser(userRepo.getById(userId));
         purchasesRepo.save(purchase);
+    }
+
+    private static Page<Purchase> getPurchases(Integer userId, Type fitterByType, Pageable pageable){
+        if (fitterByType == null) {
+            return purchasesRepo.findAllByUser_id(userId, pageable);
+        } else {
+            return purchasesRepo.findAllByUser_idAndType(userId, fitterByType, pageable);
+        }
     }
 }
