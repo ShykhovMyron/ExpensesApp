@@ -4,6 +4,7 @@ import com.application.entity.User;
 import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
 import com.application.utils.UserUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,10 +16,11 @@ import org.springframework.validation.BindingResult;
 public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
     private final PurchasesRepo purchasesRepo;
-
-    public UserService(UserRepo userRepo, PurchasesRepo purchasesRepo) {
+    private final BudgetService budgetService;
+    public UserService(UserRepo userRepo, PurchasesRepo purchasesRepo, BudgetService budgetService) {
         this.userRepo = userRepo;
         this.purchasesRepo = purchasesRepo;
+        this.budgetService = budgetService;
     }
 
     public boolean createUser(User user, BindingResult validResult, Model model) {
@@ -27,6 +29,7 @@ public class UserService implements UserDetailsService {
             return false;
 
         userRepo.save(user);
+        budgetService.createUserBudget(user.getId());
         return true;
     }
 
@@ -35,7 +38,9 @@ public class UserService implements UserDetailsService {
         return userRepo.findByUsername(username);
     }
 
-    public void deleteExpenses(User user) {
-        purchasesRepo.deleteAll(purchasesRepo.findAllByUser_id(user.getId()));
+    public void deleteExpenses(Long userId) {
+
+        purchasesRepo.deleteAll(purchasesRepo.findAllByUser_id(userId));
+        BudgetService.changeBalance(userId);
     }
 }

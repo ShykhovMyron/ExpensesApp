@@ -1,6 +1,9 @@
 package com.application.utils;
 
-import com.application.entity.*;
+import com.application.entity.Purchase;
+import com.application.entity.PurchaseNumberOnPage;
+import com.application.entity.PurchaseType;
+import com.application.entity.Wallet;
 import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
@@ -13,10 +16,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.application.utils.BudgetUtils.checkBudgetBeforeSaving;
+import static com.application.utils.BudgetUtils.warnIfLowBudget;
 
 @Component
 public class PurchaseUtils {
@@ -24,34 +29,29 @@ public class PurchaseUtils {
 
     public static Model modelErrors = new ExtendedModelMap();
 
-    private static BigDecimal balanseBeforeSaving;
-
-    private static WalletRepo walletRepo;
-    private static UserRepo userRepo;
     private static PurchasesRepo purchasesRepo;
 
-    public PurchaseUtils(PurchasesRepo purchasesRepo, UserRepo userRepo, WalletRepo walletRepo) {
+    public PurchaseUtils(PurchasesRepo purchasesRepo) {
         PurchaseUtils.purchasesRepo = purchasesRepo;
-        PurchaseUtils.userRepo = userRepo;
-        PurchaseUtils.walletRepo = walletRepo;
     }
 
-    public static void addExpensesPageInfoToModel(Integer userId, Model model, Pageable pageable,
+    public static void addExpensesPageInfoToModel(Long userId, Model model, Pageable pageable,
                                                   Page<Purchase> purchases) {
 
         model.addAttribute("purchases", purchases);
 
-        addTypesToModel(model);
+        addPurchaseTypesToModel(model);
         addDateFormatToModel(model);
         addTodayDateToModel(model);
         addInputDateFormatToModel(model);
         addPaginationInfoToModel(pageable, model, purchases);
         checkErrorsAndAddToModel(model);
+
         warnIfLowBudget(userId, model);
 
     }
 
-    public static Purchase getPurchaseOrNull(Integer purchaseId) {
+    public static Purchase getPurchaseOrNull(Long purchaseId) {
 
         Optional<Purchase> purchaseOptional = purchasesRepo.findById(purchaseId);
         if (purchaseOptional.isEmpty()) {
@@ -61,7 +61,7 @@ public class PurchaseUtils {
         return purchaseOptional.get();
     }
 
-    public static Purchase getOldPurchaseOrNull(Integer purchaseId, Integer userId,
+    public static Purchase getOldPurchaseOrNull(Long purchaseId, Long userId,
                                                 BindingResult validResult) {
 
         Optional<Purchase> purchaseOptional = purchasesRepo.findById(purchaseId);
@@ -77,7 +77,7 @@ public class PurchaseUtils {
         return purchaseOptional.get();
     }
 
-    public static Purchase getPurchaseWithDateOrNull(Integer userId, Purchase purchase,
+    public static Purchase getPurchaseWithDateOrNull(Long userId, Purchase purchase,
                                                      String date, BindingResult validResult) {
 
         try {
@@ -123,22 +123,12 @@ public class PurchaseUtils {
         }
         model.addAttribute("isPrevEnabled", pageable.getPageNumber() > 0);
         model.addAttribute("isNextEnabled", pageable.getPageNumber() < purchases.getTotalPages() - 1);
-        // Поменять имена в соответствии с новым именем переменной
         model.addAttribute("pageNumbersToHide", pageNumbersToHide);
         model.addAttribute("pageNumbersToShow", pageNumbersToShow);
         model.addAttribute("purchaseNumberOnPage", new PurchaseNumberOnPage(pageable.getPageNumber() * 10));
     }
 
-    private static void checkBudgetBeforeSaving(Integer userId) {
-        Wallet userWallet = walletRepo.findByUserId(userId);
-        BigDecimal tenPercentOfBudget = userWallet.getBudget().multiply(BigDecimal.valueOf(0.1));
-
-        if (userWallet.getBalance().compareTo(tenPercentOfBudget) >= 0) {
-            balanseBeforeSaving = userWallet.getBudget();
-        }
-    }
-
-    public static BigDecimal getPurchasesValue(Integer userId) {
+    public static BigDecimal getPurchasesValue(Long userId) {
         BigDecimal purchasesValue = new BigDecimal(0);
         for (Purchase purchase : purchasesRepo.findAllByUser_id(userId)) {
             purchasesValue = purchasesValue.add(purchase.getAmount());
@@ -146,22 +136,12 @@ public class PurchaseUtils {
         return purchasesValue;
     }
 
-    private static void warnIfLowBudget(Integer userId, Model model) {
-        Wallet userWallet = walletRepo.findByUserId(userId);
-        BigDecimal tenPercentOfBudget = userWallet.getBudget().multiply(BigDecimal.valueOf(0.1));
-        if (balanseBeforeSaving != null &&
-                userWallet.getBalance().compareTo(tenPercentOfBudget) < 0) {
-            model.addAttribute("lowBudget", true);
-            balanseBeforeSaving = null;
-        }
-    }
-
     private static SimpleDateFormat getInputDateFormat() {
         return new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH);
     }
 
-    private static void addTypesToModel(Model model) {
-        model.addAttribute("types", Type.values());
+    private static void addPurchaseTypesToModel(Model model) {
+        model.addAttribute("types", PurchaseType.values());
     }
 
     private static void addDateFormatToModel(Model model) {
@@ -177,9 +157,4 @@ public class PurchaseUtils {
         model.addAttribute("inputModalFormat", getInputDateFormat());
     }
 
-    public static void addFormatDisplayDataOnPageToModel(Model model) {
-        DecimalFormat format = new DecimalFormat();
-        format.setDecimalSeparatorAlwaysShown(false);
-        model.addAttribute("decimalFormat", format);
-    }
 }

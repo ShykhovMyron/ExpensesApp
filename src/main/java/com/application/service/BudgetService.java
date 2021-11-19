@@ -1,6 +1,5 @@
 package com.application.service;
 
-import com.application.entity.User;
 import com.application.entity.Wallet;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
@@ -22,26 +21,39 @@ public class BudgetService {
         BudgetService.walletRepo = walletRepo;
     }
 
-    public static void changeBudget(Integer userID, Wallet userWallet) {
-        walletRepo.findByUserId(userID).setBudget(userWallet.getBudget());
-        changeBalance(userID);
-    }
-
-    public static void changeBalance(Integer userId) {
-        Wallet userWallet = walletRepo.findByUserId(userId);
-        BigDecimal costs = PurchaseUtils.getPurchasesValue(userId);
-        userWallet.setBalance(userWallet.getBudget().subtract(costs));
-    }
-
-    public void getHomePageInfo(Integer userId, Model model) {
+    public void getHomePageInfo(Long userId, Model model) {
 
         BudgetUtils.addHomePageInfoToModel(userId, model);
     }
 
-    public void changeBudget(Wallet userWallet, Integer userId, BindingResult validResult) {
+    public void changeBudget(Wallet userWallet, Long userId, BindingResult validResult) {
         if (BudgetUtils.checkForValidErrors(validResult)) return;
 
-        changeBudget(userId,userWallet);
-        userRepo.save(userRepo.getById(userId));
+        changeBudget(userId, userWallet);
+        walletRepo.save(userWallet);
+    }
+
+    public void createUserBudget(Long id) {
+        Wallet wallet = new Wallet();
+        wallet.setUser(userRepo.getById(id));
+        walletRepo.save(wallet);
+    }
+
+    public static void changeBudget(Long userId, Wallet userWallet) {
+        userWallet.setId(userId);
+
+        walletRepo.getById(userId).setBudget(userWallet.getBudget());
+        changeBalance(userId, userWallet);
+    }
+
+    public static void changeBalance(Long userId, Wallet userWallet) {
+        BigDecimal costs = PurchaseUtils.getPurchasesValue(userId);
+        userWallet.setBalance(userWallet.getBudget().subtract(costs));
+    }
+
+    public static void changeBalance(Long userId) {
+        Wallet userWallet = walletRepo.getById(userId);
+        BigDecimal costs = PurchaseUtils.getPurchasesValue(userId);
+        userWallet.setBalance(userWallet.getBudget().subtract(costs));
     }
 }

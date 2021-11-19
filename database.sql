@@ -16,7 +16,7 @@ create table purchase
 (
     id      integer not null,
     amount  double ,
-    type    varchar(50),
+    purchaseType    varchar(50),
     user_id integer not null,
     dateAdded date not null;
 primary key (id)

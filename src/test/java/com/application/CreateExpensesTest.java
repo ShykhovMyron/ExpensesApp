@@ -1,7 +1,7 @@
 package com.application;
 
 import com.application.entity.Purchase;
-import com.application.entity.Type;
+import com.application.entity.PurchaseType;
 import com.application.repository.PurchasesRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -70,13 +70,13 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("inputModalFormat"))
                 .andExpect(model().attributeExists("decimalFormat"));
 
-        Set<Purchase> listPurchases = purchasesRepo.findAllByUser_id(5);
+        Set<Purchase> listPurchases = purchasesRepo.findAllByUser_id(5L);
 
-        Assertions.assertEquals(11, purchasesRepo.findAllByUser_id(5).size());
+        Assertions.assertEquals(11, purchasesRepo.findAllByUser_id(5L).size());
 
 
         Purchase purchase = listPurchases.stream().filter(s -> s.getAmount().equals(BigDecimal.valueOf(1000)) &&
-                s.getType() == Type.FOOD).findAny().get();
+                s.getType() == PurchaseType.FOOD).findAny().get();
 
         Assertions.assertEquals(purchase.getDateAdded()
                 , new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH).parse(date));
@@ -113,7 +113,7 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("inputModalFormat"))
                 .andExpect(model().attributeExists("decimalFormat"));
 
-        Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5).size());
+        Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5L).size());
     }
 
     @Test
@@ -147,7 +147,7 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("inputModalFormat"))
                 .andExpect(model().attributeExists("decimalFormat"));
 
-        Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5).size());
+        Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5L).size());
     }
 
     @Test
@@ -181,7 +181,7 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("inputModalFormat"))
                 .andExpect(model().attributeExists("decimalFormat"));
 
-        Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5).size());
+        Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5L).size());
     }
 
 }

@@ -1,7 +1,7 @@
 package com.application.controller;
 
 import com.application.entity.Purchase;
-import com.application.entity.Type;
+import com.application.entity.PurchaseType;
 import com.application.entity.User;
 import com.application.service.PurchaseService;
 import com.application.service.UserService;
@@ -35,12 +35,12 @@ public class ExpensesController {
     public String getExpensesPageInfo(Purchase purchase,
                                       @AuthenticationPrincipal User user,
                                       Model model,
-                                      @RequestParam(required = false) Type type,
+                                      @RequestParam(required = false) PurchaseType purchaseType,
                                       @PageableDefault(sort = {"dateAdded"},
                                               direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
-        purchasesService.getExpensesPageInfo(user.getId(), model, pageable, type);
+        purchasesService.getExpensesPageInfo(user.getId(), model, pageable, purchaseType);
         return "expenses";
     }
 
@@ -48,7 +48,7 @@ public class ExpensesController {
     public String editExpenses(@AuthenticationPrincipal User user,
                                @Valid Purchase purchase,
                                BindingResult validResult,
-                               @PathVariable Integer id) {
+                               @PathVariable Long id) {
 
         purchasesService.editPurchase(id, purchase, user.getId(), validResult);
         return "redirect:/expenses";
@@ -56,9 +56,10 @@ public class ExpensesController {
 
 
     @PostMapping("/expenses/{id}")
-    public String deleteExpenses(@PathVariable Integer id) {
+    public String deleteExpenses(@AuthenticationPrincipal User user,
+                                 @PathVariable Long id) {
 
-        purchasesService.deletePurchase(id);
+        purchasesService.deletePurchase(id,user.getId());
         return "redirect:/expenses";
     }
 
@@ -73,8 +74,8 @@ public class ExpensesController {
     }
 
     @PostMapping("/deleteExpenses")
-    public String deleteExpenses(@AuthenticationPrincipal User user) {
-        userService.deleteExpenses(user);
+    public String deleteAllExpenses(@AuthenticationPrincipal User user) {
+        userService.deleteExpenses(user.getId());
         return "redirect:/home";
     }
 }

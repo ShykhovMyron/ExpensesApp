@@ -47,7 +47,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top ">
         <div class="container">
             <a class="navbar-brand" href="#">Expenses Application</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+            <button class="navbar-toggler" purchaseType="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                     aria-controls="Toggle navigation" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -63,7 +63,7 @@
                 </ul>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <form th:action="@{/logout}" method="post">
-                        <button class="btn btn-outline-secondary " type="submit">Sign Out</button>
+                        <button class="btn btn-outline-secondary " purchaseType="submit">Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -82,13 +82,13 @@
             <td>
                 <input data-toggle="modal"
                        data-target="#createModel"
-                       style="font-weight: bold;" type="button" class="btn btn-outline-dark btn-sm"
+                       style="font-weight: bold;" purchaseType="button" class="btn btn-outline-dark btn-sm"
                        value="Add new purchase">
             </td>
         </tr>
         <tr th:with="ourchaseNum=${purchaseNumberOnPage.incrementAndGet()}" th:each="purchase: ${purchases}">
             <td th:text="${ourchaseNum}"></td>
-            <td th:text="${purchase.getAmount()+' $'}"></td>
+            <td th:text="${purchase.getAmount().stripTrailingZeros()+' $'}"></td>
             <td th:text="${purchase.getType()}"></td>
             <td th:text="${dateFormat.format(purchase.getDateAdded())}"></td>
             <td>
@@ -98,12 +98,12 @@
                             data-target="#editModal"
                             th:data-id="${purchase.getId()}"
                             th:data-amount="${purchase.getAmount()}"
-                            th:data-type="${purchase.getType()}"
+                            th:data-purchaseType="${purchase.getType()}"
                             th:data-typeArray="${types}">
                         Edit
                     </button>
                     <form th:action="@{'/expenses/'+${purchase.getId()}}" method="post">
-                        <button style="border-radius: 5px;" type="submit" class="btn btn-danger btn-sm">
+                        <button style="border-radius: 5px;" purchaseType="submit" class="btn btn-danger btn-sm">
                             Delete
                         </button>
                     </form>
@@ -160,25 +160,25 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit-amount" class="col-form-label">Amount</label>
-                        <input type="text" class="form-control" id="edit-amount" placeholder="Amount"
+                        <input purchaseType="text" class="form-control" id="edit-amount" placeholder="Amount"
                                field="*{amount}" name="amount">
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Type</label>
                         <select id="selectType" class="form-select form-select-sm"
                                 aria-label=".form-select-sm example"
-                                field="*{type}" name="type">
-                            <option id="edit-type" selected></option>
-                            <option th:each="type : ${types}"
-                                    th:text="${type}"
-                                    th:value="${type}">
+                                field="*{purchaseType}" name="purchaseType">
+                            <option id="edit-purchaseType" selected></option>
+                            <option th:each="purchaseType : ${types}"
+                                    th:text="${purchaseType}"
+                                    th:value="${purchaseType}">
                             </option>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button purchaseType="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button purchaseType="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
         </div>
@@ -197,24 +197,24 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit-amount" class="col-form-label">Amount</label>
-                        <input type="text" class="form-control" placeholder="Amount"
+                        <input purchaseType="text" class="form-control" placeholder="Amount"
                                field="*{amount}" name="amount">
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Type</label>
                         <select class="form-select form-select-sm"
                                 aria-label=".form-select-sm example"
-                                field="*{type}" name="type">
-                            <option th:each="type : ${types}"
-                                    th:text="${type}"
-                                    th:value="${type}">
+                                field="*{purchaseType}" name="purchaseType">
+                            <option th:each="purchaseType : ${types}"
+                                    th:text="${purchaseType}"
+                                    th:value="${purchaseType}">
                             </option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Data</label>
                         <div class="date" id="dpCreate" th:data-date="${todayDate}" data-date-format="dd-mm-yyyy">
-                            <input class="form-control span2" size="16" type="text"
+                            <input class="form-control span2" size="16" purchaseType="text"
                                    name="date" th:value="${inputModalFormat.format(todayDate)}"
                                    readonly>
                             <span class="add-on"><i class="icon-th"></i></span>
@@ -222,8 +222,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button purchaseType="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button purchaseType="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
         </div>
@@ -244,7 +244,7 @@
                 </th:block>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button purchaseType="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -263,7 +263,7 @@
                 </th:block>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button purchaseType="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -277,9 +277,9 @@
                 <h4 class="modal-title"><strong class="mx-2">Less than 10 percent of the wallet left!</strong></h4>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button purchaseType="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <a href="/home">
-                    <button type="button" class="btn btn-primary">View balance</button>
+                    <button purchaseType="button" class="btn btn-primary">View balance</button>
                 </a>
             </div>
         </div>
@@ -287,21 +287,21 @@
 </div>
 
 <th:block th:if="${errorsValid}">
-    <script type="text/javascript">
+    <script purchaseType="text/javascript">
         $(window).on('load', function () {
             $('#errorValidModel').modal('show');
         });
     </script>
 </th:block>
 <th:block th:if="${errors}">
-    <script type="text/javascript">
+    <script purchaseType="text/javascript">
         $(window).on('load', function () {
             $('#errorModel').modal('show');
         });
     </script>
 </th:block>
 <th:block th:if="${lowBudget}">
-    <script type="text/javascript">
+    <script purchaseType="text/javascript">
         $(window).on('load', function () {
             $('#warningModal').modal('show');
         });
@@ -313,12 +313,12 @@
         var button = $(event.relatedTarget)
         var id = button.data('id')
         var amount = button.data('amount')
-        var type = button.data('type')
+        var purchaseType = button.data('purchaseType')
 
         var modal = $(this)
         modal.find('#edit-amount').val(amount)
-        modal.find('#edit-type').val(type)
-        modal.find('#edit-type').text(type + '(selected)')
+        modal.find('#edit-purchaseType').val(purchaseType)
+        modal.find('#edit-purchaseType').text(purchaseType + '(selected)')
         modal.find('#edit-post').attr('action', 'editExpenses/' + id);
 
     })

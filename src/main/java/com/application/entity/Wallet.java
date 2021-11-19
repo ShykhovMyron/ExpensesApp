@@ -9,28 +9,34 @@ import java.math.BigDecimal;
 @Table(name = "wallet")
 public class Wallet {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @NotNull(message = "Budget must not be empty")
     @Min(value = 0, message = "Budget must be ≧ 0")
     @Column(name = "budget")
     private BigDecimal budget = new BigDecimal(0);
 
-    @NotNull(message = "Budget must not be empty")
-    @Min(value = 0, message = "Budget must be ≧ 0")
     @Column(name = "balance")
     private BigDecimal balance = new BigDecimal(0);
 
-    @OneToOne(mappedBy = "wallet")
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     private User user;
 
-    public Integer getId() {
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -50,11 +56,13 @@ public class Wallet {
         this.balance = balance;
     }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "id=" + id +
+                ", budget=" + budget +
+                ", balance=" + balance +
+                '}';
     }
 }

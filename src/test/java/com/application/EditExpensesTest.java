@@ -1,6 +1,6 @@
 package com.application;
 
-import com.application.entity.Type;
+import com.application.entity.PurchaseType;
 import com.application.repository.PurchasesRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ public class EditExpensesTest {
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(1000, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(PurchaseType.FOOD, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -97,7 +97,7 @@ public class EditExpensesTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class EditExpensesTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -165,7 +165,7 @@ public class EditExpensesTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -199,7 +199,7 @@ public class EditExpensesTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(3000, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.FOOD, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(PurchaseType.FOOD, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -233,7 +233,7 @@ public class EditExpensesTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
     @Test
@@ -267,7 +267,7 @@ public class EditExpensesTest {
 
         Assertions.assertNotNull(purchasesRepo.findById(10));
         Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(Type.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
     }
 
 

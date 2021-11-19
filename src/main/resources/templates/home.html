@@ -44,7 +44,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top ">
         <div class="container">
             <a class="navbar-brand" href="#">Expenses Application</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+            <button class="navbar-toggler" purchaseType="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
                     aria-controls="Toggle navigation" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -60,7 +60,7 @@
                 </ul>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <form th:action="@{/logout}" method="post">
-                        <button class="btn btn-outline-secondary " type="submit">Sign Out</button>
+                        <button class="btn btn-outline-secondary " purchaseType="submit">Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -76,12 +76,12 @@
     </h1>
     <p th:inline="text" class="lead align-">
         Your budget:
-        <span style="color: limegreen;" th:text="${userWallet.getBudget()}"/>
+        <span style="color: limegreen;" th:text="${userWallet.getBudget().stripTrailingZeros()}"/>
         $
     </p>
     <p th:inline="text" class="lead">
         Balance:
-        <span  style="color: limegreen;" th:text="${userWallet.getBalance()}"/>
+        <span  style="color: limegreen;" th:text="${userWallet.getBalance().stripTrailingZeros()}"/>
         $
     </p>
     <p class="lead">
@@ -109,13 +109,13 @@
             <form th:action="@{/changeBudget}" th:object="${wallet}" method="post">
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Budget" field="*{budget}"
+                        <input purchaseType="text" class="form-control" placeholder="Budget" field="*{budget}"
                                name="budget" th:value="${userWallet.getBudget()}">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button purchaseType="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button purchaseType="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
         </div>
@@ -133,9 +133,9 @@
                 </h4>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                <button purchaseType="button" class="btn btn-danger" data-dismiss="modal">No</button>
                 <form th:action="@{/deleteExpenses}" method="post">
-                    <button type="submit" class="btn btn-success">Yes</button>
+                    <button purchaseType="submit" class="btn btn-success">Yes</button>
                 </form>
             </div>
         </div>
@@ -155,7 +155,7 @@
                 </th:block>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button purchaseType="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -172,7 +172,7 @@
         crossorigin="anonymous"></script>
 
 <th:block th:if="${errors}">
-    <script type="text/javascript">
+    <script purchaseType="text/javascript">
         $(window).on('load', function () {
             $('#errorModel').modal('show');
         });

@@ -16,8 +16,7 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @NotEmpty(message = "Username must not be empty")
     @Size(min = 6, max = 30, message = "Username size must be between 6 and 30")
@@ -32,12 +31,6 @@ public class User implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled = true;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_wallet",
-            joinColumns = @JoinColumn(name="user_id"),
-            inverseJoinColumns = @JoinColumn(name="wallet_id")
-    )
-    private Wallet wallet;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Purchase> purchases = new LinkedHashSet<>();
@@ -53,24 +46,19 @@ public class User implements UserDetails {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", budget=" + wallet +
+                ", enabled=" + enabled +
+                ", purchases=" + purchases +
+                ", role=" + role +
                 '}';
     }
 
 
-    public Wallet getWallet() {
-        return wallet;
-    }
 
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

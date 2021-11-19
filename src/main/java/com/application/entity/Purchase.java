@@ -12,11 +12,11 @@ public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @NotNull(message = "Type must not be empty")
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private Type type;
+    private PurchaseType purchaseType;
     @NotNull(message = "Amount must not be empty")
     @Min(value = 0, message = "Amount must be ≧ 0")
     @Column(name = "amount")
@@ -32,7 +32,7 @@ public class Purchase {
     public String toString() {
         return "Purchases{" +
                 "id=" + id +
-                ", type=" + type +
+                ", type=" + purchaseType +
                 ", amount=" + amount +
                 ", dateAdded=" + dateAdded +
                 '}';
@@ -54,20 +54,20 @@ public class Purchase {
         this.user = user;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Type getType() {
-        return type;
+    public PurchaseType getType() {
+        return purchaseType;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setType(PurchaseType purchaseType) {
+        this.purchaseType = purchaseType;
     }
 
     public BigDecimal getAmount() {

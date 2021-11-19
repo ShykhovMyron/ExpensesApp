@@ -2,6 +2,7 @@ package com.application.utils;
 
 
 import com.application.entity.User;
+import com.application.entity.Wallet;
 import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
@@ -20,22 +21,19 @@ public class BudgetUtils {
 
     public static Model modelErrors = new ExtendedModelMap();
 
-    private static Double budgetBeforeSaving;
+    private static BigDecimal balanceBeforeSaving;
 
     private static UserRepo userRepo;
-    private static PurchasesRepo purchasesRepo;
     private static WalletRepo walletRepo;
 
-    public BudgetUtils(PurchasesRepo purchasesRepo, UserRepo userRepo, WalletRepo walletRepo) {
-        BudgetUtils.purchasesRepo = purchasesRepo;
+    public BudgetUtils( UserRepo userRepo, WalletRepo walletRepo) {
         BudgetUtils.userRepo = userRepo;
         BudgetUtils.walletRepo = walletRepo;
     }
 
-    public static void addHomePageInfoToModel(Integer userId, Model model) {
+    public static void addHomePageInfoToModel(Long userId, Model model) {
         model.addAttribute("username", userRepo.getById(userId).getUsername());
-        model.addAttribute("userWallet", walletRepo.findByUserId(userId));
-        PurchaseUtils.addFormatDisplayDataOnPageToModel(model);
+        model.addAttribute("userWallet", walletRepo.getById(userId));
 
         checkErrorsAndAddToModel(model);
     }
@@ -52,4 +50,25 @@ public class BudgetUtils {
         model.addAllAttributes(modelErrors.asMap());
         modelErrors = new ExtendedModelMap();
     }
+
+    public static void checkBudgetBeforeSaving(Long userId) {
+        Wallet userWallet = walletRepo.getById(userId);
+        BigDecimal tenPercentOfBudget = userWallet.getBudget().multiply(BigDecimal.valueOf(0.1));
+
+        if (userWallet.getBalance().compareTo(tenPercentOfBudget) >= 0) {
+            balanceBeforeSaving = userWallet.getBudget();
+        }
+    }
+
+    public static void warnIfLowBudget(Long userId, Model model) {
+        Wallet userWallet = walletRepo.getById(userId);
+
+        BigDecimal tenPercentOfBudget = userWallet.getBudget().multiply(BigDecimal.valueOf(0.1));
+        if (balanceBeforeSaving != null &&
+                userWallet.getBalance().compareTo(tenPercentOfBudget) < 0) {
+            model.addAttribute("lowBudget", true);
+            balanceBeforeSaving = null;
+        }
+    }
+
 }
