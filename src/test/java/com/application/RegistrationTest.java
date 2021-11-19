@@ -1,6 +1,7 @@
 package com.application;
 
 import com.application.repository.UserRepo;
+import com.application.repository.WalletRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -10,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +32,9 @@ public class RegistrationTest {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private WalletRepo walletRepo;
+
     @ParameterizedTest
     @CsvSource({
             "Bethzarill,4JD9ujpF92",
@@ -42,8 +48,12 @@ public class RegistrationTest {
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(redirectedUrl("/login"));
-        Assertions.assertEquals(userRepo.findByUsername(username).getUsername(), username);
-        Assertions.assertEquals(userRepo.findByUsername(username).getPassword(), password);
+        Assertions.assertEquals(username, userRepo.findByUsername(username).getUsername());
+        Assertions.assertEquals(password, userRepo.findByUsername(username).getPassword());
+        Assertions.assertEquals(new BigDecimal("0.00"),
+                walletRepo.getById(userRepo.findByUsername(username).getId()).getBalance());
+        Assertions.assertEquals(new BigDecimal("0.00"),
+                walletRepo.getById(userRepo.findByUsername(username).getId()).getBudget());
     }
 
     @ParameterizedTest
@@ -88,8 +98,8 @@ public class RegistrationTest {
                 .andExpect(model().attribute("message", "User already exist!"))
                 .andExpect(status().isOk());
         Assertions.assertNotNull(userRepo.findByUsername(username));
-        Assertions.assertEquals(userRepo.findByUsername(username).getUsername(), username);
-        Assertions.assertEquals(userRepo.findByUsername(username).getPassword(), password);
+        Assertions.assertEquals(username, userRepo.findByUsername(username).getUsername());
+        Assertions.assertEquals(password, userRepo.findByUsername(username).getPassword());
     }
 
     @ParameterizedTest

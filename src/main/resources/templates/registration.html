@@ -50,7 +50,7 @@
             background: #2ecc71;
         }
 
-        .box input[purchaseType = "text"], .box input[purchaseType = "password"] {
+        .box input[type = "text"], .box input[type = "password"] {
             background: none;
             display: block;
             margin: 20px auto;
@@ -64,7 +64,7 @@
             transition: 0.25s;
         }
 
-        .box input[purchaseType = "text"]:focus, .box input[purchaseType = "password"]:focus {
+        .box input[type = "text"]:focus, .box input[type = "password"]:focus {
             width: 280px;
             border-color: #2ecc71;
         }
@@ -74,7 +74,7 @@
             color: white;
         }
 
-        .box input[purchaseType = "submit"] {
+        .box input[type = "submit"] {
 
             background: none;
             display: block;
@@ -90,11 +90,11 @@
             cursor: pointer;
         }
 
-        .box input[purchaseType = "submit"]:hover {
+        .box input[type = "submit"]:hover {
             background: #2ecc71;
         }
 
-        .box input[purchaseType = "button"] {
+        .box input[type = "button"] {
 
             background: none;
             display: block;
@@ -110,7 +110,7 @@
             cursor: pointer;
         }
 
-        .box input[purchaseType = "button"]:hover {
+        .box input[type = "button"]:hover {
             background: #2ecc71;
         }
 
@@ -132,10 +132,10 @@
 </div>
 <form class="box" th:action="@{/registration}" th:object="${user}" method="post">
     <h1>New user</h1>
-    <input purchaseType="text" th:field="*{username}" id="username" placeholder="Username(6-30)"/>
-    <input purchaseType="password" th:field="*{password}" id="password" placeholder="Password(6-50)"/>
-    <input purchaseType="submit" value="Create"/>
-    <a href="/login"><input purchaseType="button" value="Login"/></a>
+    <input type="text" th:field="*{username}" id="username" placeholder="Username(6-30)"/>
+    <input type="password" th:field="*{password}" id="password" placeholder="Password(6-50)"/>
+    <input type="submit" value="Create"/>
+    <a href="/login"><input type="button" value="Login"/></a>
 </form>
 </body>
 </html>

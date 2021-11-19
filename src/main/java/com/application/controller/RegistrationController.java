@@ -15,8 +15,11 @@ import javax.validation.Valid;
 @Controller
 public class RegistrationController {
     final static Logger logger = Logger.getLogger(RegistrationController.class);
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/registration")
     public String getRegistrationPageInfo(User user) {

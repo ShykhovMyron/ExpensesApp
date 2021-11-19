@@ -32,6 +32,8 @@ public class ExpensesPageTest {
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("purchases"))
+                .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeDoesNotExist("errorsValid"))
                 .andExpect(model().attributeDoesNotExist("errors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
@@ -39,12 +41,9 @@ public class ExpensesPageTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
-                .andExpect(model().attributeExists("purchases"))
-                .andExpect(model().attributeExists("types"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
     }
 }

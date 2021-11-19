@@ -12,6 +12,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,18 +54,18 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(1000, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(PurchaseType.FOOD, purchasesRepo.findById(10).get().getType());
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertEquals(new BigDecimal("1000.00"),
+                purchasesRepo.findById(10L).get().getAmount());
+        Assertions.assertEquals(PurchaseType.FOOD, purchasesRepo.findById(10L).get().getType());
     }
 
     @Test
@@ -87,17 +89,17 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertEquals(BigDecimal.valueOf(15),
+                purchasesRepo.findById(10L).get().getAmount().stripTrailingZeros());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10L).get().getType());
     }
 
     @Test
@@ -121,17 +123,17 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertEquals(BigDecimal.valueOf(15),
+                purchasesRepo.findById(10L).get().getAmount().stripTrailingZeros());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10L).get().getType());
     }
 
     @Test
@@ -155,17 +157,17 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertEquals(BigDecimal.valueOf(15),
+                purchasesRepo.findById(10L).get().getAmount().stripTrailingZeros());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10L).get().getType());
     }
 
     @Test
@@ -189,17 +191,17 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(3000, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(PurchaseType.FOOD, purchasesRepo.findById(10).get().getType());
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertEquals(new BigDecimal("3000.00"),
+                purchasesRepo.findById(10L).get().getAmount());
+        Assertions.assertEquals(PurchaseType.FOOD, purchasesRepo.findById(10L).get().getType());
     }
 
     @Test
@@ -223,17 +225,17 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertEquals(BigDecimal.valueOf(15),
+                purchasesRepo.findById(10L).get().getAmount().stripTrailingZeros());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10L).get().getType());
     }
 
     @Test
@@ -257,17 +259,17 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchasesRepo.findById(10));
-        Assertions.assertEquals(15, purchasesRepo.findById(10).get().getAmount());
-        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10).get().getType());
+        Assertions.assertNotNull(purchasesRepo.findById(10L));
+        Assertions.assertEquals(BigDecimal.valueOf(15),
+                purchasesRepo.findById(10L).get().getAmount().stripTrailingZeros());
+        Assertions.assertEquals(PurchaseType.RESTAURANT, purchasesRepo.findById(10L).get().getType());
     }
 
 

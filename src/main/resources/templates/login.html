@@ -50,7 +50,7 @@
             background: #2ecc71;
         }
 
-        .box input[purchaseType = "text"], .box input[purchaseType = "password"] {
+        .box input[type = "text"], .box input[type = "password"] {
             background: none;
             display: block;
             margin: 20px auto;
@@ -64,7 +64,7 @@
             transition: 0.25s;
         }
 
-        .box input[purchaseType = "text"]:focus, .box input[purchaseType = "password"]:focus {
+        .box input[type = "text"]:focus, .box input[type = "password"]:focus {
             width: 280px;
             border-color: #2ecc71;
         }
@@ -74,7 +74,7 @@
             color: white;
         }
 
-        .box input[purchaseType = "submit"] {
+        .box input[type = "submit"] {
 
             background: none;
             display: block;
@@ -90,11 +90,11 @@
             cursor: pointer;
         }
 
-        .box input[purchaseType = "submit"]:hover {
+        .box input[type = "submit"]:hover {
             background: #2ecc71;
         }
 
-        .box input[purchaseType = "button"] {
+        .box input[type = "button"] {
 
             background: none;
             display: block;
@@ -110,7 +110,7 @@
             cursor: pointer;
         }
 
-        .box input[purchaseType = "button"]:hover {
+        .box input[type = "button"]:hover {
             background: #2ecc71;
         }
 
@@ -135,10 +135,10 @@
 </div>
 <form class="box" th:action="@{/login}" method="post">
     <h1>Login</h1>
-    <input purchaseType="text" name="username" placeholder="Username"/>
-    <input purchaseType="password" name="password" placeholder="Password"/>
-    <input purchaseType="submit" value="Login"/>
-    <a href="/registration"><input purchaseType="button" value="New Account"/></a>
+    <input type="text" name="username" placeholder="Username"/>
+    <input type="password" name="password" placeholder="Password"/>
+    <input type="submit" value="Login"/>
+    <a href="/registration"><input type="button" value="New Account"/></a>
 </form>
 
 </body>

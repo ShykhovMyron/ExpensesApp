@@ -1,6 +1,7 @@
 package com.application;
 
 import com.application.repository.UserRepo;
+import com.application.repository.WalletRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +34,20 @@ public class HomeTest {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private WalletRepo walletRepo;
+
     @Test
     @WithUserDetails("stalker")
     public void homePageUser1Test() throws Exception {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
-                .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", (double) 0))
+                .andExpect(model().attribute("username", "stalker"))
+                .andExpect(model().attributeExists("userWallet"))
                 .andExpect(model().attributeDoesNotExist("errors"));
+        Assertions.assertEquals(new BigDecimal("0.00"),
+                walletRepo.getById(userRepo.findByUsername("stalker").getId()).getBudget());
 
-//        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
-//                BigDecimal.valueOf(0));
     }
 
     @Test
@@ -51,20 +55,18 @@ public class HomeTest {
     public void homePageUser2Test() throws Exception {
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
-                .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", BigDecimal.valueOf(335)))
+                .andExpect(model().attribute("username", "phantom"))
+                .andExpect(model().attributeExists("userWallet"))
                 .andExpect(model().attributeDoesNotExist("errors"));
+        Assertions.assertEquals(new BigDecimal("1000.00"),
+                walletRepo.getById(userRepo.findByUsername("phantom").getId()).getBudget());
 
-//        Assertions.assertEquals(userRepo.findByUsername("phantom").getWallet().getBudget(),
-//                BigDecimal.valueOf(1000));
     }
 
     @Test
     @WithUserDetails("stalker")
     public void changeUser1BudgetTest() throws Exception {
         this.mockMvc.perform(post("/changeBudget")
-                        .param("username", "ignore")
-                        .param("password", "ignore")
                         .param("budget", "100")
                         .with(csrf()))
                 .andDo(print())
@@ -72,21 +74,19 @@ public class HomeTest {
                 .andExpect(redirectedUrl("/home"));
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
-                .andExpect(model().attributeExists("user"))
-//                .andExpect(model().attribute("balance", userRepo
-//                        .findByUsername("stalker").getWallet().getBudget()))
+                .andExpect(model().attribute("username", "stalker"))
+                .andExpect(model().attributeExists("userWallet"))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-//        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
-//                BigDecimal.valueOf(100));
+        Assertions.assertEquals(new BigDecimal("100.00"),
+                walletRepo.getById(userRepo.findByUsername("stalker").getId()).getBudget());
+
     }
 
     @Test
     @WithUserDetails("phantom")
     public void changeUser2BudgetTest() throws Exception {
         this.mockMvc.perform(post("/changeBudget")
-                        .param("username", "ignore")
-                        .param("password", "ignore")
                         .param("budget", "900")
                         .with(csrf()))
                 .andDo(print())
@@ -94,12 +94,13 @@ public class HomeTest {
                 .andExpect(redirectedUrl("/home"));
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
-                .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", BigDecimal.valueOf(235)))
+                .andExpect(model().attribute("username", "phantom"))
+                .andExpect(model().attributeExists("userWallet"))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-//        Assertions.assertEquals(userRepo.findByUsername("phantom").getWallet().getBudget(),
-//                BigDecimal.valueOf(900));
+        Assertions.assertEquals(new BigDecimal("900.00"),
+                walletRepo.getById(userRepo.findByUsername("phantom").getId()).getBudget());
+
 
     }
 
@@ -107,8 +108,6 @@ public class HomeTest {
     @WithUserDetails("stalker")
     public void changeUserBudgetToEmptyTest() throws Exception {
         this.mockMvc.perform(post("/changeBudget")
-                        .param("username", "ignore")
-                        .param("password", "ignore")
                         .param("budget", (String) null)
                         .with(csrf()))
                 .andDo(print())
@@ -116,21 +115,19 @@ public class HomeTest {
                 .andExpect(redirectedUrl("/home"));
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
-                .andExpect(model().attributeExists("user"))
-//                .andExpect(model().attribute("balance", userRepo
-//                        .findByUsername("stalker").getWallet().getBudget()))
+                .andExpect(model().attribute("username", "stalker"))
+                .andExpect(model().attributeExists("userWallet"))
                 .andExpect(model().attributeExists("errors"));
 
-//        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
-//                BigDecimal.valueOf(0));
+        Assertions.assertEquals(new BigDecimal("0.00"),
+                walletRepo.getById(userRepo.findByUsername("stalker").getId()).getBudget());
+
     }
 
     @Test
     @WithUserDetails("stalker")
     public void changeUserBudgetToNegativeTest() throws Exception {
         this.mockMvc.perform(post("/changeBudget")
-                        .param("username", "ignore")
-                        .param("password", "ignore")
                         .param("budget", "-100")
                         .with(csrf()))
                 .andDo(print())
@@ -138,13 +135,13 @@ public class HomeTest {
                 .andExpect(redirectedUrl("/home"));
         this.mockMvc.perform(get(("/home")))
                 .andExpect(authenticated())
-                .andExpect(model().attributeExists("user"))
-//                .andExpect(model().attribute("balance", userRepo
-//                        .findByUsername("stalker").getWallet().getBudget()))
+                .andExpect(model().attribute("username", "stalker"))
+                .andExpect(model().attributeExists("userWallet"))
                 .andExpect(model().attributeExists("errors"));
 
-//        Assertions.assertEquals(userRepo.findByUsername("stalker").getWallet().getBudget(),
-//                BigDecimal.valueOf(0));
+        Assertions.assertEquals(new BigDecimal("0.00"),
+                walletRepo.getById(userRepo.findByUsername("stalker").getId()).getBudget());
+
     }
 
     @Test
@@ -156,11 +153,11 @@ public class HomeTest {
                 .andExpect(authenticated())
                 .andExpect(redirectedUrl("/home"));
         this.mockMvc.perform(get(("/home")))
-                .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("balance", BigDecimal.valueOf(10000)))
+                .andExpect(model().attribute("username", "phantom"))
+                .andExpect(model().attributeExists("userWallet"))
                 .andExpect(model().attributeDoesNotExist("errors"));
 
-//        Assertions.assertEquals(userRepo.findByUsername("phantom").getWallet().getBudget(),
-//                BigDecimal.valueOf(1000));
+        Assertions.assertEquals(new BigDecimal("1000.00"),
+                walletRepo.getById(userRepo.findByUsername("phantom").getId()).getBudget());
     }
 }

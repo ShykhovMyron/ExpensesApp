@@ -50,15 +50,14 @@ public class DeleteExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertTrue(purchasesRepo.findById(10).isEmpty());
+        Assertions.assertTrue(purchasesRepo.findById(10L).isEmpty());
     }
 
     @Test
@@ -80,15 +79,14 @@ public class DeleteExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertFalse(purchasesRepo.findById(10).isEmpty());
+        Assertions.assertFalse(purchasesRepo.findById(10L).isEmpty());
     }
 
 }

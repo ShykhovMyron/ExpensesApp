@@ -39,7 +39,6 @@ public class ExpensesController {
                                       @PageableDefault(sort = {"dateAdded"},
                                               direction = Sort.Direction.DESC) Pageable pageable
     ) {
-
         purchasesService.getExpensesPageInfo(user.getId(), model, pageable, purchaseType);
         return "expenses";
     }

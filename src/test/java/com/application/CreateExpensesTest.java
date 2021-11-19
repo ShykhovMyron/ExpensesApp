@@ -62,20 +62,19 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
         Set<Purchase> listPurchases = purchasesRepo.findAllByUser_id(5L);
 
         Assertions.assertEquals(11, purchasesRepo.findAllByUser_id(5L).size());
 
 
-        Purchase purchase = listPurchases.stream().filter(s -> s.getAmount().equals(BigDecimal.valueOf(1000)) &&
+        Purchase purchase = listPurchases.stream().filter(s -> s.getAmount().equals(new BigDecimal("1000.00")) &&
                 s.getType() == PurchaseType.FOOD).findAny().get();
 
         Assertions.assertEquals(purchase.getDateAdded()
@@ -105,13 +104,12 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
         Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5L).size());
     }
@@ -139,13 +137,12 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
         Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5L).size());
     }
@@ -173,13 +170,12 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("isNextEnabled"))
                 .andExpect(model().attributeExists("pageNumbersToHide"))
                 .andExpect(model().attributeExists("pageNumbersToShow"))
-                .andExpect(model().attributeExists("purchaseNumberOnPage"))
+                .andExpect(model().attributeExists("firstPurchaseNumberOnPage"))
                 .andExpect(model().attributeExists("purchases"))
                 .andExpect(model().attributeExists("types"))
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
-                .andExpect(model().attributeExists("inputModalFormat"))
-                .andExpect(model().attributeExists("decimalFormat"));
+                .andExpect(model().attributeExists("inputModalFormat"));
 
         Assertions.assertEquals(10, purchasesRepo.findAllByUser_id(5L).size());
     }
