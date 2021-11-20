@@ -176,7 +176,7 @@
                         <label class="col-form-label">Type</label>
                         <select id="selectType" class="form-select form-select-sm"
                                 aria-label=".form-select-sm example"
-                                field="*{type}" name="type">
+                                 name="purchaseType">
                             <option id="edit-type" selected></option>
                             <option th:each="type : ${types}"
                                     th:text="${type}"
@@ -213,7 +213,7 @@
                         <label class="col-form-label">Type</label>
                         <select class="form-select form-select-sm"
                                 aria-label=".form-select-sm example"
-                                field="*{type}" name="type">
+                                 name="purchaseType">
                             <option th:each="type : ${types}"
                                     th:text="${type}"
                                     th:value="${type}">

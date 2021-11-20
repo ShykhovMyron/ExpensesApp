@@ -43,10 +43,8 @@ public class CreatePurchaseTypeTest {
     @WithUserDetails("technology")
     public void createPurchaseTest() throws Exception {
         String date = new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH).format(new Date());
-        this.mockMvc.perform(post("/createExpenses")
-                        .param("amount", "1000")
-                        .param("type", "FOOD")
-                        .param("date", date)
+        this.mockMvc.perform(post("/createPurchaseType")
+                        .param("type", "12314121")
                         .with(csrf()))
                 .andExpect(authenticated())
                 .andExpect(status().is3xxRedirection());
@@ -56,6 +54,7 @@ public class CreatePurchaseTypeTest {
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("errors"))
+                .andExpect(model().attributeDoesNotExist("validErrors"))
                 .andExpect(model().attributeDoesNotExist("lowBudget"))
                 .andExpect(model().attributeExists("isPrevEnabled"))
                 .andExpect(model().attributeExists("isNextEnabled"))
@@ -67,17 +66,6 @@ public class CreatePurchaseTypeTest {
                 .andExpect(model().attributeExists("dateFormat"))
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
-
-        Set<Purchase> listPurchases = purchaseRepo.findAllByUserId(5L);
-
-        Assertions.assertEquals(11, purchaseRepo.findAllByUserId(5L).size());
-
-
-        Purchase purchase = listPurchases.stream().filter(s -> s.getAmount().equals(new BigDecimal("1000.00")) &&
-                s.getType().equals("FOOD")).findAny().get();
-
-        Assertions.assertEquals(purchase.getDateAdded()
-                , new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH).parse(date));
     }
 
 

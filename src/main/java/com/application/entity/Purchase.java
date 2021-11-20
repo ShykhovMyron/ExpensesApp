@@ -9,20 +9,27 @@ import java.util.Date;
 @Entity
 @Table(name = "purchases")
 public class Purchase {
-    @Temporal(TemporalType.DATE)
-    @Column(name = "date_added")
-    Date dateAdded;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @NotNull(message = "Type must not be empty")
-    @Column(name = "type")
-    private String type;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_added")
+    Date dateAdded;
+
+    @ManyToOne
+    @JoinTable(name = "purchases_types",
+            joinColumns = @JoinColumn(name = "purchase_id"),
+            inverseJoinColumns = @JoinColumn(name = "type_id")
+    )
+    private PurchaseType type;
+
     @NotNull(message = "Amount must not be empty")
     @Min(value = 0, message = "Amount must be ≧ 0")
     @Column(name = "amount")
     private BigDecimal amount;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
@@ -60,11 +67,11 @@ public class Purchase {
         this.id = id;
     }
 
-    public String getType() {
+    public PurchaseType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(PurchaseType type) {
         this.type = type;
     }
 

@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.application.utils.PurchaseUtils.checkValidErrors;
+import static com.application.utils.PurchaseUtils.modelErrors;
 
 @Service
 public class PurchaseTypeService {
@@ -31,21 +32,18 @@ public class PurchaseTypeService {
         user.setTypes(userTypes);
     }
 
-    public void createPurchaseType(Long userId, PurchaseType purchaseType, BindingResult validResult) {
-        if (checkValidErrors(validResult)) return;
-
-        if (userAlreadyHaveReceivedType(userId, purchaseType)) {
-            PurchaseUtils.modelErrors
-                    .addAttribute("errors", "User already have this type");
-            return;
+    public static PurchaseType getPurchaseTypeOrNull(String type) {
+        if (type == null) {
+            modelErrors.addAttribute("errors", "Type must not be empty");
+            return null;
         }
-
-        if (purchaseTypeRepo.findByType(purchaseType.getType()) == null) {
-            purchaseTypeRepo.save(purchaseType);
+        PurchaseType purchaseType = purchaseTypeRepo.findByType(type);
+        if (purchaseType == null){
+            modelErrors.addAttribute("errors", "This type was not found");
+            return null;
+        }else {
+            return purchaseType;
         }
-        User user = userRepo.getById(userId);
-        user.getTypes().add(purchaseTypeRepo.findByType(purchaseType.getType()));
-        userRepo.save(user);
     }
 
     private static Set<PurchaseType> getDefaultPurchaseTypes() {
@@ -68,5 +66,22 @@ public class PurchaseTypeService {
     private static boolean userAlreadyHaveReceivedType(Long userId, PurchaseType purchaseType) {
         return userRepo.getById(userId).getTypes()
                 .contains(purchaseTypeRepo.findByType(purchaseType.getType()));
+    }
+
+    public void createPurchaseType(Long userId, PurchaseType purchaseType, BindingResult validResult) {
+        if (checkValidErrors(validResult)) return;
+
+        if (userAlreadyHaveReceivedType(userId, purchaseType)) {
+            PurchaseUtils.modelErrors
+                    .addAttribute("errors", "User already have this type");
+            return;
+        }
+
+        if (purchaseTypeRepo.findByType(purchaseType.getType()) == null) {
+            purchaseTypeRepo.save(purchaseType);
+        }
+        User user = userRepo.getById(userId);
+        user.getTypes().add(purchaseTypeRepo.findByType(purchaseType.getType()));
+        userRepo.save(user);
     }
 }

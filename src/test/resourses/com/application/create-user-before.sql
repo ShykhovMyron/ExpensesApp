@@ -1,3 +1,4 @@
+delete from purchases_types;
 delete from user_types;
 delete from types;
 delete

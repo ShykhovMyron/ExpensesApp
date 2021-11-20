@@ -50,9 +50,10 @@ public class ExpensesController {
     public String editExpenses(@AuthenticationPrincipal User user,
                                @Valid Purchase purchase,
                                BindingResult validResult,
+                               @RequestParam(required = false) String purchaseType,
                                @PathVariable Long id) {
 
-        purchaseService.editPurchase(id, purchase, user.getId(), validResult);
+        purchaseService.editPurchase(id, purchase, user.getId(), validResult,purchaseType);
         return "redirect:/expenses";
     }
 
@@ -69,9 +70,10 @@ public class ExpensesController {
     public String createExpenses(@AuthenticationPrincipal User user,
                                  @Valid Purchase purchase,
                                  BindingResult validResult,
+                                 @RequestParam(required = false) String purchaseType,
                                  @RequestParam String date) {
 
-        purchaseService.createPurchase(user.getId(), purchase, date, validResult);
+        purchaseService.createPurchase(user.getId(), purchase, date, validResult,purchaseType);
         return "redirect:/expenses";
     }
 

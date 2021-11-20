@@ -19,12 +19,37 @@ public class PurchaseType {
 
     @ManyToMany(mappedBy = "types")
     private List<User> types;
+    @OneToMany(mappedBy = "type")
+    private List<Purchase> purchases;
 
     public PurchaseType() {
     }
 
     public PurchaseType(String type) {
         this.type = type;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PurchaseType)) return false;
+
+        PurchaseType that = (PurchaseType) o;
+
+        return getType().equals(that.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return getType().hashCode();
     }
 
     @Override
