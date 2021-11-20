@@ -1,9 +1,9 @@
 package com.application.utils;
 
 import com.application.entity.Purchase;
-import com.application.entity.PurchaseNumberOnPage;
-import com.application.entity.PurchaseType;
-import com.application.repository.PurchasesRepo;
+import com.application.pager.PurchaseNumberOnPage;
+import com.application.repository.PurchaseRepo;
+import com.application.repository.UserRepo;
 import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,11 +25,13 @@ public class PurchaseUtils {
     final static Logger logger = Logger.getLogger(PurchaseUtils.class);
 
     public static Model modelErrors = new ExtendedModelMap();
-    private static PurchasesRepo purchasesRepo;
+    private static PurchaseRepo purchaseRepo;
+    private static  UserRepo userRepo;
     private final static Integer pagesToShow = 10;
 
-    public PurchaseUtils(PurchasesRepo purchasesRepo) {
-        PurchaseUtils.purchasesRepo = purchasesRepo;
+    public PurchaseUtils(PurchaseRepo purchaseRepo, UserRepo userRepo) {
+        PurchaseUtils.purchaseRepo = purchaseRepo;
+        PurchaseUtils.userRepo = userRepo;
     }
 
     public static void addExpensesPageInfoToModel(Long userId, Model model, Pageable pageable,
@@ -37,7 +39,7 @@ public class PurchaseUtils {
 
         model.addAttribute("purchases", purchases);
 
-        addPurchaseTypesToModel(model);
+        addPurchaseTypesToModel(model,userId);
         addDateFormatToModel(model);
         addTodayDateToModel(model);
         addInputDateFormatToModel(model);
@@ -50,7 +52,7 @@ public class PurchaseUtils {
 
     public static Purchase getPurchaseOrNull(Long purchaseId) {
 
-        Optional<Purchase> purchaseOptional = purchasesRepo.findById(purchaseId);
+        Optional<Purchase> purchaseOptional = purchaseRepo.findById(purchaseId);
         if (purchaseOptional.isEmpty()) {
             modelErrors.addAttribute("errors", "Nonexistent id");
             return null;
@@ -61,7 +63,7 @@ public class PurchaseUtils {
     public static Purchase getOldPurchaseOrNull(Long purchaseId, Long userId,
                                                 BindingResult validResult) {
 
-        Optional<Purchase> purchaseOptional = purchasesRepo.findById(purchaseId);
+        Optional<Purchase> purchaseOptional = purchaseRepo.findById(purchaseId);
         if (purchaseOptional.isEmpty()) {
             modelErrors.addAttribute("errors", "Nonexistent id");
             return null;
@@ -146,7 +148,7 @@ public class PurchaseUtils {
 
     public static BigDecimal getPurchasesValue(Long userId) {
         BigDecimal purchasesValue = new BigDecimal(0);
-        for (Purchase purchase : purchasesRepo.findAllByUser_id(userId)) {
+        for (Purchase purchase : purchaseRepo.findAllByUserId(userId)) {
             purchasesValue = purchasesValue.add(purchase.getAmount());
         }
         return purchasesValue;
@@ -156,8 +158,8 @@ public class PurchaseUtils {
         return new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH);
     }
 
-    private static void addPurchaseTypesToModel(Model model) {
-        model.addAttribute("types", PurchaseType.values());
+    private static void addPurchaseTypesToModel(Model model, Long userId) {
+        model.addAttribute("types", userRepo.getById(userId).getTypes());
     }
 
     private static void addDateFormatToModel(Model model) {

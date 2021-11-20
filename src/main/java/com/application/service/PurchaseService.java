@@ -2,7 +2,7 @@ package com.application.service;
 
 import com.application.entity.Purchase;
 import com.application.entity.PurchaseType;
-import com.application.repository.PurchasesRepo;
+import com.application.repository.PurchaseRepo;
 import com.application.repository.UserRepo;
 import com.application.utils.PurchaseUtils;
 import org.springframework.data.domain.Page;
@@ -14,10 +14,10 @@ import org.springframework.validation.BindingResult;
 @Service
 public class PurchaseService {
     private static UserRepo userRepo;
-    private static PurchasesRepo purchasesRepo;
+    private static PurchaseRepo purchaseRepo;
 
-    public PurchaseService(PurchasesRepo purchasesRepo, UserRepo userRepo) {
-        PurchaseService.purchasesRepo = purchasesRepo;
+    public PurchaseService(PurchaseRepo purchaseRepo, UserRepo userRepo) {
+        PurchaseService.purchaseRepo = purchaseRepo;
         PurchaseService.userRepo = userRepo;
     }
 
@@ -35,7 +35,7 @@ public class PurchaseService {
         if (oldPurchase == null) return;
         oldPurchase.setAmount(newPurchaseInfo.getAmount());
         oldPurchase.setType(newPurchaseInfo.getType());
-        purchasesRepo.save(oldPurchase);
+        purchaseRepo.save(oldPurchase);
 
         BudgetService.changeBalance(userId);
     }
@@ -43,7 +43,7 @@ public class PurchaseService {
     public void deletePurchase(Long purchaseId, Long userId) {
         Purchase purchase = PurchaseUtils.getPurchaseOrNull(purchaseId);
         if (purchase == null) return;
-        purchasesRepo.delete(purchase);
+        purchaseRepo.delete(purchase);
 
         BudgetService.changeBalance(userId);
     }
@@ -53,16 +53,16 @@ public class PurchaseService {
                 date, validResult);
         if (purchaseWithDate == null) return;
         purchase.setUser(userRepo.getById(userId));
-        purchasesRepo.save(purchase);
+        purchaseRepo.save(purchase);
 
         BudgetService.changeBalance(userId);
     }
 
     private static Page<Purchase> getPurchases(Long userId, PurchaseType fitterByPurchaseType, Pageable pageable){
         if (fitterByPurchaseType == null) {
-            return purchasesRepo.findAllByUser_id(userId, pageable);
+            return purchaseRepo.findAllByUserId(userId, pageable);
         } else {
-            return purchasesRepo.findAllByUser_idAndType(userId, fitterByPurchaseType, pageable);
+            return purchaseRepo.findAllByUserIdAndType(userId, fitterByPurchaseType, pageable);
         }
     }
 }

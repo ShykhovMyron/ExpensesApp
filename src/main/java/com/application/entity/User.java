@@ -34,11 +34,27 @@ public class User implements UserDetails {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Purchase> purchases = new LinkedHashSet<>();
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Set<Role> role = Collections.singleton(Role.USER);
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_types",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "type_id")
+    )
+    private Set<PurchaseType> types;
+
+    public Set<PurchaseType> getTypes() {
+        return types;
+    }
+
+    public void setTypes(Set<PurchaseType> types) {
+        this.types = types;
+    }
 
     @Override
     public String toString() {

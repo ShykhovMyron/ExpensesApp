@@ -1,9 +1,7 @@
 package com.application.utils;
 
 
-import com.application.entity.User;
 import com.application.entity.Wallet;
-import com.application.repository.PurchasesRepo;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
 import org.apache.log4j.Logger;

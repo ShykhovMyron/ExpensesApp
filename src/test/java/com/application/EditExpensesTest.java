@@ -1,3 +1,4 @@
+/*
 package com.application;
 
 import com.application.entity.PurchaseType;
@@ -274,3 +275,4 @@ public class EditExpensesTest {
 
 
 }
+*/

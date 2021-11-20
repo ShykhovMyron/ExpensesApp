@@ -1,7 +1,8 @@
 package com.application.service;
 
 import com.application.entity.User;
-import com.application.repository.PurchasesRepo;
+import com.application.repository.PurchaseRepo;
+import com.application.repository.PurchaseTypeRepo;
 import com.application.repository.UserRepo;
 import com.application.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import static com.application.service.PurchaseTypeService.addDefaultPurchaseTypesToUser;
+
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
-    private final PurchasesRepo purchasesRepo;
+    private final PurchaseRepo purchaseRepo;
     private final BudgetService budgetService;
-    public UserService(UserRepo userRepo, PurchasesRepo purchasesRepo, BudgetService budgetService) {
+
+    @Autowired
+    PurchaseTypeRepo purchaseTypeRepo;
+
+    public UserService(UserRepo userRepo, PurchaseRepo purchaseRepo, BudgetService budgetService) {
         this.userRepo = userRepo;
-        this.purchasesRepo = purchasesRepo;
+        this.purchaseRepo = purchaseRepo;
         this.budgetService = budgetService;
     }
 
@@ -27,6 +34,8 @@ public class UserService implements UserDetailsService {
         user = UserUtils.getUserOrNull(user,validResult,model);
         if (user == null)
             return false;
+
+        addDefaultPurchaseTypesToUser(user);
 
         userRepo.save(user);
         budgetService.createUserBudget(user.getId());
@@ -40,7 +49,7 @@ public class UserService implements UserDetailsService {
 
     public void deleteExpenses(Long userId) {
 
-        purchasesRepo.deleteAll(purchasesRepo.findAllByUser_id(userId));
+        purchaseRepo.deleteAll(purchaseRepo.findAllByUserId(userId));
         BudgetService.changeBalance(userId);
     }
 }

@@ -1,4 +1,4 @@
-package com.application.entity;
+package com.application.pager;
 
 public class PurchaseNumberOnPage {
 
