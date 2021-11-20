@@ -13,7 +13,7 @@ public class Purchase {
     @Column(name = "date_added")
     Date dateAdded;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @NotNull(message = "Type must not be empty")
