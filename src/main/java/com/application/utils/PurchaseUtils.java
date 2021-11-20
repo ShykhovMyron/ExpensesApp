@@ -68,10 +68,8 @@ public class PurchaseUtils {
             modelErrors.addAttribute("errors", "Nonexistent id");
             return null;
         }
-        if (validResult.hasErrors()) {
-            modelErrors.addAttribute("errorsValid", validResult.getFieldErrors());
-            return null;
-        }
+        if (checkValidErrors(validResult)) return null;
+
         checkBudgetBeforeSaving(userId);
         return purchaseOptional.get();
     }
@@ -85,10 +83,9 @@ public class PurchaseUtils {
             modelErrors.addAttribute("errors", "Incorrect date");
             return null;
         }
-        if (validResult.hasErrors()) {
-            modelErrors.addAttribute("errorsValid", validResult.getFieldErrors());
-            return null;
-        }
+
+        if (checkValidErrors(validResult)) return null;
+
         checkBudgetBeforeSaving(userId);
         return purchase;
     }
@@ -96,6 +93,14 @@ public class PurchaseUtils {
     private static void checkErrorsAndAddToModel(Model model) {
         model.addAllAttributes(modelErrors.asMap());
         modelErrors = new ExtendedModelMap();
+    }
+
+    public static boolean checkValidErrors(BindingResult validResult){
+        if (validResult.hasErrors()) {
+            modelErrors.addAttribute("errorsValid", validResult.getFieldErrors());
+            return true;
+        }
+        return false;
     }
 
     private static void addPaginationInfoToModel(Pageable pageable, Model model,

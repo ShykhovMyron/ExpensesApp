@@ -4,6 +4,7 @@ import com.application.entity.Purchase;
 import com.application.entity.PurchaseType;
 import com.application.entity.User;
 import com.application.service.PurchaseService;
+import com.application.service.PurchaseTypeService;
 import com.application.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,23 +24,25 @@ import javax.validation.Valid;
 @Controller
 @Transactional
 public class ExpensesController {
-    private final PurchaseService purchasesService;
+    private final PurchaseService purchaseService;
+    private final PurchaseTypeService purchaseTypeService;
     private final UserService userService;
 
-    public ExpensesController(PurchaseService purchasesService, UserService userService) {
-        this.purchasesService = purchasesService;
+    public ExpensesController(PurchaseService purchaseService, PurchaseTypeService purchaseTypeService, UserService userService) {
+        this.purchaseService = purchaseService;
+        this.purchaseTypeService = purchaseTypeService;
         this.userService = userService;
     }
 
     @GetMapping("/expenses")
     public String getExpensesPageInfo(Purchase purchase,
+                                      PurchaseType purchaseType,
                                       @AuthenticationPrincipal User user,
                                       Model model,
-                                      @RequestParam(required = false) PurchaseType purchaseType,
                                       @PageableDefault(sort = {"dateAdded"},
                                               direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        purchasesService.getExpensesPageInfo(user.getId(), model, pageable, purchaseType);
+        purchaseService.getExpensesPageInfo(user.getId(), model, pageable);
         return "expenses";
     }
 
@@ -49,7 +52,7 @@ public class ExpensesController {
                                BindingResult validResult,
                                @PathVariable Long id) {
 
-        purchasesService.editPurchase(id, purchase, user.getId(), validResult);
+        purchaseService.editPurchase(id, purchase, user.getId(), validResult);
         return "redirect:/expenses";
     }
 
@@ -58,7 +61,7 @@ public class ExpensesController {
     public String deleteExpenses(@AuthenticationPrincipal User user,
                                  @PathVariable Long id) {
 
-        purchasesService.deletePurchase(id,user.getId());
+        purchaseService.deletePurchase(id, user.getId());
         return "redirect:/expenses";
     }
 
@@ -68,7 +71,7 @@ public class ExpensesController {
                                  BindingResult validResult,
                                  @RequestParam String date) {
 
-        purchasesService.createPurchase(user.getId(), purchase, date, validResult);
+        purchaseService.createPurchase(user.getId(), purchase, date, validResult);
         return "redirect:/expenses";
     }
 
@@ -76,5 +79,13 @@ public class ExpensesController {
     public String deleteAllExpenses(@AuthenticationPrincipal User user) {
         userService.deleteExpenses(user.getId());
         return "redirect:/home";
+    }
+
+    @PostMapping("/createPurchaseType")
+    public String createPurchaseType(@AuthenticationPrincipal User user,
+                                @Valid PurchaseType purchaseType,
+                                BindingResult validResult) {
+        purchaseTypeService.createPurchaseType(user.getId(),purchaseType,validResult);
+        return "redirect:/expenses";
     }
 }

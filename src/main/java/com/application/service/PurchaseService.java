@@ -21,9 +21,9 @@ public class PurchaseService {
         PurchaseService.userRepo = userRepo;
     }
 
-    public void getExpensesPageInfo(Long userId, Model model, Pageable pageable, PurchaseType fitterByPurchaseType) {
+    public void getExpensesPageInfo(Long userId, Model model, Pageable pageable) {
 
-        Page<Purchase> userPurchases = getPurchases(userId, fitterByPurchaseType, pageable);
+        Page<Purchase> userPurchases = getPurchases(userId, pageable);
 
         PurchaseUtils.addExpensesPageInfoToModel(userId,model,pageable,userPurchases);
     }
@@ -58,11 +58,7 @@ public class PurchaseService {
         BudgetService.changeBalance(userId);
     }
 
-    private static Page<Purchase> getPurchases(Long userId, PurchaseType fitterByPurchaseType, Pageable pageable){
-        if (fitterByPurchaseType == null) {
+    private static Page<Purchase> getPurchases(Long userId, Pageable pageable){
             return purchaseRepo.findAllByUserId(userId, pageable);
-        } else {
-            return purchaseRepo.findAllByUserIdAndType(userId, fitterByPurchaseType, pageable);
-        }
     }
 }
