@@ -1,13 +1,13 @@
 package com.application.pager;
 
-public class PurchaseNumberOnPage {
+public class ExpenseNumberOnPage {
 
     // рэто не энтити, не тот пакет.азберись что это задрочь, мб есть другой способ обработать эту ситуацию в симлифе, и переименуй этот ебаный класс если нет
 
 
     private int count;
 
-    public PurchaseNumberOnPage(int init) {
+    public ExpenseNumberOnPage(int init) {
         count = init;
     }
 

@@ -1,9 +1,8 @@
 package com.application.controller;
 
-import com.application.entity.User;
+import com.application.model.requests.CreateUserRequest;
 import com.application.service.UserService;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.security.InvalidParameterException;
 
 @Controller
 public class RegistrationController {
@@ -22,17 +22,23 @@ public class RegistrationController {
     }
 
     @GetMapping("/registration")
-    public String getRegistrationPageInfo(User user) {
+    public String getRegistrationPageInfo(CreateUserRequest createUserRequest) {
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String createUser(@Valid User user,
+    public String createUser(@Valid CreateUserRequest createUserRequest,
                              BindingResult validResult,
                              Model model) {
-        if (userService.createUser(user, validResult, model)) {
+        try {
+            logger.info(createUserRequest.toString());
+            if (validResult.hasErrors()) {
+                // TODO validate username and pass here
+                throw new InvalidParameterException();
+            }
+            userService.createUser(createUserRequest.getUsername(), createUserRequest.getPassword());
             return "redirect:/login";
-        } else {
+        } catch (Exception e) {
             return "registration";
         }
     }

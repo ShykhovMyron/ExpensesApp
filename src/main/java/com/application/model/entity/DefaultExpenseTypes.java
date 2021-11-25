@@ -1,6 +1,6 @@
-package com.application.entity;
+package com.application.model.entity;
 
-public enum DefaultPurchaseTypes {
+public enum DefaultExpenseTypes {
     ENTERTAINMENT,
     RESTAURANTS,
     PRODUCTS,

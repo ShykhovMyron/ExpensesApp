@@ -1,8 +1,6 @@
 package com.application;
 
-import com.application.entity.Purchase;
-import com.application.repository.PurchaseRepo;
-import org.junit.jupiter.api.Assertions;
+import com.application.repository.ExpenseRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,11 +10,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -31,17 +27,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"create-user-before.sql", "create-expenses-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"create-expenses-after.sql", "create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 
-public class CreatePurchaseTypeTest {
+public class CreateExpenseTypeTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private PurchaseRepo purchaseRepo;
+    private ExpenseRepo expenseRepo;
 
 
     @Test
     @WithUserDetails("technology")
-    public void createPurchaseTest() throws Exception {
+    public void createExpenseFTest() throws Exception {
         String date = new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH).format(new Date());
         this.mockMvc.perform(post("/createPurchaseType")
                         .param("type", "12314121")

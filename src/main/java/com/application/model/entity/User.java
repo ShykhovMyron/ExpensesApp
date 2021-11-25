@@ -1,14 +1,23 @@
-package com.application.entity;
+package com.application.model.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -18,22 +27,14 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Username must not be empty")
-    @Size(min = 6, max = 30, message = "Username size must be between 6 and 30")
     @Column(name = "username")
     private String username;
 
-    @NotEmpty(message = "Password must not be empty")
-    @Size(min = 6, max = 50, message = "Password size must be between 6 and 50")
     @Column(name = "password")
     private String password;
 
     @Column(name = "enabled")
     private boolean enabled = true;
-
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Purchase> purchases = new LinkedHashSet<>();
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "id"))
@@ -41,19 +42,24 @@ public class User implements UserDetails {
     @Column(name = "role")
     private Set<Role> role = Collections.singleton(Role.USER);
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_types",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "type_id")
-    )
-    private Set<PurchaseType> types;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Wallet wallet;
 
-    public Set<PurchaseType> getTypes() {
-        return types;
+    public Wallet getWallet() {
+        return wallet;
     }
 
-    public void setTypes(Set<PurchaseType> types) {
-        this.types = types;
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    public User() {
+    }
+
+    public User(String username, String password, Wallet wallet) {
+        this.username = username;
+        this.password = password;
+        this.wallet = wallet;
     }
 
     @Override
@@ -63,12 +69,9 @@ public class User implements UserDetails {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", enabled=" + enabled +
-                ", purchases=" + purchases +
                 ", role=" + role +
                 '}';
     }
-
-
 
     public Long getId() {
         return id;
@@ -76,14 +79,6 @@ public class User implements UserDetails {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Set<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(Set<Purchase> purchases) {
-        this.purchases = purchases;
     }
 
     public String getUsername() {

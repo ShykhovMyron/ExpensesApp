@@ -1,6 +1,6 @@
 package com.application;
 
-import com.application.repository.PurchaseRepo;
+import com.application.repository.ExpenseRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class EditExpensesTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PurchaseRepo purchaseRepo;
+    private ExpenseRepo expenseRepo;
 
 //    @Test
 //    @WithUserDetails("technology")
@@ -127,9 +127,9 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchaseRepo.findById(10L));
+        Assertions.assertNotNull(expenseRepo.findById(10L));
         Assertions.assertEquals(BigDecimal.valueOf(15),
-                purchaseRepo.findById(10L).get().getAmount().stripTrailingZeros());
+                expenseRepo.findById(10L).get().getAmount().stripTrailingZeros());
     }
 
     @Test
@@ -160,9 +160,9 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchaseRepo.findById(10L));
+        Assertions.assertNotNull(expenseRepo.findById(10L));
         Assertions.assertEquals(BigDecimal.valueOf(15),
-                purchaseRepo.findById(10L).get().getAmount().stripTrailingZeros());
+                expenseRepo.findById(10L).get().getAmount().stripTrailingZeros());
     }
 
 //    @Test
@@ -226,9 +226,9 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchaseRepo.findById(10L));
+        Assertions.assertNotNull(expenseRepo.findById(10L));
         Assertions.assertEquals(BigDecimal.valueOf(15),
-                purchaseRepo.findById(10L).get().getAmount().stripTrailingZeros());
+                expenseRepo.findById(10L).get().getAmount().stripTrailingZeros());
     }
 
     @Test
@@ -259,9 +259,9 @@ public class EditExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertNotNull(purchaseRepo.findById(10L));
+        Assertions.assertNotNull(expenseRepo.findById(10L));
         Assertions.assertEquals(BigDecimal.valueOf(15),
-                purchaseRepo.findById(10L).get().getAmount().stripTrailingZeros());
+                expenseRepo.findById(10L).get().getAmount().stripTrailingZeros());
     }
 
 

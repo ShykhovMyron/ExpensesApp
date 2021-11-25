@@ -1,6 +1,6 @@
 package com.application;
 
-import com.application.repository.PurchaseRepo;
+import com.application.repository.ExpenseRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class DeleteExpensesTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PurchaseRepo purchaseRepo;
+    private ExpenseRepo expenseRepo;
 
     @Test
     @WithUserDetails("technology")
@@ -57,7 +57,7 @@ public class DeleteExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertTrue(purchaseRepo.findById(10L).isEmpty());
+        Assertions.assertTrue(expenseRepo.findById(10L).isEmpty());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class DeleteExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertFalse(purchaseRepo.findById(10L).isEmpty());
+        Assertions.assertFalse(expenseRepo.findById(10L).isEmpty());
     }
 
 }

@@ -1,48 +1,38 @@
-package com.application.entity;
+package com.application.model.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
 @Table(name = "types")
-public class PurchaseType {
+public class ExpenseType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer id;
 
-    @NotEmpty(message = "Type must not be empty")
-    @Column(unique = true)
+    @Column(name = "type",unique = true)
     private String type;
 
     @ManyToMany(mappedBy = "types")
-    private List<User> types;
+    private List<Wallet> wallets;
     @OneToMany(mappedBy = "type")
-    private List<Purchase> purchases;
+    private List<Expense> expenses;
 
-    public PurchaseType() {
+    public ExpenseType() {
     }
 
-    public PurchaseType(String type) {
+    public ExpenseType(String type) {
         this.type = type;
-    }
-
-    public List<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(List<Purchase> purchases) {
-        this.purchases = purchases;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PurchaseType)) return false;
+        if (!(o instanceof ExpenseType)) return false;
 
-        PurchaseType that = (PurchaseType) o;
+        ExpenseType that = (ExpenseType) o;
 
         return getType().equals(that.getType());
     }
@@ -73,11 +63,19 @@ public class PurchaseType {
         this.type = type;
     }
 
-    public List<User> getTypes() {
-        return types;
+    public List<Wallet> getWallets() {
+        return wallets;
     }
 
-    public void setTypes(List<User> types) {
-        this.types = types;
+    public void setWallets(List<Wallet> wallets) {
+        this.wallets = wallets;
+    }
+
+    public List<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<Expense> expenses) {
+        this.expenses = expenses;
     }
 }

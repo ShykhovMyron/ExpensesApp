@@ -106,7 +106,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">Change wallet</h5>
             </div>
-            <form th:action="@{/changeBudget}" th:object="${wallet}" method="post">
+            <form th:action="@{/changeBudget}" th:object="${request}" method="post">
                 <div class="modal-body">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Budget" field="*{budget}"
@@ -134,7 +134,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                <form th:action="@{/deleteExpenses}" method="post">
+                <form th:action="@{/expenses/delete}" method="post">
                     <button type="submit" class="btn btn-success">Yes</button>
                 </form>
             </div>

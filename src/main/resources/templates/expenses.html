@@ -74,7 +74,7 @@
 <div class="table-wrap">
     <table class="table table-striped table-secondary">
         <tr style="font-weight: bold;">
-            <td th:text="'№ ('+${purchases.getTotalElements()}+')'"></td>
+            <td th:text="'№ ('+${expenses.getTotalElements()}+')'"></td>
             <td>Amount</td>
             <td>Type
                 <a href="#">
@@ -92,26 +92,26 @@
                 <input data-toggle="modal"
                        data-target="#createModel"
                        style="font-weight: bold;" type="button" class="btn btn-outline-dark btn-sm"
-                       value="Add new purchase">
+                       value="Add new expense">
             </td>
         </tr>
-        <tr th:with="ourchaseNum=${firstPurchaseNumberOnPage.incrementAndGet()}" th:each="purchase: ${purchases}">
+        <tr th:with="ourchaseNum=${firstExpenseNumberOnPage.incrementAndGet()}" th:each="expense: ${expenses}">
             <td th:text="${ourchaseNum}"></td>
-            <td th:text="${purchase.getAmount()+' $'}"></td>
-            <td th:text="${purchase.getType()}"></td>
-            <td th:text="${dateFormat.format(purchase.getDateAdded())}"></td>
+            <td th:text="${expense.getAmount()+' $'}"></td>
+            <td th:text="${expense.getType()}"></td>
+            <td th:text="${dateFormat.format(expense.getDateAdded())}"></td>
             <td>
                 <div class="btn-group">
                     <button style="margin-right: 10px; border-radius: 5px;" class="btn btn-primary btn-sm"
                             data-toggle="modal"
                             data-target="#editModal"
-                            th:data-id="${purchase.getId()}"
-                            th:data-amount="${purchase.getAmount()}"
-                            th:data-type="${purchase.getType()}"
+                            th:data-id="${expense.getId()}"
+                            th:data-amount="${expense.getAmount()}"
+                            th:data-type="${expense.getType()}"
                             th:data-typeArray="${types}">
                         Edit
                     </button>
-                    <form th:action="@{'/expenses/'+${purchase.getId()}}" method="post">
+                    <form th:action="@{'/expenses/delete/'+${expense.getId()}}" method="post">
                         <button style="border-radius: 5px;" type="submit" class="btn btn-danger btn-sm">
                             Delete
                         </button>
@@ -124,19 +124,19 @@
 
 <div>
     <nav aria-label="Page navigation example ">
-        <ul class="pagination justify-content-center fixed-bottom" th:if="${purchases.getTotalPages() > 1}">
+        <ul class="pagination justify-content-center fixed-bottom" th:if="${expenses.getTotalPages() > 1}">
             <li class="page-item" th:classappend="${!isPrevEnabled? 'disabled' : ''}">
                 <a class="page-link"
-                   th:href="@{'/expenses?page=' + ${purchases.getPageable().getPageNumber() - 1}}">
+                   th:href="@{'/expenses?page=' + ${expenses.getPageable().getPageNumber() - 1}}">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <th:block th:each="index: ${#numbers.sequence(0, purchases.getTotalPages()-1)}">
+            <th:block th:each="index: ${#numbers.sequence(0, expenses.getTotalPages()-1)}">
                 <li class="page-item"
-                    th:classappend="${index == purchases.getPageable().getPageNumber()? 'active' : ''}"
+                    th:classappend="${index == expenses.getPageable().getPageNumber()? 'active' : ''}"
                     th:if="${pageNumbersToShow.contains(index) ||
                                         index == 0 ||
-                                        index+1 == purchases.getTotalPages()}">
+                                        index+1 == expenses.getTotalPages()}">
                     <a class="page-link"
                        th:href="@{'/expenses?page=' + ${index}}"
                        th:text="${index+1}"></a>
@@ -149,7 +149,7 @@
             </th:block>
             <li class="page-item" th:classappend="${!isNextEnabled? 'disabled' : ''}">
                 <a class="page-link"
-                   th:href="@{'/expenses?page=' + ${purchases.getPageable().getPageNumber() + 1}}">
+                   th:href="@{'/expenses?page=' + ${expenses.getPageable().getPageNumber() + 1}}">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
@@ -165,7 +165,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLongTitle">Edit</h5>
             </div>
-            <form id="edit-post" th:object="${purchase}" method="get">
+            <form id="edit-post" th:object="${expense}" method="get">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit-amount" class="col-form-label">Amount</label>
@@ -176,7 +176,7 @@
                         <label class="col-form-label">Type</label>
                         <select id="selectType" class="form-select form-select-sm"
                                 aria-label=".form-select-sm example"
-                                 name="purchaseType">
+                                 name="expenseType">
                             <option id="edit-type" selected></option>
                             <option th:each="type : ${types}"
                                     th:text="${type}"
@@ -202,7 +202,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">Create</h5>
             </div>
-            <form th:action="@{/createExpenses}" th:object="${purchase}" method="post">
+            <form th:action="@{/expenses/create}" th:object="${expense}" method="post">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit-amount" class="col-form-label">Amount</label>
@@ -213,7 +213,7 @@
                         <label class="col-form-label">Type</label>
                         <select class="form-select form-select-sm"
                                 aria-label=".form-select-sm example"
-                                 name="purchaseType">
+                                 name="expenseType">
                             <option th:each="type : ${types}"
                                     th:text="${type}"
                                     th:value="${type}">
@@ -246,7 +246,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">Create</h5>
             </div>
-            <form th:action="@{/createPurchaseType}" th:object="${purchaseType}" method="post">
+            <form th:action="@{/expenses/create/type}" th:object="${expenseType}" method="post">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="edit-amount" class="col-form-label">Type</label>
@@ -351,7 +351,7 @@
         modal.find('#edit-amount').val(amount)
         modal.find('#edit-type').val(type)
         modal.find('#edit-type').text(type + '(selected)')
-        modal.find('#edit-post').attr('action', 'editExpenses/' + id);
+        modal.find('#edit-post').attr('action', '/expenses/edit/' + id);
 
     })
 

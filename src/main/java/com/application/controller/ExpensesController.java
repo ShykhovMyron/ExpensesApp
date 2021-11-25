@@ -1,11 +1,19 @@
 package com.application.controller;
 
-import com.application.entity.Purchase;
-import com.application.entity.PurchaseType;
-import com.application.entity.User;
-import com.application.service.PurchaseService;
-import com.application.service.PurchaseTypeService;
+import com.application.config.ExpensesConfig;
+import com.application.exeptions.TypeNotFoundException;
+import com.application.exeptions.ValidException;
+import com.application.model.entity.Expense;
+import com.application.model.entity.ExpenseType;
+import com.application.model.entity.User;
+import com.application.model.requests.CreateExpenseRequest;
+import com.application.model.requests.CreateExpenseTypeRequest;
+import com.application.model.requests.EditExpenseRequest;
+import com.application.service.ExpenseTypeService;
+import com.application.service.ExpensesService;
 import com.application.service.UserService;
+import com.application.service.WalletService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -16,78 +24,130 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Set;
+
+import static com.application.utils.ExpensesPaginationUtils.addPaginationInfoToModel;
 
 @Controller
-@Transactional
+@RequestMapping("/expenses")
 public class ExpensesController {
-    private final PurchaseService purchaseService;
-    private final PurchaseTypeService purchaseTypeService;
+    private final ExpensesService expensesService;
+    private final ExpenseTypeService expenseTypeService;
     private final UserService userService;
+    private final WalletService walletService;
+    private final ExpensesConfig expensesConfig;
 
-    public ExpensesController(PurchaseService purchaseService, PurchaseTypeService purchaseTypeService, UserService userService) {
-        this.purchaseService = purchaseService;
-        this.purchaseTypeService = purchaseTypeService;
+    public ExpensesController(ExpensesService expensesService, ExpenseTypeService expenseTypeService, UserService userService,
+                              WalletService walletService, ExpensesConfig expensesConfig) {
+        this.expensesService = expensesService;
+        this.expenseTypeService = expenseTypeService;
         this.userService = userService;
+        this.walletService = walletService;
+        this.expensesConfig = expensesConfig;
     }
 
-    @GetMapping("/expenses")
-    public String getExpensesPageInfo(Purchase purchase,
-                                      PurchaseType purchaseType,
-                                      @AuthenticationPrincipal User user,
-                                      Model model,
-                                      @PageableDefault(sort = {"dateAdded"},
-                                              direction = Sort.Direction.DESC) Pageable pageable
+    @GetMapping("")
+    public String expenses(@AuthenticationPrincipal User user,
+                           Model model,
+                           @PageableDefault(sort = {"dateAdded"},
+                                   direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        purchaseService.getExpensesPageInfo(user.getId(), model, pageable);
+        Page<Expense> expenses = expensesService.getExpenses(user.getId(), pageable);
+        Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
+
+        model.addAttribute("expenses", expenses);
+        model.addAttribute("types", expenseTypes);
+        addPaginationInfoToModel(pageable, model, expenses, expensesConfig.getPagesToShow());
+        model.addAttribute("dateFormat", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
+        model.addAttribute("todayDate", new Date()); // currentDate
+        model.addAttribute("inputModalFormat", new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH));
+        // TODO где-то добавить проверку *lowBudget* (потом)
         return "expenses";
     }
 
-    @GetMapping("/editExpenses/{id}")
-    public String editExpenses(@AuthenticationPrincipal User user,
-                               @Valid Purchase purchase,
-                               BindingResult validResult,
-                               @RequestParam(required = false) String purchaseType,
-                               @PathVariable Long id) {
+    @GetMapping("/edit/{expenseId}")
+    public String editExpense(@AuthenticationPrincipal User user,
+                              @Valid EditExpenseRequest expense,
+                              BindingResult validResult,
+                              @PathVariable Long expenseId) {
+        try {
+            if (validResult.hasErrors()) {
+                throw new ValidException();
+            }
+            if (!expenseTypeService.isUserHaveThisType(user.getId(), expense.getType())) {
+                throw new TypeNotFoundException();
+            }
 
-        purchaseService.editPurchase(id, purchase, user.getId(), validResult,purchaseType);
+            expensesService.editExpense(expenseId, expense.getAmount(), expense.getType());
+            walletService.recalculateBalance(user.getId());
+        } catch (Exception e) {
+
+        }
         return "redirect:/expenses";
     }
 
 
-    @PostMapping("/expenses/{id}")
-    public String deleteExpenses(@AuthenticationPrincipal User user,
-                                 @PathVariable Long id) {
+    @PostMapping("/delete/{expenseId}")
+    public String deleteExpense(@AuthenticationPrincipal User user,
+                                @PathVariable Long expenseId) {
+        try {
+            expensesService.deleteExpense(expenseId);
+            walletService.recalculateBalance(user.getId());
+        } catch (Exception e) {
 
-        purchaseService.deletePurchase(id, user.getId());
+        }
         return "redirect:/expenses";
     }
 
-    @PostMapping("/createExpenses")
-    public String createExpenses(@AuthenticationPrincipal User user,
-                                 @Valid Purchase purchase,
-                                 BindingResult validResult,
-                                 @RequestParam(required = false) String purchaseType,
-                                 @RequestParam String date) {
+    @PostMapping("/create")
+    public String createExpense(@AuthenticationPrincipal User user,
+                                @Valid CreateExpenseRequest expense,
+                                BindingResult validResult) {
+        try {
+            if (validResult.hasErrors()) {
+                throw new ValidException();
+            }
+            if (!expenseTypeService.isUserHaveThisType(user.getId(), expense.getType())) {
+                throw new TypeNotFoundException();
+            }
 
-        purchaseService.createPurchase(user.getId(), purchase, date, validResult,purchaseType);
+            expensesService.createExpense(user.getId(), expense.getAmount(), expense.getType(), expense.getDateAdded());
+            walletService.recalculateBalance(user.getId());
+        } catch (Exception e) {
+
+        }
         return "redirect:/expenses";
     }
 
-    @PostMapping("/deleteExpenses")
+    @PostMapping("/delete")
     public String deleteAllExpenses(@AuthenticationPrincipal User user) {
-        userService.deleteExpenses(user.getId());
+        try {
+            userService.deleteExpenses(user.getId());
+            walletService.recalculateBalance(user.getId());
+        } catch (Exception e) {
+
+        }
         return "redirect:/home";
     }
 
-    @PostMapping("/createPurchaseType")
-    public String createPurchaseType(@AuthenticationPrincipal User user,
-                                @Valid PurchaseType purchaseType,
-                                BindingResult validResult) {
-        purchaseTypeService.createPurchaseType(user.getId(),purchaseType,validResult);
+    @PostMapping("/create/type")
+    public String createExpenseType(@AuthenticationPrincipal User user,
+                                    @Valid CreateExpenseTypeRequest expenseType,
+                                    BindingResult validResult) {
+        try {
+            if (validResult.hasErrors()) {
+                throw new ValidException();
+            }
+            expenseTypeService.createExpenseType(user.getId(), expenseType.getType());
+        } catch (Exception e) {
+
+        }
         return "redirect:/expenses";
     }
 }

@@ -1,6 +1,6 @@
 delete from purchases_types;
-delete from purchases;
-insert into purchases(id, amount,  date_added, user_id)
+delete from expenses;
+insert into expenses(id, amount,  date_added, user_id)
 values (1,300,'2021-11-12',2),
        (2,200,'2021-11-12',2),
        (3,100,'2021-11-12',2),

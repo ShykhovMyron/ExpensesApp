@@ -1,8 +1,6 @@
 package com.application;
 
-import com.application.entity.Purchase;
-import com.application.entity.PurchaseType;
-import com.application.repository.PurchaseRepo;
+import com.application.repository.ExpenseRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +11,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -37,7 +33,7 @@ public class CreateExpensesTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private PurchaseRepo purchaseRepo;
+    private ExpenseRepo expenseRepo;
 
 
 //    @Test
@@ -109,7 +105,7 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertEquals(10, purchaseRepo.findAllByUserId(5L).size());
+        Assertions.assertEquals(10, expenseRepo.findAllByUserId(5L).size());
     }
 
     @Test
@@ -142,7 +138,7 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertEquals(10, purchaseRepo.findAllByUserId(5L).size());
+        Assertions.assertEquals(10, expenseRepo.findAllByUserId(5L).size());
     }
 
     @Test
@@ -175,7 +171,7 @@ public class CreateExpensesTest {
                 .andExpect(model().attributeExists("todayDate"))
                 .andExpect(model().attributeExists("inputModalFormat"));
 
-        Assertions.assertEquals(10, purchaseRepo.findAllByUserId(5L).size());
+        Assertions.assertEquals(10, expenseRepo.findAllByUserId(5L).size());
     }
 
 }

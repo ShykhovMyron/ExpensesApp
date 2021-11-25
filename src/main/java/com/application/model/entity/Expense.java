@@ -1,4 +1,4 @@
-package com.application.entity;
+package com.application.model.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
-@Table(name = "purchases")
-public class Purchase {
+@Table(name = "expenses")
+public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -16,14 +16,14 @@ public class Purchase {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "date_added")
-    Date dateAdded;
+    private Date dateAdded;
 
     @ManyToOne
-    @JoinTable(name = "purchases_types",
-            joinColumns = @JoinColumn(name = "purchase_id"),
+    @JoinTable(name = "expenses_types",
+            joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "type_id")
     )
-    private PurchaseType type;
+    private ExpenseType type;
 
     @NotNull(message = "Amount must not be empty")
     @Min(value = 0, message = "Amount must be ≧ 0")
@@ -36,10 +36,12 @@ public class Purchase {
 
     @Override
     public String toString() {
-        return "Purchases{" +
+        return "Expense{" +
                 "id=" + id +
-                ", amount=" + amount +
                 ", dateAdded=" + dateAdded +
+                ", type=" + type +
+                ", amount=" + amount +
+                ", user=" + user +
                 '}';
     }
 
@@ -67,11 +69,11 @@ public class Purchase {
         this.id = id;
     }
 
-    public PurchaseType getType() {
+    public ExpenseType getType() {
         return type;
     }
 
-    public void setType(PurchaseType type) {
+    public void setType(ExpenseType type) {
         this.type = type;
     }
 

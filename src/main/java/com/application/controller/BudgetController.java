@@ -1,8 +1,12 @@
 package com.application.controller;
 
-import com.application.entity.User;
-import com.application.entity.Wallet;
-import com.application.service.BudgetService;
+import com.application.exeptions.NegativeBudgetException;
+import com.application.exeptions.ValidException;
+import com.application.model.entity.User;
+import com.application.model.entity.Wallet;
+import com.application.model.requests.ChangeBudgetRequest;
+import com.application.service.WalletService;
+import com.application.utils.BudgetUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,27 +18,22 @@ import javax.validation.Valid;
 
 @Controller
 public class BudgetController {
-    private final BudgetService budgetService;
+    private final WalletService walletService;
 
-    public BudgetController(BudgetService budgetService) {
-        this.budgetService = budgetService;
+    public BudgetController(WalletService walletService) {
+        this.walletService = walletService;
     }
 
-    @GetMapping({"", "home"})
-    public String getHomePageInfo(@AuthenticationPrincipal User user,
-                                  Wallet wallet,
-                                  Model model) {
-
-        budgetService.getHomePageInfo(user.getId(), model);
-        return "home";
-    }
-
-    @PostMapping("changeBudget")
+    @PostMapping("/changeBudget")
     public String changeBudget(@AuthenticationPrincipal User user,
-                               @Valid Wallet wallet,
+                               @Valid ChangeBudgetRequest request,
                                BindingResult validResult) {
+        try {
+            if (validResult.hasErrors()){ throw new NegativeBudgetException();}
+            walletService.changeBudget(user.getId(), request.getBudget());
+        } catch (Exception e) {
 
-        budgetService.changeBudget(wallet, user.getId(), validResult);
+        }
         return "redirect:/home";
     }
 }

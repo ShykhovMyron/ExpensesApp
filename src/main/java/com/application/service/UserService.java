@@ -1,55 +1,53 @@
 package com.application.service;
 
-import com.application.entity.User;
-import com.application.repository.PurchaseRepo;
-import com.application.repository.PurchaseTypeRepo;
+import com.application.exeptions.UserAlreadyExistException;
+import com.application.model.entity.ExpenseType;
+import com.application.model.entity.User;
+import com.application.model.entity.Wallet;
+import com.application.repository.ExpenseRepo;
 import com.application.repository.UserRepo;
-import com.application.utils.UserUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.application.repository.WalletRepo;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.transaction.annotation.Transactional;
 
-import static com.application.service.PurchaseTypeService.addDefaultPurchaseTypesToUser;
+import java.util.Set;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepo userRepo;
-    private final PurchaseRepo purchaseRepo;
-    private final BudgetService budgetService;
+    private final WalletRepo walletRepo;
+    private final ExpenseRepo expenseRepo;
+    private final ExpenseTypeService expenseTypeService;
 
-    @Autowired
-    PurchaseTypeRepo purchaseTypeRepo;
-
-    public UserService(UserRepo userRepo, PurchaseRepo purchaseRepo, BudgetService budgetService) {
+    public UserService(UserRepo userRepo,
+                       WalletRepo walletRepo,
+                       ExpenseRepo expenseRepo,
+                       ExpenseTypeService expenseTypeService) {
         this.userRepo = userRepo;
-        this.purchaseRepo = purchaseRepo;
-        this.budgetService = budgetService;
+        this.walletRepo = walletRepo;
+        this.expenseRepo = expenseRepo;
+        this.expenseTypeService = expenseTypeService;
     }
 
-    public boolean createUser(User user, BindingResult validResult, Model model) {
-        user = UserUtils.getUserOrNull(user,validResult,model);
-        if (user == null)
-            return false;
-
-        addDefaultPurchaseTypesToUser(user);
-
-        userRepo.save(user);
-        budgetService.createUserBudget(user.getId());
-        return true;
+    @Transactional
+    public void createUser(String username, String password) throws UserAlreadyExistException {
+        if (userRepo.existsByUsername(username)) {
+            throw new UserAlreadyExistException();
+        }
+        createUserWithDefaultParams(username, password);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsername(username);
-    }
 
     public void deleteExpenses(Long userId) {
+        expenseRepo.deleteAll(expenseRepo.findAllByUserId(userId));
+    }
 
-        purchaseRepo.deleteAll(purchaseRepo.findAllByUserId(userId));
-        BudgetService.changeBalance(userId);
+    private void createUserWithDefaultParams(String username, String password) {
+        Set<ExpenseType> defaultExpenseTypes = expenseTypeService.getDefaultExpenseTypes();
+        Wallet userWallet = walletRepo.save(new Wallet(defaultExpenseTypes));
+        userRepo.save(new User(
+                username,
+                password,
+                userWallet));
     }
 }
