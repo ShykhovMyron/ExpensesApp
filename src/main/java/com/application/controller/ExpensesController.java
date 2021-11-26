@@ -1,6 +1,7 @@
 package com.application.controller;
 
 import com.application.config.ExpensesConfig;
+import com.application.exeptions.ExpenseNotFoundException;
 import com.application.exeptions.TypeNotFoundException;
 import com.application.exeptions.ValidException;
 import com.application.model.entity.Expense;
@@ -13,6 +14,7 @@ import com.application.service.ExpenseTypeService;
 import com.application.service.ExpensesService;
 import com.application.service.UserService;
 import com.application.service.WalletService;
+import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,6 +39,8 @@ import static com.application.utils.ExpensesPaginationUtils.addPaginationInfoToM
 @Controller
 @RequestMapping("/expenses")
 public class ExpensesController {
+    final static Logger logger = Logger.getLogger(ExpensesController.class);
+
     private final ExpensesService expensesService;
     private final ExpenseTypeService expenseTypeService;
     private final UserService userService;
@@ -65,13 +69,13 @@ public class ExpensesController {
         model.addAttribute("types", expenseTypes);
         addPaginationInfoToModel(pageable, model, expenses, expensesConfig.getPagesToShow());
         model.addAttribute("dateFormat", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
-        model.addAttribute("todayDate", new Date()); // currentDate
+        model.addAttribute("currentDate", new Date());
         model.addAttribute("inputModalFormat", new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH));
         // TODO где-то добавить проверку *lowBudget* (потом)
         return "expenses";
     }
 
-    @GetMapping("/edit/{expenseId}")
+    @PostMapping("/edit/{expenseId}")
     public String editExpense(@AuthenticationPrincipal User user,
                               @Valid EditExpenseRequest expense,
                               BindingResult validResult,
@@ -105,7 +109,7 @@ public class ExpensesController {
         return "redirect:/expenses";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/create/expense")
     public String createExpense(@AuthenticationPrincipal User user,
                                 @Valid CreateExpenseRequest expense,
                                 BindingResult validResult) {

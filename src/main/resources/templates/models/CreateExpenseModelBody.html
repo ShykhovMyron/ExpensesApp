@@ -1,0 +1,34 @@
+<form th:action="@{/expenses/create/expense}" th:object="${expense}" method="post">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="col-form-label">Amount</label>
+            <input type="text" class="form-control" placeholder="Amount"
+                   field="*{amount}" name="amount">
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Type</label>
+            <select class="form-select form-select-sm"
+                    aria-label=".form-select-sm example"
+                    field="*{type}" name="type">
+                <option th:each="type : ${types}"
+                        th:text="${type}"
+                        th:value="${type}">
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Data</label>
+            <div class="date" id="dpCreate" th:data-date="${currentDate}" data-date-format="dd-mm-yyyy">
+                <input class="form-control span2" size="16" type="text"
+                       field="*{dateAdded}"  name="dateAdded"
+                       th:value="${inputModalFormat.format(currentDate)}"
+                       readonly>
+                <span class="add-on"><i class="icon-th"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+</form>

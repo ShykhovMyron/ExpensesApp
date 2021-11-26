@@ -1,0 +1,12 @@
+<form th:action="@{/changeBudget}" th:object="${request}" method="post">
+    <div class="modal-body">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Budget" field="*{budget}"
+                   name="budget" th:value="${userBudget}">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+</form>

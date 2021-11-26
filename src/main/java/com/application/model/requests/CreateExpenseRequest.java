@@ -8,6 +8,13 @@ public class CreateExpenseRequest extends ExpenseRequestModel {
     @NotEmpty(message = "Type must not be empty")
     private String dateAdded;
 
+    @Override
+    public String toString() {
+        return "CreateExpenseRequest{" +
+                "dateAdded='" + dateAdded + '\'' +
+                '}';
+    }
+
     public String getDateAdded() {
         return dateAdded;
     }

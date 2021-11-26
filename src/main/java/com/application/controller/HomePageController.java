@@ -21,7 +21,6 @@ public class HomePageController {
 
     @GetMapping({"/", "/home"})
     public String getHomePageInfo(@AuthenticationPrincipal User user,
-                                  ChangeBudgetRequest request,
                                   Model model) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("userWallet", walletService.getWallet(user.getId()));

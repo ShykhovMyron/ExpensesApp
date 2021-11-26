@@ -38,6 +38,13 @@ public class ExpensesService {
         return expenseRepo.findAllByUserId(userId, pageable);
     }
 
+    public Expense getExpense(Long expenseId) throws ExpenseNotFoundException {
+        Optional<Expense> expenseOptional = expenseRepo.findById(expenseId);
+        if (expenseOptional.isEmpty()){throw new ExpenseNotFoundException();}
+
+        return expenseOptional.get();
+    }
+
     @Transactional
     public void editExpense(Long expenseId, BigDecimal expenseAmount, String expenseType) throws ExpenseNotFoundException {
         Optional<Expense> expenseOptional = expenseRepo.findById(expenseId);
@@ -62,6 +69,7 @@ public class ExpensesService {
         expenseRepo.save(newExpense);
     }
 
+    @Transactional
     public void deleteExpense(Long expenseId) throws ExpenseNotFoundException {
 
         Optional<Expense> expenseOptional = expenseRepo.findById(expenseId);
