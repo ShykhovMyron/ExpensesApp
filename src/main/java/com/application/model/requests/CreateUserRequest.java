@@ -24,15 +24,15 @@ public class CreateUserRequest {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "CreateUserRequest{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

@@ -13,11 +13,12 @@ import java.util.Set;
 public interface ExpenseRepo extends CrudRepository<Expense, Integer> {
 
     Optional<Expense> findById(Long id);
+
     // findAllByUserId и так все методы ниже
     Set<Expense> findAllByUserId(Long tag);
 
     Page<Expense> findAllByUserId(Long tag, Pageable pageable);
 
 
-    Page<Expense> findAllByUserIdAndType(Long  id, ExpenseType fitterByExpenseType, Pageable pageable);
+    Page<Expense> findAllByUserIdAndType(Long id, ExpenseType fitterByExpenseType, Pageable pageable);
 }

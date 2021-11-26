@@ -3,7 +3,6 @@ package com.application.service;
 import com.application.model.entity.Expense;
 import com.application.model.entity.Wallet;
 import com.application.repository.ExpenseRepo;
-import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

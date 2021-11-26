@@ -1,7 +1,6 @@
 package com.application.controller;
 
 import com.application.config.ExpensesConfig;
-import com.application.exeptions.ExpenseNotFoundException;
 import com.application.exeptions.TypeNotFoundException;
 import com.application.exeptions.ValidException;
 import com.application.model.entity.Expense;

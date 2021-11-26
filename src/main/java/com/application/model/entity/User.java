@@ -45,20 +45,20 @@ public class User implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY)
     private Wallet wallet;
 
-    public Wallet getWallet() {
-        return wallet;
-    }
-
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
-    }
-
     public User() {
     }
 
     public User(String username, String password, Wallet wallet) {
         this.username = username;
         this.password = password;
+        this.wallet = wallet;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
 

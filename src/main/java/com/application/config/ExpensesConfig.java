@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "exoenses")
+@ConfigurationProperties(prefix = "expenses")
 public class ExpensesConfig {
     private int pagesToShow = 20;
 

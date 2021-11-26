@@ -24,7 +24,9 @@ public class BudgetController {
                                @Valid ChangeBudgetRequest request,
                                BindingResult validResult) {
         try {
-            if (validResult.hasErrors()){ throw new NegativeBudgetException();}
+            if (validResult.hasErrors()) {
+                throw new NegativeBudgetException();
+            }
             walletService.changeBudget(user.getId(), request.getBudget());
         } catch (Exception e) {
 

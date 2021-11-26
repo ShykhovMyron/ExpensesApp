@@ -40,7 +40,9 @@ public class ExpensesService {
 
     public Expense getExpense(Long expenseId) throws ExpenseNotFoundException {
         Optional<Expense> expenseOptional = expenseRepo.findById(expenseId);
-        if (expenseOptional.isEmpty()){throw new ExpenseNotFoundException();}
+        if (expenseOptional.isEmpty()) {
+            throw new ExpenseNotFoundException();
+        }
 
         return expenseOptional.get();
     }
