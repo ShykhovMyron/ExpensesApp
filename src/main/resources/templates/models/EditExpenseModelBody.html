@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div class="modal-header">
+    <h5 class="modal-title" id="editModalLongTitle">Edit</h5>
+</div>
 <form th:action="@{'/expenses/edit/'+${expense.getId()}}" th:object="${expense}" method="post">
     <div class="modal-body">
         <div class="form-group">
@@ -10,12 +18,24 @@
             <select id="selectType" class="form-select form-select-sm"
                     aria-label=".form-select-sm example"
                     field="*{type}" name="type">
-                <option th:value="${expense.getType()}" th:text="${expense.getType()+'(selected)'}" selected></option>
+                <option th:value="${expense.getType()}" th:text="${expense.getType()+'(selected)'}"
+                        selected></option>
                 <option th:each="type : ${types}"
                         th:text="${type}"
                         th:value="${type}">
                 </option>
             </select>
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Data</label>
+            <div class="date" id="dpEdit" th:data-date="${expense.getDateAdded()}"
+                 data-date-format="yyyy-mm-dd">
+                <input class="form-control span2" size="16" type="text"
+                       field="*{dateAdded}" name="dateAdded"
+                       th:value="${expense.getDateAdded()}"
+                       readonly>
+                <span class="add-on"><i class="icon-th"></i></span>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
@@ -23,3 +43,10 @@
         <button type="submit" class="btn btn-primary">Save changes</button>
     </div>
 </form>
+<script>
+    $(function () {
+        $('#dpEdit').datepicker();
+    });
+</script>
+</body>
+</html>

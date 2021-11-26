@@ -1,12 +1,15 @@
 package com.application.service;
 
+import com.application.controller.ExpensesController;
 import com.application.exeptions.TypeAlreadyExistException;
+import com.application.exeptions.TypeNotFoundException;
 import com.application.model.entity.DefaultExpenseTypes;
 import com.application.model.entity.ExpenseType;
 import com.application.model.entity.Wallet;
 import com.application.repository.ExpenseTypeRepo;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -14,6 +17,8 @@ import java.util.Set;
 
 @Service
 public class ExpenseTypeService {
+    final static Logger logger = Logger.getLogger(ExpenseTypeService.class);
+
     private final ExpenseTypeRepo expenseTypeRepo;
     private final UserRepo userRepo;
     private final WalletRepo walletRepo;
@@ -60,5 +65,23 @@ public class ExpenseTypeService {
         Set<ExpenseType> userTypes = walletRepo.getWalletByUserId(userId).getTypes();
         ExpenseType type = expenseTypeRepo.findByType(expenseType);
         return userTypes.contains(type);
+    }
+
+    public void deleteExpenseType(Long userId, String type) throws TypeNotFoundException {
+        if (!isUserHaveThisType(userId, type)) {
+            throw new TypeNotFoundException();
+        }
+
+        Wallet userWallet = walletRepo.getWalletByUserId(userId);
+//        Optional<ExpenseType> expenseTypeOptional = userWallet.getTypes()
+//                .stream().filter(s -> s.getType().equals(type))
+//                .findAny();
+//        if (expenseTypeOptional.isEmpty()) {
+//            throw new TypeNotFoundException();
+//        }
+
+        userWallet.getTypes().remove(expenseTypeRepo.findByType(type));
+        logger.info(userWallet.getTypes().toString());
+        walletRepo.save(userWallet);
     }
 }

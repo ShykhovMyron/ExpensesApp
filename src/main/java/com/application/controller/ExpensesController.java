@@ -8,6 +8,7 @@ import com.application.model.entity.ExpenseType;
 import com.application.model.entity.User;
 import com.application.model.requests.CreateExpenseRequest;
 import com.application.model.requests.CreateExpenseTypeRequest;
+import com.application.model.requests.DeleteExpenseTypeRequest;
 import com.application.model.requests.EditExpenseRequest;
 import com.application.service.ExpenseTypeService;
 import com.application.service.ExpensesService;
@@ -69,7 +70,7 @@ public class ExpensesController {
         addPaginationInfoToModel(pageable, model, expenses, expensesConfig.getPagesToShow());
         model.addAttribute("dateFormat", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("inputModalFormat", new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH));
+        model.addAttribute("inputModalFormat", new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH));
         // TODO где-то добавить проверку *lowBudget* (потом)
         return "expenses";
     }
@@ -79,6 +80,7 @@ public class ExpensesController {
                               @Valid EditExpenseRequest expense,
                               BindingResult validResult,
                               @PathVariable Long expenseId) {
+        logger.info(expense.getDateAdded());
         try {
             if (validResult.hasErrors()) {
                 throw new ValidException();
@@ -87,7 +89,7 @@ public class ExpensesController {
                 throw new TypeNotFoundException();
             }
 
-            expensesService.editExpense(expenseId, expense.getAmount(), expense.getType());
+            expensesService.editExpense(expenseId, expense.getAmount(), expense.getType(), expense.getDateAdded());
             walletService.recalculateBalance(user.getId());
         } catch (Exception e) {
 
@@ -148,6 +150,22 @@ public class ExpensesController {
                 throw new ValidException();
             }
             expenseTypeService.createExpenseType(user.getId(), expenseType.getType());
+        } catch (Exception e) {
+
+        }
+        return "redirect:/expenses";
+    }
+
+    @PostMapping("/delete/type")
+    public String deleteExpenseType(@AuthenticationPrincipal User user,
+                                    @Valid DeleteExpenseTypeRequest expenseType,
+                                    BindingResult validResult) {
+        logger.info(validResult.toString() + "   " + expenseType.getType());
+        try {
+            if (validResult.hasErrors()) {
+                throw new ValidException();
+            }
+            expenseTypeService.deleteExpenseType(user.getId(), expenseType.getType());
         } catch (Exception e) {
 
         }

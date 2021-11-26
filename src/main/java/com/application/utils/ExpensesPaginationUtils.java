@@ -31,11 +31,9 @@ public class ExpensesPaginationUtils {
         List<Integer> pageNumbersToHide = new ArrayList<>();
 
         if (Collections.min(pageNumbersToShow) - 1 > 0) {
-            pageNumbersToShow.remove(0);
             pageNumbersToHide.add(Collections.min(pageNumbersToShow) - 1);
         }
         if (Collections.max(pageNumbersToShow) + 1 < expenses.getTotalPages() - 1) {
-            pageNumbersToShow.remove(pageNumbersToShow.size() - 1);
             pageNumbersToHide.add(Collections.max(pageNumbersToShow) + 1);
         }
         return pageNumbersToHide;

@@ -23,13 +23,11 @@ import java.util.Optional;
 public class ExpensesService {
     private final UserRepo userRepo;
     private final ExpenseRepo expenseRepo;
-    private final WalletService walletService;
     private final ExpenseTypeRepo expenseTypeRepo;
 
-    public ExpensesService(UserRepo userRepo, ExpenseRepo expenseRepo, WalletService walletService, ExpenseTypeRepo expenseTypeRepo) {
+    public ExpensesService(UserRepo userRepo, ExpenseRepo expenseRepo, ExpenseTypeRepo expenseTypeRepo) {
         this.userRepo = userRepo;
         this.expenseRepo = expenseRepo;
-        this.walletService = walletService;
         this.expenseTypeRepo = expenseTypeRepo;
     }
 
@@ -48,13 +46,13 @@ public class ExpensesService {
     }
 
     @Transactional
-    public void editExpense(Long expenseId, BigDecimal expenseAmount, String expenseType) throws ExpenseNotFoundException {
+    public void editExpense(Long expenseId, BigDecimal expenseAmount, String expenseType, String date) throws ExpenseNotFoundException, ParseException {
         Optional<Expense> expenseOptional = expenseRepo.findById(expenseId);
         if (expenseOptional.isEmpty()) {
             throw new ExpenseNotFoundException();
         }
-
         Expense expense = expenseOptional.get();
+        expense.setDateAdded(new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH).parse(date));
         expense.setAmount(expenseAmount);
         expense.setType(expenseTypeRepo.findByType(expenseType));
         expenseRepo.save(expense);
@@ -62,9 +60,8 @@ public class ExpensesService {
 
     @Transactional
     public void createExpense(Long userId, BigDecimal amount, String type, String date) throws ParseException {
-
         Expense newExpense = new Expense();
-        newExpense.setDateAdded(new SimpleDateFormat("d-M-yyyy", Locale.ENGLISH).parse(date));
+        newExpense.setDateAdded(new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH).parse(date));
         newExpense.setType(expenseTypeRepo.findByType(type));
         newExpense.setAmount(amount);
         newExpense.setUser(userRepo.getById(userId));
