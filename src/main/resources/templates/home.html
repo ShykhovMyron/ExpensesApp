@@ -99,22 +99,6 @@
     </p>
 </div>
 
-<!--changeBudget Modal-->
-<div class="modal fade" id="changeBudget" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Change wallet</h5>
-            </div>
-
-            <div class="body">
-            </div>
-
-        </div>
-    </div>
-</div>
-
 <!--confirmDeleteModal-->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
      aria-hidden="true">
@@ -161,6 +145,8 @@
         });
     </script>
 </th:block>
+
+<th:block th:replace="modals :: modal('changeBudget')">modal</th:block>
 
 <script>
 

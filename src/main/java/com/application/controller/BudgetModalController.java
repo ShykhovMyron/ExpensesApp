@@ -22,6 +22,6 @@ public class BudgetModalController {
                                Model model) {
 
         model.addAttribute("userBudget", walletService.getWallet(user.getId()).getBudget());
-        return "ChangeBudgetModelBody";
+        return "models/ChangeBudgetModelBody";
     }
 }
