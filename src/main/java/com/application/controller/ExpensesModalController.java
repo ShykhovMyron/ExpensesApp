@@ -51,7 +51,7 @@ public class ExpensesModalController {
         } catch (Exception e) {
 
         }
-        return "models/EditExpenseModelBody";
+        return "modals/EditExpenseModalBody";
     }
 
     @GetMapping("/create/expense")
@@ -65,13 +65,13 @@ public class ExpensesModalController {
         model.addAttribute("currentDate", new Date());
         model.addAttribute("inputModalFormat", new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH));
 
-        return "models/CreateExpenseModelBody";
+        return "modals/CreateExpenseModalBody";
     }
 
     @GetMapping("/create/type")
     public String createExpenseTypeModel(CreateExpenseTypeRequest expenseType,
                                          Model model) {
-        return "models/CreateExpenseTypeModelBody";
+        return "modals/CreateExpenseTypeModalBody";
     }
 
     @GetMapping("/delete/type")
@@ -81,6 +81,6 @@ public class ExpensesModalController {
         Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
 
         model.addAttribute("types", expenseTypes);
-        return "models/DeleteExpenseTypeModelBody";
+        return "modals/DeleteExpenseTypeModalBody";
     }
 }
