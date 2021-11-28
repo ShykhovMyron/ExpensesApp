@@ -44,7 +44,6 @@ public class WalletService {
     private BigDecimal getExpensesValue(Long userId) {
         Set<Expense> expenses = expenseRepo.findAllByUserId(userId);
         BigDecimal expensesValue = new BigDecimal(0);
-
         for (Expense expense : expenses) {
             expensesValue = expensesValue.add(expense.getAmount());
         }

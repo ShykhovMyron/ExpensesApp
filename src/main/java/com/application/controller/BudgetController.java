@@ -7,7 +7,9 @@ import com.application.service.WalletService;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -22,11 +24,19 @@ public class BudgetController {
         this.walletService = walletService;
     }
 
+    @GetMapping("/changeBudget")
+    public String changeBudget(@AuthenticationPrincipal User user,
+                               ChangeBudgetRequest request,
+                               Model model) {
+
+        model.addAttribute("userBudget", walletService.getWallet(user.getId()).getBudget());
+        return "modals/ChangeBudgetModalBody";
+    }
+
     @PostMapping("/changeBudget")
     public String changeBudget(@AuthenticationPrincipal User user,
                                @Valid ChangeBudgetRequest request,
                                BindingResult validResult) {
-//        logger.info("Post:/changeBudget - ");
         try {
             if (validResult.hasErrors()) {
                 throw new NegativeBudgetException();

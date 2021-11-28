@@ -47,8 +47,11 @@ public class ExpensesController {
     private final WalletService walletService;
     private final ExpensesConfig expensesConfig;
 
-    public ExpensesController(ExpensesService expensesService, ExpenseTypeService expenseTypeService, UserService userService,
-                              WalletService walletService, ExpensesConfig expensesConfig) {
+    public ExpensesController(ExpensesService expensesService,
+                              ExpenseTypeService expenseTypeService,
+                              UserService userService,
+                              WalletService walletService,
+                              ExpensesConfig expensesConfig) {
         this.expensesService = expensesService;
         this.expenseTypeService = expenseTypeService;
         this.userService = userService;
@@ -85,7 +88,7 @@ public class ExpensesController {
             if (validResult.hasErrors()) {
                 throw new ValidException();
             }
-            if (!expenseTypeService.isUserHaveThisType(user.getId(), expense.getType())) {
+            if (!expenseTypeService.userHasExpense(user.getId(), expense.getType())) {
                 throw new TypeNotFoundException();
             }
 
@@ -118,7 +121,7 @@ public class ExpensesController {
             if (validResult.hasErrors()) {
                 throw new ValidException();
             }
-            if (!expenseTypeService.isUserHaveThisType(user.getId(), expense.getType())) {
+            if (!expenseTypeService.userHasExpense(user.getId(), expense.getType())) {
                 throw new TypeNotFoundException();
             }
 
@@ -129,7 +132,7 @@ public class ExpensesController {
         }
         return "redirect:/expenses";
     }
-
+    // /deleteAll
     @PostMapping("/delete")
     public String deleteAllExpenses(@AuthenticationPrincipal User user) {
         try {
@@ -160,7 +163,7 @@ public class ExpensesController {
     public String deleteExpenseType(@AuthenticationPrincipal User user,
                                     @Valid DeleteExpenseTypeRequest expenseType,
                                     BindingResult validResult) {
-        logger.info(validResult.toString() + "   " + expenseType.getType());
+        logger.info(validResult.toString() + "\t\t" + expenseType.getType());
         try {
             if (validResult.hasErrors()) {
                 throw new ValidException();

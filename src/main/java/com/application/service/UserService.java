@@ -37,7 +37,6 @@ public class UserService {
         createUserWithDefaultParams(username, password);
     }
 
-
     public void deleteExpenses(Long userId) {
         expenseRepo.deleteAll(expenseRepo.findAllByUserId(userId));
     }

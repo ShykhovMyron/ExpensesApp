@@ -1,6 +1,5 @@
 package com.application.service;
 
-import com.application.controller.ExpensesController;
 import com.application.exeptions.TypeAlreadyExistException;
 import com.application.exeptions.TypeNotFoundException;
 import com.application.model.entity.DefaultExpenseTypes;
@@ -49,7 +48,7 @@ public class ExpenseTypeService {
     }
 
     public void createExpenseType(Long userId, String expenseType) throws TypeAlreadyExistException {
-        if (isUserHaveThisType(userId, expenseType)) {
+        if (userHasExpense(userId, expenseType)) {
             throw new TypeAlreadyExistException();
         }
 
@@ -61,14 +60,14 @@ public class ExpenseTypeService {
         walletRepo.save(wallet);
     }
 
-    public boolean isUserHaveThisType(Long userId, String expenseType) {
+    public boolean userHasExpense(Long userId, String expenseType) {
         Set<ExpenseType> userTypes = walletRepo.getWalletByUserId(userId).getTypes();
         ExpenseType type = expenseTypeRepo.findByType(expenseType);
         return userTypes.contains(type);
     }
 
     public void deleteExpenseType(Long userId, String type) throws TypeNotFoundException {
-        if (!isUserHaveThisType(userId, type)) {
+        if (!userHasExpense(userId, type)) {
             throw new TypeNotFoundException();
         }
 

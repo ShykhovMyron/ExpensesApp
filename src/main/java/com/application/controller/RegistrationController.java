@@ -22,14 +22,14 @@ public class RegistrationController {
     }
 
     @GetMapping("/registration")
-    public String getRegistrationPageInfo(CreateUserRequest createUserRequest) {
+    public String getRegistrationPage(CreateUserRequest createUserRequest) {
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String createUser(@Valid CreateUserRequest createUserRequest,
-                             BindingResult validResult,
-                             Model model) {
+    public String registerUser(@Valid CreateUserRequest createUserRequest,
+                               BindingResult validResult,
+                               Model model) {
         try {
             logger.info(createUserRequest.toString());
             if (validResult.hasErrors()) {
