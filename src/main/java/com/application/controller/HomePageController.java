@@ -6,6 +6,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.ArrayList;
 
 @Controller
 public class HomePageController {
@@ -16,7 +19,8 @@ public class HomePageController {
     }
 
     @GetMapping({"/", "/home"})
-    public String getHomePageInfo(@AuthenticationPrincipal User user,
+    public String getHomePageInfo(@ModelAttribute("errors") ArrayList<String> errors,
+                                  @AuthenticationPrincipal User user,
                                   Model model) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("userWallet", walletService.getWallet(user.getId()));

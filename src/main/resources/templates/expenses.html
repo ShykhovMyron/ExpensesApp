@@ -170,26 +170,6 @@
 <th:block th:replace="modalsConteiner :: modal('addNewTypeModal')">modal</th:block>
 <th:block th:replace="modalsConteiner :: modal('deleteTypeModal')">modal</th:block>
 
-
-<!--errorValidModel-->
-<div class="modal fade" id="errorValidModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content panel-warning">
-            <div class="modal-header modal-header-danger">
-                <h4 class="modal-title"><strong class="mx-2">Error!</strong></h4>
-            </div>
-            <div class="modal-body text-center">
-                <th:block th:each="error:${errorsValid}">
-                    <p th:text="${error.getDefaultMessage()}"/>
-                </th:block>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!--errorModel-->
 <div class="modal fade" id="errorModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">
@@ -227,14 +207,7 @@
     </div>
 </div>
 
-<th:block th:if="${errorsValid}">
-    <script type="text/javascript">
-        $(window).on('load', function () {
-            $('#errorValidModel').modal('show');
-        });
-    </script>
-</th:block>
-<th:block th:if="${errors}">
+<th:block th:if="${!errors.isEmpty()}">
     <script type="text/javascript">
         $(window).on('load', function () {
             $('#errorModel').modal('show');

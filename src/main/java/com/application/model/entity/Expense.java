@@ -16,6 +16,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "expenses")
@@ -100,6 +101,19 @@ public class Expense {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Expense)) return false;
+        Expense expense = (Expense) o;
+        return Objects.equals(getId(), expense.getId()) && getDateAdded().equals(expense.getDateAdded()) && getType().equals(expense.getType()) && getAmount().equals(expense.getAmount()) && getUser().equals(expense.getUser());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getDateAdded(), getType(), getAmount(), getUser());
     }
 
     public void setAmount(BigDecimal amount) {

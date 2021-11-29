@@ -128,7 +128,7 @@
             </div>
             <div id="alert-modal-body" class="modal-body text-center">
                 <th:block th:each="error:${errors}">
-                    <p th:text="${error.getDefaultMessage()}"/>
+                    <p th:text="${error}"/>
                 </th:block>
             </div>
             <div class="modal-footer">
@@ -138,7 +138,7 @@
     </div>
 </div>
 
-<th:block th:if="${errors}">
+<th:block th:if="${!errors.isEmpty()}">
     <script type="text/javascript">
         $(window).on('load', function () {
             $('#errorModel').modal('show');

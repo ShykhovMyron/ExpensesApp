@@ -49,7 +49,7 @@ public class ExpenseTypeService {
 
     public void createExpenseType(Long userId, String expenseType) throws TypeAlreadyExistException {
         if (userHasExpense(userId, expenseType)) {
-            throw new TypeAlreadyExistException();
+            throw new TypeAlreadyExistException(expenseType);
         }
 
         if (!expenseTypeRepo.existsByType(expenseType)) {
@@ -68,7 +68,7 @@ public class ExpenseTypeService {
 
     public void deleteExpenseType(Long userId, String type) throws TypeNotFoundException {
         if (!userHasExpense(userId, type)) {
-            throw new TypeNotFoundException();
+            throw new TypeNotFoundException(type);
         }
 
         Wallet userWallet = walletRepo.getWalletByUserId(userId);

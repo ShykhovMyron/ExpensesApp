@@ -30,7 +30,7 @@ public class UserService {
 
     public void createUser(String username, String password) throws UserAlreadyExistException {
         if (userRepo.existsByUsername(username)) {
-            throw new UserAlreadyExistException();
+            throw new UserAlreadyExistException(username);
         }
         createUserWithDefaultParams(username, password);
     }

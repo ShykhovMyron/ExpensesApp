@@ -1,12 +1,10 @@
 package com.application.repository;
 
 import com.application.model.entity.Expense;
-import com.application.model.entity.ExpenseType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
 import java.util.Set;
 
 

@@ -127,8 +127,8 @@
     </style>
 </head>
 <body>
-<div class="top" th:if="${errors}">
-    <p th:text="${errors}"/>
+<div class="top" th:if="${!errors.isEmpty()}" th:each="error:${errors}">
+    <p th:text="${error}"/>
 </div>
 <form class="box" th:action="@{/registration}" th:object="${createUserRequest}" method="post">
     <h1>New user</h1>

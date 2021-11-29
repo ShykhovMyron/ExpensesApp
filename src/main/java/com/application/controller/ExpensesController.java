@@ -2,8 +2,8 @@ package com.application.controller;
 
 import com.application.config.ExpensesConfig;
 import com.application.exeptions.ExpenseNotFoundException;
+import com.application.exeptions.TypeAlreadyExistException;
 import com.application.exeptions.TypeNotFoundException;
-import com.application.exeptions.ValidException;
 import com.application.model.entity.Expense;
 import com.application.model.entity.ExpenseType;
 import com.application.model.entity.User;
@@ -25,16 +25,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
 
+import static com.application.parser.ErrorsParser.getExceptionErrors;
+import static com.application.parser.ErrorsParser.getValidErrors;
 import static com.application.utils.ExpensesPaginationUtils.addPaginationInfoToModel;
 
 @Controller
@@ -61,7 +67,8 @@ public class ExpensesController {
     }
 
     @GetMapping("")
-    public String expenses(@AuthenticationPrincipal User user,
+    public String expenses(@ModelAttribute("errors") ArrayList<String> errors,
+                           @AuthenticationPrincipal User user,
                            Model model,
                            @PageableDefault(sort = {"dateAdded"},
                                    direction = Sort.Direction.DESC) Pageable pageable
@@ -85,7 +92,9 @@ public class ExpensesController {
     public String editExpenseModel(@AuthenticationPrincipal User user,
                                    EditExpenseRequest expense,
                                    @PathVariable Long expenseId,
-                                   Model model) {
+                                   Model model,
+                                   @ModelAttribute("errors") ArrayList<String> errors,
+                                   RedirectAttributes redirectAttributes) {
         try {
             Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
 
@@ -95,9 +104,11 @@ public class ExpensesController {
             model.addAttribute("inputModalFormat",
                     new SimpleDateFormat(expensesConfig.getInputDateFormat(), Locale.ENGLISH));
 
-        } catch (Exception e) {
-
+        } catch (ExpenseNotFoundException e) {
+            errors = getExceptionErrors(e);
+            return "redirect:/expenses";
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
         return "modals/EditExpenseModalBody";
     }
 
@@ -105,44 +116,53 @@ public class ExpensesController {
     public String editExpense(@AuthenticationPrincipal User user,
                               @Valid EditExpenseRequest expense,
                               BindingResult validResult,
-                              @PathVariable Long expenseId) {
+                              @PathVariable Long expenseId,
+                              @ModelAttribute("errors") ArrayList<String> errors,
+                              RedirectAttributes redirectAttributes) {
         logger.info(expense.getDateAdded());
         try {
             if (validResult.hasErrors()) {
-                throw new ValidException();
+                errors = getValidErrors(validResult);
+            } else {
+                expensesService.editExpense(
+                        user.getId(),
+                        expenseId,
+                        expense.getAmount(),
+                        expense.getType(),
+                        expense.getDateAdded());
+                walletService.recalculateBalance(user.getId());
             }
-            if (!expenseTypeService.userHasExpense(user.getId(), expense.getType())) {
-                throw new TypeNotFoundException();
-            }
-
-            expensesService.editExpense(expenseId, expense.getAmount(), expense.getType(), expense.getDateAdded());
-            walletService.recalculateBalance(user.getId());
-        } catch (Exception e) {
-
+        } catch (ExpenseNotFoundException | TypeNotFoundException | ParseException e) {
+            errors = getExceptionErrors(e);
+        } finally {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/expenses";
         }
-        return "redirect:/expenses";
     }
 
 
     @PostMapping("/delete/{expenseId}")
     public String deleteExpense(@AuthenticationPrincipal User user,
-                                @PathVariable Long expenseId) {
+                                @PathVariable Long expenseId,
+                                @ModelAttribute("errors") ArrayList<String> errors,
+                                RedirectAttributes redirectAttributes) {
         try {
             expensesService.deleteExpense(expenseId);
             walletService.recalculateBalance(user.getId());
-        } catch (Exception e) {
-
+        } catch (ExpenseNotFoundException e) {
+            errors = getExceptionErrors(e);
+        } finally {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/expenses";
         }
-        return "redirect:/expenses";
     }
 
     @GetMapping("/create/expense")
     public String createExpenseModel(@AuthenticationPrincipal User user,
                                      CreateExpenseRequest expense,
-                                     Model model) throws ExpenseNotFoundException {
+                                     Model model) {
         Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
 
-        model.addAttribute("expense", expensesService.getExpense(42L));
         model.addAttribute("types", expenseTypes);
         model.addAttribute("currentDate", new Date());
         model.addAttribute("inputModalFormat",
@@ -154,53 +174,64 @@ public class ExpensesController {
     @PostMapping("/create/expense")
     public String createExpense(@AuthenticationPrincipal User user,
                                 @Valid CreateExpenseRequest expense,
-                                BindingResult validResult) {
+                                BindingResult validResult,
+                                @ModelAttribute("errors") ArrayList<String> errors,
+                                RedirectAttributes redirectAttributes) {
         try {
             if (validResult.hasErrors()) {
-                throw new ValidException();
+                errors = getValidErrors(validResult);
+            } else {
+                expensesService.createExpense(
+                        user.getId(),
+                        expense.getAmount(),
+                        expense.getType(),
+                        expense.getDateAdded());
+                walletService.recalculateBalance(user.getId());
             }
-            if (!expenseTypeService.userHasExpense(user.getId(), expense.getType())) {
-                throw new TypeNotFoundException();
-            }
-
-            expensesService.createExpense(user.getId(), expense.getAmount(), expense.getType(), expense.getDateAdded());
-            walletService.recalculateBalance(user.getId());
-        } catch (Exception e) {
-
+        } catch (TypeNotFoundException | ParseException e) {
+            errors = getExceptionErrors(e);
+        } finally {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/expenses";
         }
-        return "redirect:/expenses";
     }
 
     @PostMapping("/deleteAll")
-    public String deleteAllExpenses(@AuthenticationPrincipal User user) {
+    public String deleteAllExpenses(@AuthenticationPrincipal User user,
+                                    @ModelAttribute("errors") ArrayList<String> errors,
+                                    RedirectAttributes redirectAttributes) {
         try {
             userService.deleteExpenses(user.getId());
             walletService.recalculateBalance(user.getId());
-        } catch (Exception e) {
-
+        } finally {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/home";
         }
-        return "redirect:/home";
     }
 
     @GetMapping("/create/type")
-    public String createExpenseTypeModel(CreateExpenseTypeRequest expenseType,
-                                         Model model) {
+    public String createExpenseTypeModel(CreateExpenseTypeRequest expenseType) {
         return "modals/CreateExpenseTypeModalBody";
     }
 
     @PostMapping("/create/type")
     public String createExpenseType(@AuthenticationPrincipal User user,
                                     @Valid CreateExpenseTypeRequest expenseType,
-                                    BindingResult validResult) {
+                                    BindingResult validResult,
+                                    @ModelAttribute("errors") ArrayList<String> errors,
+                                    RedirectAttributes redirectAttributes) {
         try {
             if (validResult.hasErrors()) {
-                throw new ValidException();
+                errors = getValidErrors(validResult);
+            } else {
+                expenseTypeService.createExpenseType(user.getId(), expenseType.getType());
             }
-            expenseTypeService.createExpenseType(user.getId(), expenseType.getType());
-        } catch (Exception e) {
-
+        } catch (TypeAlreadyExistException e) {
+            errors = getExceptionErrors(e);
+        } finally {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/expenses";
         }
-        return "redirect:/expenses";
     }
 
     @GetMapping("/delete/type")
@@ -216,16 +247,21 @@ public class ExpensesController {
     @PostMapping("/delete/type")
     public String deleteExpenseType(@AuthenticationPrincipal User user,
                                     @Valid DeleteExpenseTypeRequest expenseType,
-                                    BindingResult validResult) {
+                                    BindingResult validResult,
+                                    @ModelAttribute("errors") ArrayList<String> errors,
+                                    RedirectAttributes redirectAttributes) {
         logger.info(validResult.toString() + "\t\t" + expenseType.getType());
         try {
             if (validResult.hasErrors()) {
-                throw new ValidException();
+                errors = getValidErrors(validResult);
+            } else {
+                expenseTypeService.deleteExpenseType(user.getId(), expenseType.getType());
             }
-            expenseTypeService.deleteExpenseType(user.getId(), expenseType.getType());
-        } catch (Exception e) {
-
+        } catch (TypeNotFoundException e) {
+            errors = getExceptionErrors(e);
+        } finally {
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/expenses";
         }
-        return "redirect:/expenses";
     }
 }
