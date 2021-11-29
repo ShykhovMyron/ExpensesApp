@@ -23,7 +23,6 @@ public class WalletService {
         this.expenseRepo = expenseRepo;
     }
 
-    @Transactional
     public void changeBudget(Long userId, BigDecimal newBudget) {
         Wallet wallet = walletRepo.getWalletByUserId(userId);
         BigDecimal balance = (newBudget.subtract(wallet.getBudget())).add(wallet.getBalance());
@@ -32,7 +31,6 @@ public class WalletService {
         walletRepo.save(wallet);
     }
 
-    @Transactional
     public void recalculateBalance(Long userId) {
         BigDecimal expensesValue = getExpensesValue(userId);
 

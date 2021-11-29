@@ -72,12 +72,6 @@ public class ExpenseTypeService {
         }
 
         Wallet userWallet = walletRepo.getWalletByUserId(userId);
-//        Optional<ExpenseType> expenseTypeOptional = userWallet.getTypes()
-//                .stream().filter(s -> s.getType().equals(type))
-//                .findAny();
-//        if (expenseTypeOptional.isEmpty()) {
-//            throw new TypeNotFoundException();
-//        }
 
         userWallet.getTypes().remove(expenseTypeRepo.findByType(type));
         logger.info(userWallet.getTypes().toString());

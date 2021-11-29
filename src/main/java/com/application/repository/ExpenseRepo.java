@@ -10,13 +10,9 @@ import java.util.Optional;
 import java.util.Set;
 
 
-public interface ExpenseRepo extends CrudRepository<Expense, Integer> {
-
-    Optional<Expense> findById(Long id);
+public interface ExpenseRepo extends CrudRepository<Expense, Long> {
 
     Set<Expense> findAllByUserId(Long tag);
 
     Page<Expense> findAllByUserId(Long tag, Pageable pageable);
-
-    Page<Expense> findAllByUserIdAndType(Long id, ExpenseType fitterByExpenseType, Pageable pageable);
 }

@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 
 public interface ExpenseTypeRepo extends CrudRepository<ExpenseType, Integer> {
+
     boolean existsByType(String type);
 
     ExpenseType findByType(String type);

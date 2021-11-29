@@ -1,6 +1,7 @@
 package com.application.controller;
 
 import com.application.config.ExpensesConfig;
+import com.application.exeptions.ExpenseNotFoundException;
 import com.application.exeptions.TypeNotFoundException;
 import com.application.exeptions.ValidException;
 import com.application.model.entity.Expense;
@@ -39,7 +40,7 @@ import static com.application.utils.ExpensesPaginationUtils.addPaginationInfoToM
 @Controller
 @RequestMapping("/expenses")
 public class ExpensesController {
-    final static Logger logger = Logger.getLogger(ExpensesController.class);
+    final Logger logger = Logger.getLogger(ExpensesController.class);
 
     private final ExpensesService expensesService;
     private final ExpenseTypeService expenseTypeService;
@@ -71,11 +72,33 @@ public class ExpensesController {
         model.addAttribute("expenses", expenses);
         model.addAttribute("types", expenseTypes);
         addPaginationInfoToModel(pageable, model, expenses, expensesConfig.getPagesToShow());
-        model.addAttribute("dateFormat", new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
+        model.addAttribute("dateFormat",
+                new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("inputModalFormat", new SimpleDateFormat("yyyy-M-d", Locale.ENGLISH));
+        model.addAttribute("inputModalFormat",
+                new SimpleDateFormat(expensesConfig.getInputDateFormat(), Locale.ENGLISH));
         // TODO где-то добавить проверку *lowBudget* (потом)
         return "expenses";
+    }
+
+    @GetMapping("/edit/{expenseId}")
+    public String editExpenseModel(@AuthenticationPrincipal User user,
+                                   EditExpenseRequest expense,
+                                   @PathVariable Long expenseId,
+                                   Model model) {
+        try {
+            Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
+
+            model.addAttribute("expense", expensesService.getExpense(expenseId));
+            logger.info(expensesService.getExpense(expenseId).getDateAdded());
+            model.addAttribute("types", expenseTypes);
+            model.addAttribute("inputModalFormat",
+                    new SimpleDateFormat(expensesConfig.getInputDateFormat(), Locale.ENGLISH));
+
+        } catch (Exception e) {
+
+        }
+        return "modals/EditExpenseModalBody";
     }
 
     @PostMapping("/edit/{expenseId}")
@@ -113,6 +136,21 @@ public class ExpensesController {
         return "redirect:/expenses";
     }
 
+    @GetMapping("/create/expense")
+    public String createExpenseModel(@AuthenticationPrincipal User user,
+                                     CreateExpenseRequest expense,
+                                     Model model) throws ExpenseNotFoundException {
+        Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
+
+        model.addAttribute("expense", expensesService.getExpense(42L));
+        model.addAttribute("types", expenseTypes);
+        model.addAttribute("currentDate", new Date());
+        model.addAttribute("inputModalFormat",
+                new SimpleDateFormat(expensesConfig.getInputDateFormat(), Locale.ENGLISH));
+
+        return "modals/CreateExpenseModalBody";
+    }
+
     @PostMapping("/create/expense")
     public String createExpense(@AuthenticationPrincipal User user,
                                 @Valid CreateExpenseRequest expense,
@@ -132,8 +170,8 @@ public class ExpensesController {
         }
         return "redirect:/expenses";
     }
-    // /deleteAll
-    @PostMapping("/delete")
+
+    @PostMapping("/deleteAll")
     public String deleteAllExpenses(@AuthenticationPrincipal User user) {
         try {
             userService.deleteExpenses(user.getId());
@@ -142,6 +180,12 @@ public class ExpensesController {
 
         }
         return "redirect:/home";
+    }
+
+    @GetMapping("/create/type")
+    public String createExpenseTypeModel(CreateExpenseTypeRequest expenseType,
+                                         Model model) {
+        return "modals/CreateExpenseTypeModalBody";
     }
 
     @PostMapping("/create/type")
@@ -157,6 +201,16 @@ public class ExpensesController {
 
         }
         return "redirect:/expenses";
+    }
+
+    @GetMapping("/delete/type")
+    public String deleteExpenseTypeModel(@AuthenticationPrincipal User user,
+                                         DeleteExpenseTypeRequest expenseType,
+                                         Model model) {
+        Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
+
+        model.addAttribute("types", expenseTypes);
+        return "modals/DeleteExpenseTypeModalBody";
     }
 
     @PostMapping("/delete/type")

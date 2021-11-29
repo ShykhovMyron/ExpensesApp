@@ -111,7 +111,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                <form th:action="@{/expenses/delete}" method="post">
+                <form th:action="@{/expenses/deleteAll}" method="post">
                     <button type="submit" class="btn btn-success">Yes</button>
                 </form>
             </div>
@@ -146,7 +146,7 @@
     </script>
 </th:block>
 
-<th:block th:replace="modals :: modal('changeBudget')">modal</th:block>
+<th:block th:replace="modalsConteiner :: modal('changeBudget')">modal</th:block>
 
 <script>
 

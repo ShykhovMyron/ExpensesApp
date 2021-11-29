@@ -56,6 +56,9 @@ public class Expense {
                 '}';
     }
 
+    public Expense() {
+    }
+
     public Expense(Date dateAdded, ExpenseType type, BigDecimal amount, User user) {
         this.dateAdded = dateAdded;
         this.type = type;
