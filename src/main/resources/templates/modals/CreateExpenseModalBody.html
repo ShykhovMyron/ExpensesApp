@@ -28,7 +28,7 @@
             <label class="col-form-label">Data</label>
             <div class="date" id="dpCreate" th:data-date="${currentDate}" data-date-format="yyyy-mm-dd">
                 <input class="form-control span2" size="16" type="text"
-                       field="*{dateAdded}"  name="dateAdded"
+                       field="*{dateAdded}" name="dateAdded"
                        th:value="${inputModalFormat.format(currentDate)}"
                        readonly>
                 <span class="add-on"><i class="icon-th"></i></span>

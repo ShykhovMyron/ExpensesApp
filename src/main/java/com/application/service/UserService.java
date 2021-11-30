@@ -8,6 +8,7 @@ import com.application.repository.ExpenseRepo;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -28,6 +29,7 @@ public class UserService {
         this.expenseTypeService = expenseTypeService;
     }
 
+    @Transactional
     public void createUser(String username, String password) throws UserAlreadyExistException {
         if (userRepo.existsByUsername(username)) {
             throw new UserAlreadyExistException(username);

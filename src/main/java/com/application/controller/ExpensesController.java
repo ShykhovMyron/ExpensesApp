@@ -106,6 +106,7 @@ public class ExpensesController {
 
         } catch (ExpenseNotFoundException e) {
             errors = getExceptionErrors(e);
+            redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:/expenses";
         }
         redirectAttributes.addFlashAttribute("errors", errors);

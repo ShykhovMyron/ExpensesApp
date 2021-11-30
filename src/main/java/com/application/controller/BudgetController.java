@@ -2,7 +2,6 @@ package com.application.controller;
 
 import com.application.model.entity.User;
 import com.application.model.requests.ChangeBudgetRequest;
-import com.application.parser.ErrorsParser;
 import com.application.service.WalletService;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

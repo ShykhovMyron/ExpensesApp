@@ -1,1 +1,2 @@
-delete from types;
+delete
+from types;

@@ -1,2 +1,4 @@
-delete from purchases_types;
-delete from expenses;
+delete
+from purchases_types;
+delete
+from expenses;

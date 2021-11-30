@@ -10,6 +10,7 @@ import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +30,6 @@ public class ExpenseTypeService {
     }
 
     public Set<ExpenseType> getDefaultExpenseTypes() {
-        addDefaultExpenseTypesToDatabase();
         Set<ExpenseType> expenseTypes = new HashSet<>();
         for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {
             expenseTypes.add(expenseTypeRepo.findByType(type.toString()));
@@ -38,15 +38,7 @@ public class ExpenseTypeService {
         return expenseTypes;
     }
 
-    private void addDefaultExpenseTypesToDatabase() {
-        //TODO добавить дефолтные типы в бд
-        for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {
-            if (expenseTypeRepo.findByType(type.toString()) == null) {
-                expenseTypeRepo.save(new ExpenseType(type.toString()));
-            }
-        }
-    }
-
+    @Transactional
     public void createExpenseType(Long userId, String expenseType) throws TypeAlreadyExistException {
         if (userHasExpense(userId, expenseType)) {
             throw new TypeAlreadyExistException(expenseType);

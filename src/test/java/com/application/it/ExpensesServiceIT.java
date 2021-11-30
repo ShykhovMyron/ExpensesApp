@@ -49,10 +49,10 @@ public class ExpensesServiceIT {
     public void getExpenses() {
         // Arrange
         User user = createUser("Peter", "9BSYTW8yrv");
-        createExpense(user,new BigDecimal(100),"BOOKS");
-        createExpense(user,new BigDecimal(2),"BOOKS");
-        createExpense(user,new BigDecimal(400),"FLOWERS");
-        createExpense(user,new BigDecimal(10000),"PRODUCTS");
+        createExpense(user, new BigDecimal(100), "BOOKS");
+        createExpense(user, new BigDecimal(2), "BOOKS");
+        createExpense(user, new BigDecimal(400), "FLOWERS");
+        createExpense(user, new BigDecimal(10000), "PRODUCTS");
         // Act
         Page<Expense> expenses = expensesService.getExpenses(user.getId(), pageable);
         // Assert
@@ -61,6 +61,7 @@ public class ExpensesServiceIT {
         deleteUser(user.getId());
     }
 
+    // -------------------------------------------------------------------
     private void createExpense(User user, BigDecimal amount, String type) {
         Expense expense = new Expense();
         expense.setUser(user);
