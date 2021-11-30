@@ -8,6 +8,13 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
         <dbms type="mysql"/>
     </preConditions>
 
+    <changeSet id="0" author="Myron">
+        <tagDatabase tag="db_init"/>
+    </changeSet>
+
     <include file="v-1.0/db.changelog-v.1.0.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="1" author="Myron">
+        <tagDatabase tag="v.1.0"/>
+    </changeSet>
 </databaseChangeLog>

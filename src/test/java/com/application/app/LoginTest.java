@@ -1,4 +1,4 @@
-package com.application;
+package com.application.app;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

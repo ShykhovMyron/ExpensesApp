@@ -1,4 +1,4 @@
-package com.application;
+package com.application.app;
 
 import com.application.repository.ExpenseRepo;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package com.application;
+package com.application.app;
 
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;

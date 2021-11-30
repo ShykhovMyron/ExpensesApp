@@ -10,11 +10,8 @@ import com.application.repository.ExpenseTypeRepo;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
 import com.application.service.ExpensesService;
-import liquibase.pro.packaged.D;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,26 +45,6 @@ public class ExpensesServiceIT {
         pageable = PageRequest.of(0, 10);
     }
 
-    @BeforeEach
-    public void beforeEach() {
-        //TODO удалить после добавления типов вбазу  данных по дефолту
-        //(начало)
-        for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {
-            if (expenseTypeRepo.findByType(type.toString()) == null) {
-                expenseTypeRepo.save(new ExpenseType(type.toString()));
-            }
-        }
-        //(конец)
-        createUser("Peter", "9BSYTW8yrv");
-        createUser("Tyler", "Mv3Gjh7HYW");
-        createUser("Robert", "skyu5CqcNg");
-    }
-
-    @AfterEach
-    public void afterEach() {
-
-    }
-
     @Test
     public void getExpenses() {
         // Arrange
@@ -79,7 +56,6 @@ public class ExpensesServiceIT {
         // Act
         Page<Expense> expenses = expensesService.getExpenses(user.getId(), pageable);
         // Assert
-        Page<Expense> expenses1 = expenseRepo.findAllByUserId(user.getId(),pageable);
         Assertions.assertEquals(expenseRepo.findAllByUserId(user.getId(), pageable), expenses);
 
         deleteUser(user.getId());
