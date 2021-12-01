@@ -40,7 +40,7 @@ public class ExpenseTypeService {
 
     @Transactional
     public void createExpenseType(Long userId, String expenseType) throws TypeAlreadyExistException {
-        if (userHasExpense(userId, expenseType)) {
+        if (hasExpense(userId, expenseType)) {
             throw new TypeAlreadyExistException(expenseType);
         }
 
@@ -52,14 +52,14 @@ public class ExpenseTypeService {
         walletRepo.save(wallet);
     }
 
-    public boolean userHasExpense(Long userId, String expenseType) {
+    public boolean hasExpense(Long userId, String expenseType) {
         Set<ExpenseType> userTypes = walletRepo.getWalletByUserId(userId).getTypes();
         ExpenseType type = expenseTypeRepo.findByType(expenseType);
         return userTypes.contains(type);
     }
 
     public void deleteExpenseType(Long userId, String type) throws TypeNotFoundException {
-        if (!userHasExpense(userId, type)) {
+        if (!hasExpense(userId, type)) {
             throw new TypeNotFoundException(type);
         }
 

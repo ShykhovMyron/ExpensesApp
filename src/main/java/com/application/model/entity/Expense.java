@@ -42,20 +42,9 @@ public class Expense {
     @Column(name = "amount")
     private BigDecimal amount;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Override
-    public String toString() {
-        return "Expense{" +
-                "id=" + id +
-                ", dateAdded=" + dateAdded +
-                ", type=" + type +
-                ", amount=" + amount +
-                ", user=" + user +
-                '}';
-    }
 
     public Expense() {
     }
@@ -65,6 +54,17 @@ public class Expense {
         this.type = type;
         this.amount = amount;
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Expense{" +
+                "id=" + id +
+//                ", dateAdded=" + dateAdded +
+                ", type=" + type +
+                ", amount=" + amount +
+                ", user=" + user +
+                '}';
     }
 
     public Date getDateAdded() {
@@ -103,20 +103,28 @@ public class Expense {
         return amount;
     }
 
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Expense)) return false;
         Expense expense = (Expense) o;
-        return Objects.equals(getId(), expense.getId()) && getDateAdded().equals(expense.getDateAdded()) && getType().equals(expense.getType()) && getAmount().equals(expense.getAmount()) && getUser().equals(expense.getUser());
+        return Objects.equals(getId(), expense.getId()) &&
+//                getDateAdded().equals(expense.getDateAdded()) &&
+                getType().equals(expense.getType()) &&
+                getAmount().equals(expense.getAmount()) &&
+                getUser().equals(expense.getUser());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getDateAdded(), getType(), getAmount(), getUser());
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+        return Objects.hash(getId(),
+//                getDateAdded(),
+                getType(),
+                getAmount(),
+                getUser());
     }
 }

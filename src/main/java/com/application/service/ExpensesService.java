@@ -63,7 +63,7 @@ public class ExpensesService {
             String expenseType,
             String date
     ) throws ExpenseNotFoundException, ParseException, TypeNotFoundException {
-        if (!expenseTypeService.userHasExpense(userId, expenseType)) {
+        if (!expenseTypeService.hasExpense(userId, expenseType)) {
             throw new TypeNotFoundException(expenseType);
         }
 
@@ -80,7 +80,7 @@ public class ExpensesService {
     }
 
     public void createExpense(Long userId, BigDecimal amount, String type, String date) throws ParseException, TypeNotFoundException {
-        if (!expenseTypeService.userHasExpense(userId, type)) {
+        if (!expenseTypeService.hasExpense(userId, type)) {
             throw new TypeNotFoundException(type);
         }
 
