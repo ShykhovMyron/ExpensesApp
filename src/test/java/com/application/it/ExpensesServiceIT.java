@@ -29,12 +29,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
@@ -107,7 +110,7 @@ public class ExpensesServiceIT {
     public void editExpenseTest() throws TypeNotFoundException, ExpenseNotFoundException, ParseException {
         // Arrange
         Date date = new Date();
-        BigDecimal amount = new BigDecimal("200.00");
+        BigDecimal amount = new BigDecimal("5006.00");
         String type = "FLOWERS";
         Expense expected = createExpense(user, 100, "BOOKS");
         expected.setAmount(amount);
@@ -180,7 +183,7 @@ public class ExpensesServiceIT {
     public void createExpenseTest() throws TypeNotFoundException, ParseException {
         // Arrange
         Date date = formatter.parse(formatter.format(new Date()));
-        BigDecimal amount = new BigDecimal("200.00");
+        BigDecimal amount = new BigDecimal("450.00");
         String type = "FLOWERS";
         Expense expected = new Expense(date, expenseTypeRepo.findByType(type), amount, user);
         //Act
@@ -211,7 +214,7 @@ public class ExpensesServiceIT {
     public void createExpenseInvalidDateTest() throws ParseException {
         // Arrange
         Date date = formatter.parse(formatter.format(new Date()));
-        BigDecimal amount = new BigDecimal("200.00");
+        BigDecimal amount = new BigDecimal("100.00");
         String type = "FLOWERS";
         // Assert
         assertThrows(ParseException.class,
@@ -220,6 +223,29 @@ public class ExpensesServiceIT {
                         amount,
                         type,
                         new SimpleDateFormat("").format(date)));
+
+    }
+
+    @Test
+    public void deleteExpenseTest() throws ParseException, ExpenseNotFoundException {
+        // Arrange
+        Date date = formatter.parse(formatter.format(new Date()));
+        BigDecimal amount = new BigDecimal("100.00");
+        String type = "FLOWERS";
+        Long expenseId = createExpense(user, 5002, "FLOWERS").getId();
+        //Act
+        expensesService.deleteExpense(expenseId);
+        Optional<Expense> expense = expenseRepo.findById(expenseId);
+        // Assert
+        assertTrue(expense.isEmpty());
+
+    }
+
+    @Test
+    public void deleteExpenseNonexistentIdTest() {
+        // Assert
+        assertThrows(ExpenseNotFoundException.class,
+                () -> expensesService.deleteExpense(0L));
 
     }
 
