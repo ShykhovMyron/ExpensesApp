@@ -1,6 +1,5 @@
 package com.application.it;
 
-import com.application.config.ExpensesConfig;
 import com.application.exeptions.ExpenseNotFoundException;
 import com.application.exeptions.TypeNotFoundException;
 import com.application.model.entity.DefaultExpenseTypes;
@@ -26,6 +25,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,10 +43,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ExpensesServiceIT {
     private static Pageable pageable;
     private static DateFormat formatter;
-    User user;
+    private User user;
 
-    @Autowired
-    ExpensesConfig expensesConfig;
     @Autowired
     private ExpensesService expensesService;
     @Autowired
@@ -92,7 +89,8 @@ public class ExpensesServiceIT {
     @Test
     public void getExpenseTest() throws ExpenseNotFoundException {
         // Arrange
-        Expense expected = createExpense(user, 100, "BOOKS");
+        String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
+        Expense expected = createExpense(user, 100, type);
         // Act
         Expense actual = expensesService.getExpense(expected.getId());
         // Assert
@@ -111,7 +109,7 @@ public class ExpensesServiceIT {
         // Arrange
         Date date = new Date();
         BigDecimal amount = new BigDecimal("5006.00");
-        String type = "FLOWERS";
+        String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         Expense expected = createExpense(user, 100, "BOOKS");
         expected.setAmount(amount);
         expected.setType(expenseTypeRepo.findByType(type));
@@ -133,7 +131,7 @@ public class ExpensesServiceIT {
         // Arrange
         Date date = new Date();
         BigDecimal amount = new BigDecimal("200.00");
-        String type = "FLOWERS";
+        String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         // Assert
         assertThrows(ExpenseNotFoundException.class,
                 () -> expensesService.editExpense(
@@ -166,8 +164,8 @@ public class ExpensesServiceIT {
         // Arrange
         Date date = new Date();
         BigDecimal amount = new BigDecimal("200.00");
-        String type = "BOOKS";
-        Long expenseId = createExpense(user, 100, "BOOKS").getId();
+        String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
+        Long expenseId = createExpense(user, 100, type).getId();
         // Assert
         assertThrows(ParseException.class,
                 () -> expensesService.editExpense(
@@ -184,7 +182,7 @@ public class ExpensesServiceIT {
         // Arrange
         Date date = formatter.parse(formatter.format(new Date()));
         BigDecimal amount = new BigDecimal("450.00");
-        String type = "FLOWERS";
+        String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         Expense expected = new Expense(date, expenseTypeRepo.findByType(type), amount, user);
         //Act
         expensesService.createExpense(user.getId(), amount, type, formatter.format(date));
@@ -215,7 +213,7 @@ public class ExpensesServiceIT {
         // Arrange
         Date date = formatter.parse(formatter.format(new Date()));
         BigDecimal amount = new BigDecimal("100.00");
-        String type = "FLOWERS";
+        String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         // Assert
         assertThrows(ParseException.class,
                 () -> expensesService.createExpense(
@@ -229,9 +227,6 @@ public class ExpensesServiceIT {
     @Test
     public void deleteExpenseTest() throws ParseException, ExpenseNotFoundException {
         // Arrange
-        Date date = formatter.parse(formatter.format(new Date()));
-        BigDecimal amount = new BigDecimal("100.00");
-        String type = "FLOWERS";
         Long expenseId = createExpense(user, 5002, "FLOWERS").getId();
         //Act
         expensesService.deleteExpense(expenseId);
@@ -270,4 +265,6 @@ public class ExpensesServiceIT {
         Wallet userWallet = walletRepo.save(new Wallet(defaultExpenseTypes));
         return userRepo.save(new User(username, password, userWallet));
     }
+
+    //TODO  должен ли проверять что их ТОЧНО нет у юзера(покупок) если получил эксепшн
 }

@@ -12,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -42,6 +43,13 @@ public class Wallet {
     }
 
     public Wallet() {
+    }
+
+    public Wallet(BigDecimal budget, BigDecimal balance, Set<ExpenseType> types, User user) {
+        this.budget = budget;
+        this.balance = balance;
+        this.types = types;
+        this.user = user;
     }
 
     public User getUser() {
@@ -82,6 +90,19 @@ public class Wallet {
 
     public void setTypes(Set<ExpenseType> types) {
         this.types = types;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Wallet)) return false;
+        Wallet wallet = (Wallet) o;
+        return Objects.equals(getId(), wallet.getId()) && getBudget().equals(wallet.getBudget()) && getBalance().equals(wallet.getBalance()) && getTypes().equals(wallet.getTypes()) && getUser().equals(wallet.getUser());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getBudget(), getBalance(), getTypes(), getUser());
     }
 
     @Override

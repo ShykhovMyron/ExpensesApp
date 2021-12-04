@@ -32,7 +32,7 @@ create table expenses
     id         bigint auto_increment
         primary key,
     amount     decimal(19, 2) not null,
-    date_added datetime           null,
+    date_added datetime       null,
     user_id    bigint         not null,
     constraint FK2qife4sxyeoi1kwgvg769ks8y
         foreign key (user_id) references user (id)
