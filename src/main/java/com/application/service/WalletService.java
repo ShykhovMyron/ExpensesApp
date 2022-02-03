@@ -27,6 +27,7 @@ public class WalletService {
         BigDecimal balance = (newBudget.subtract(wallet.getBudget())).add(wallet.getBalance());
         wallet.setBudget(newBudget);
         wallet.setBalance(balance);
+
         walletRepo.save(wallet);
     }
 
@@ -35,6 +36,7 @@ public class WalletService {
 
         Wallet userWallet = walletRepo.getWalletByUserId(userId);
         userWallet.setBalance(userWallet.getBudget().subtract(expensesValue));
+
         walletRepo.save(userWallet);
     }
 

@@ -1,5 +1,7 @@
 package com.application.model.entity;
 
+import com.application.config.ExpensesConfig;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,7 +17,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
@@ -73,6 +78,10 @@ public class Expense {
 
     public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
+    }
+    public void setDateAdded(String dateAdded, ExpensesConfig config) throws ParseException {
+        this.dateAdded = new SimpleDateFormat(config.getInputDateFormat(),
+                Locale.ENGLISH).parse(dateAdded);
     }
 
     public User getUser() {

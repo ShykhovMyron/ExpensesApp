@@ -40,7 +40,7 @@ public class ExpensesPaginationUtils {
     }
 
     private static List<Integer> getPageNumbersToShow(Page<Expense> expenses, Pageable pageable, int pagesToShow) {
-        int firstExpenseNumberMustBeShow = getFirstPageNumberMustBeShow(expenses, pageable, pagesToShow);
+        int firstExpenseNumberMustBeShow = getFirstPageNumberMustBeShown(expenses, pageable, pagesToShow);
 
         List<Integer> pageNumbersToShow = new ArrayList<>();
         for (int i = firstExpenseNumberMustBeShow; i <= firstExpenseNumberMustBeShow + pagesToShow; i++) {
@@ -49,7 +49,7 @@ public class ExpensesPaginationUtils {
         return pageNumbersToShow;
     }
 
-    private static int getFirstPageNumberMustBeShow(Page<Expense> expenses, Pageable pageable, int pagesToShow) {
+    private static int getFirstPageNumberMustBeShown(Page<Expense> expenses, Pageable pageable, int pagesToShow) {
         if (((expenses.getTotalPages() - 1) - pageable.getPageNumber()) < 5) {
             return (expenses.getTotalPages() - 1) - pagesToShow;
         } else {

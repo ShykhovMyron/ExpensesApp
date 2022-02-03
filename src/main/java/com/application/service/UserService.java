@@ -16,6 +16,7 @@ import java.util.Set;
 public class UserService {
     private final UserRepo userRepo;
     private final WalletRepo walletRepo;
+    //TODO он тут будет не нужен когда спрячеш метод deleteExpenses в нужный сервис
     private final ExpenseRepo expenseRepo;
     private final ExpenseTypeService expenseTypeService;
 
@@ -37,10 +38,12 @@ public class UserService {
         createUserWithDefaultParams(username, password);
     }
 
+    //TODO спрятать это в експенсСервис, оно ж логически туда относится
     public void deleteExpenses(Long userId) {
         expenseRepo.deleteAll(expenseRepo.findAllByUserId(userId));
     }
 
+    //TODO верни это в метод, оно не большое и относится по сути к одному методу createUser
     private void createUserWithDefaultParams(String username, String password) {
         Set<ExpenseType> defaultExpenseTypes = expenseTypeService.getDefaultExpenseTypes();
         Wallet userWallet = walletRepo.save(new Wallet(defaultExpenseTypes));

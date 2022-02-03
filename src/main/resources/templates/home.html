@@ -73,16 +73,16 @@
             color: white">
     <h1 class="cover-heading">
         Welcome
-        <span class="fst-italic" th:text="${username}"/>
+        <span class="fst-italic" th:text="${username}"></span>
     </h1>
     <p th:inline="text" class="lead align-">
         Your budget:
-        <span style="color: limegreen;" th:text="${userWallet.getBudget()}"/>
+        <span style="color: limegreen;" th:text="${userWallet.getBudget()}"></span>
         $
     </p>
     <p th:inline="text" class="lead">
         Balance:
-        <span style="color: limegreen;" th:text="${userWallet.getBalance()}"/>
+        <span style="color: limegreen;" th:text="${userWallet.getBalance()}"></span>
         $
     </p>
     <p class="lead">
@@ -118,6 +118,7 @@
         </div>
     </div>
 </div>
+
 <!--errorModel-->
 <div class="modal fade" id="errorModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">

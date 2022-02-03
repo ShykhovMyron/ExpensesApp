@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.application.model.entity.DefaultExpenseTypes.BOOKS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -133,6 +134,7 @@ public class ExpensesServiceIT {
         BigDecimal amount = new BigDecimal("200.00");
         String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         // Assert
+
         assertThrows(ExpenseNotFoundException.class,
                 () -> expensesService.editExpense(
                         user.getId(),
@@ -148,7 +150,7 @@ public class ExpensesServiceIT {
         Date date = new Date();
         BigDecimal amount = new BigDecimal("200.00");
         String type = "SOMETHING";
-        Long expenseId = createExpense(user, 100, "BOOKS").getId();
+        Long expenseId = createExpense(user, 100, BOOKS.name()).getId();
         // Assert
         assertThrows(TypeNotFoundException.class,
                 () -> expensesService.editExpense(
@@ -205,7 +207,6 @@ public class ExpensesServiceIT {
                         amount,
                         type,
                         formatter.format(date)));
-
     }
 
     @Test
@@ -221,7 +222,6 @@ public class ExpensesServiceIT {
                         amount,
                         type,
                         new SimpleDateFormat("").format(date)));
-
     }
 
     @Test
@@ -257,6 +257,7 @@ public class ExpensesServiceIT {
         return expense;
     }
 
+    //
     private User createUser(String username, String password) {
         Set<ExpenseType> defaultExpenseTypes = new HashSet<>();
         for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {

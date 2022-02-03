@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@TestPropertySource("/application-test.properties")
+//@TestPropertySource("/application-test.properties") TODO удали отовсюду
 public class ExpenseTypeServiceIT {
     private User user;
 

@@ -60,6 +60,7 @@ public class WalletServiceIT {
         user = createUser("Peter", "9BSYTW8yrv");
     }
 
+    //TODO та же история с параметризированым тестом
     @ParameterizedTest
     @CsvSource({
             "100",
@@ -101,6 +102,7 @@ public class WalletServiceIT {
         assertEquals(expected,actual);
     }
 
+    //TODO название теста с верхним
     @Test
     public void recalculateBalanceTest2() {
         //Arrange
@@ -120,6 +122,7 @@ public class WalletServiceIT {
         assertEquals(expected,actual);
     }
 
+    //TODO ну ты понял
     @ParameterizedTest
     @CsvSource({
             "400",
@@ -166,7 +169,8 @@ public class WalletServiceIT {
         assertEquals(expected, actual);
     }
 
-    private Expense createExpense(User user, Integer amount, String type) {
+    //TODO вынесеш
+    private void createExpense(User user, Integer amount, String type) {
         Expense expense = new Expense();
         expense.setUser(user);
         try {
@@ -176,7 +180,6 @@ public class WalletServiceIT {
         expense.setAmount(new BigDecimal(amount + ".00"));
         expense.setType(expenseTypeRepo.findByType(type));
         expenseRepo.save(expense);
-        return expense;
     }
 
     private User createUser(String username, String password) {

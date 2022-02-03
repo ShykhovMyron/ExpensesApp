@@ -60,6 +60,7 @@ public class UserServiceIT {
         walletRepo.deleteAll();
     }
 
+    //TODO чектко что ты нашел параметризированые тесты но он тут не нужен
     @ParameterizedTest
     @CsvSource({"Steven,LH9t6rj26Y",
             "Thomas,C67cZh7e8G",

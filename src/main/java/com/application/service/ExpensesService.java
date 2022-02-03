@@ -67,19 +67,23 @@ public class ExpensesService {
             throw new TypeNotFoundException(expenseType);
         }
 
-        Optional<Expense> expenseOptional = expenseRepo.findById(expenseId);
-        if (expenseOptional.isEmpty()) {
+        Optional<Expense> expenseToEdit = expenseRepo.findById(expenseId);
+        if (expenseToEdit.isEmpty()) {
             throw new ExpenseNotFoundException();
         }
-        Expense expense = expenseOptional.get();
-        expense.setDateAdded(new SimpleDateFormat(expensesConfig.getInputDateFormat(),
-                Locale.ENGLISH).parse(date));
+        Expense expense = expenseToEdit.get();
+        expense.setDateAdded(date, expensesConfig);
         expense.setAmount(expenseAmount);
         expense.setType(expenseTypeRepo.findByType(expenseType));
+
         expenseRepo.save(expense);
     }
 
-    public void createExpense(Long userId, BigDecimal amount, String type, String date) throws ParseException, TypeNotFoundException {
+    public void createExpense(Long userId,
+                              BigDecimal amount,
+                              String type,
+                              String date) throws ParseException, TypeNotFoundException {
+
         if (!expenseTypeService.hasExpenseType(userId, type)) {
             throw new TypeNotFoundException(type);
         }
@@ -90,6 +94,7 @@ public class ExpensesService {
         newExpense.setType(expenseTypeRepo.findByType(type));
         newExpense.setAmount(amount);
         newExpense.setUser(userRepo.getById(userId));
+
         expenseRepo.save(newExpense);
     }
 
@@ -102,5 +107,4 @@ public class ExpensesService {
 
         expenseRepo.delete(expenseOptional.get());
     }
-
 }
