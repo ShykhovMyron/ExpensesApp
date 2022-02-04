@@ -25,7 +25,6 @@ public class DefaultTestService {
     private WalletRepo walletRepo;
     @Autowired
     private UserRepo userRepo;
-
     public Expense createExpense(User user, Integer amount, String type, DateFormat formatter) {
         Expense expense = new Expense();
         expense.setUser(user);

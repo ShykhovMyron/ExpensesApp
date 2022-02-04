@@ -13,7 +13,6 @@ import com.application.model.requests.DeleteExpenseTypeRequest;
 import com.application.model.requests.EditExpenseRequest;
 import com.application.service.ExpenseTypeService;
 import com.application.service.ExpensesService;
-import com.application.service.UserService;
 import com.application.service.WalletService;
 import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -24,11 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -50,18 +45,15 @@ public class ExpensesController {
 
     private final ExpensesService expensesService;
     private final ExpenseTypeService expenseTypeService;
-    private final UserService userService;
     private final WalletService walletService;
     private final ExpensesConfig expensesConfig;
 
     public ExpensesController(ExpensesService expensesService,
                               ExpenseTypeService expenseTypeService,
-                              UserService userService,
                               WalletService walletService,
                               ExpensesConfig expensesConfig) {
         this.expensesService = expensesService;
         this.expenseTypeService = expenseTypeService;
-        this.userService = userService;
         this.walletService = walletService;
         this.expensesConfig = expensesConfig;
     }
@@ -73,18 +65,22 @@ public class ExpensesController {
                            @PageableDefault(sort = {"dateAdded"},
                                    direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<Expense> expenses = expensesService.getExpenses(user.getId(), pageable);
-        Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
+        try {
 
-        model.addAttribute("expenses", expenses);
-        model.addAttribute("types", expenseTypes);
-        addPaginationInfoToModel(pageable, model, expenses, expensesConfig.getPagesToShow());
-        model.addAttribute("dateFormat",
-                new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
-        model.addAttribute("currentDate", new Date());
-        model.addAttribute("inputModalFormat",
-                new SimpleDateFormat(expensesConfig.getInputDateFormat(), Locale.ENGLISH));
-        // TODO где-то добавить проверку *lowBudget* (потом)
+            Page<Expense> expenses = expensesService.getExpenses(user.getId(), pageable);
+            Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
+
+            model.addAttribute("expenses", expenses);
+            model.addAttribute("types", expenseTypes);
+            addPaginationInfoToModel(pageable, model, expenses, expensesConfig.getPagesToShow());
+            model.addAttribute("dateFormat",
+                    new SimpleDateFormat("E, LLLL d, yyyy", Locale.ENGLISH));
+            model.addAttribute("currentDate", new Date());
+            model.addAttribute("inputModalFormat",
+                    new SimpleDateFormat(expensesConfig.getInputDateFormat(), Locale.ENGLISH));
+        } catch (Exception e) {
+            logger.warn(e);
+        }
         return "expenses";
     }
 
@@ -105,8 +101,12 @@ public class ExpensesController {
                     new SimpleDateFormat(expensesConfig.getInputDateFormat(), Locale.ENGLISH));
 
         } catch (ExpenseNotFoundException e) {
+            logger.info(e);
             errors = getExceptionErrors(e);
             redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/expenses";
+        } catch (Exception e) {
+            logger.warn(e);
             return "redirect:/expenses";
         }
         redirectAttributes.addFlashAttribute("errors", errors);
@@ -135,12 +135,13 @@ public class ExpensesController {
             }
         } catch (ExpenseNotFoundException | TypeNotFoundException | ParseException e) {
             errors = getExceptionErrors(e);
-        } finally {
-            redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:/expenses";
+            logger.info(e);
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
+        return "redirect:/expenses";
     }
-
 
     @PostMapping("/delete/{expenseId}")
     public String deleteExpense(@AuthenticationPrincipal User user,
@@ -152,10 +153,12 @@ public class ExpensesController {
             walletService.recalculateBalance(user.getId());
         } catch (ExpenseNotFoundException e) {
             errors = getExceptionErrors(e);
-        } finally {
-            redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:/expenses";
+            logger.info(e);
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
+        return "redirect:/expenses";
     }
 
     @GetMapping("/create/expense")
@@ -191,10 +194,12 @@ public class ExpensesController {
             }
         } catch (TypeNotFoundException | ParseException e) {
             errors = getExceptionErrors(e);
-        } finally {
-            redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:/expenses";
+            logger.info(e);
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
+        return "redirect:/expenses";
     }
 
     @PostMapping("/deleteAll")
@@ -202,12 +207,13 @@ public class ExpensesController {
                                     @ModelAttribute("errors") ArrayList<String> errors,
                                     RedirectAttributes redirectAttributes) {
         try {
-            userService.deleteExpenses(user.getId());
+            expensesService.deleteExpenses(user.getId());
             walletService.recalculateBalance(user.getId());
-        } finally {
-            redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:/home";
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
+        return "redirect:/home";
     }
 
     @GetMapping("/create/type")
@@ -229,10 +235,12 @@ public class ExpensesController {
             }
         } catch (TypeAlreadyExistException e) {
             errors = getExceptionErrors(e);
-        } finally {
-            redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:/expenses";
+            logger.info(e);
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
+        return "redirect:/expenses";
     }
 
     @GetMapping("/delete/type")
@@ -259,10 +267,12 @@ public class ExpensesController {
                 expenseTypeService.deleteExpenseType(user.getId(), expenseType.getType());
             }
         } catch (TypeNotFoundException e) {
+            logger.info(e);
             errors = getExceptionErrors(e);
-        } finally {
-            redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:/expenses";
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
+        return "redirect:/expenses";
     }
 }

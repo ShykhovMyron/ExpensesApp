@@ -240,4 +240,18 @@ public class ExpensesServiceIT {
                 () -> expensesService.deleteExpense(0L));
 
     }
+
+    @Test
+    public void deleteExpensesTest() {
+        //Arrange
+        User user = defaultTestService.createUser("Thomas", "C67cZh7e8G");
+        defaultTestService.createExpense(user, 100, "BOOKS", testExpensesConfig.getFormatter());
+        defaultTestService.createExpense(user, 2, "BOOKS", testExpensesConfig.getFormatter());
+        defaultTestService.createExpense(user, 400, "FLOWERS", testExpensesConfig.getFormatter());
+        defaultTestService.createExpense(user, 10000, "PRODUCTS", testExpensesConfig.getFormatter());
+        //Act
+        expensesService.deleteExpenses(user.getId());
+        //Assert
+        assertTrue(expenseRepo.findAllByUserId(user.getId()).isEmpty());
+    }
 }

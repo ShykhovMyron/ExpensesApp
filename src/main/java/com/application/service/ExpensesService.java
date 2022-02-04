@@ -100,11 +100,15 @@ public class ExpensesService {
 
     public void deleteExpense(Long expenseId) throws ExpenseNotFoundException {
 
-        Optional<Expense> expenseOptional = expenseRepo.findById(expenseId);
-        if (expenseOptional.isEmpty()) {
+        Optional<Expense> expenseToDelete = expenseRepo.findById(expenseId);
+        if (expenseToDelete.isEmpty()) {
             throw new ExpenseNotFoundException();
         }
 
-        expenseRepo.delete(expenseOptional.get());
+        expenseRepo.delete(expenseToDelete.get());
+    }
+
+    public void deleteExpenses(Long userId) {
+        expenseRepo.deleteAll(expenseRepo.findAllByUserId(userId));
     }
 }

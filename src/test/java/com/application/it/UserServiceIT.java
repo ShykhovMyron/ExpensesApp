@@ -15,7 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
@@ -68,19 +69,5 @@ public class UserServiceIT {
         //Assert
         assertThrows(UserAlreadyExistException.class,
                 () -> userService.createUser(username, password));
-    }
-
-    @Test
-    public void deleteExpensesTest() {
-        //Arrange
-        User user = defaultTestService.createUser("Thomas", "C67cZh7e8G");
-        defaultTestService.createExpense(user, 100, "BOOKS", testExpensesConfig.getFormatter());
-        defaultTestService.createExpense(user, 2, "BOOKS", testExpensesConfig.getFormatter());
-        defaultTestService.createExpense(user, 400, "FLOWERS", testExpensesConfig.getFormatter());
-        defaultTestService.createExpense(user, 10000, "PRODUCTS", testExpensesConfig.getFormatter());
-        //Act
-        userService.deleteExpenses(user.getId());
-        //Assert
-        assertTrue(expenseRepo.findAllByUserId(user.getId()).isEmpty());
     }
 }

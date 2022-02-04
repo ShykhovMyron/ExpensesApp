@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * этот сервис отвечает за тип покупки
+ */
 @Service
 public class ExpenseTypeService {
     final static Logger logger = Logger.getLogger(ExpenseTypeService.class);

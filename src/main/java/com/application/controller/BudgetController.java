@@ -49,9 +49,10 @@ public class BudgetController {
             } else {
                 walletService.changeBudget(user.getId(), request.getBudget());
             }
-        } finally {
-            redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:/home";
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        redirectAttributes.addFlashAttribute("errors", errors);
+        return "redirect:/home";
     }
 }

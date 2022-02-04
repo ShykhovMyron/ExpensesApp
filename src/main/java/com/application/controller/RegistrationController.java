@@ -1,5 +1,6 @@
 package com.application.controller;
 
+import com.application.exeptions.UserAlreadyExistException;
 import com.application.model.requests.CreateUserRequest;
 import com.application.service.UserService;
 import org.apache.log4j.Logger;
@@ -37,19 +38,18 @@ public class RegistrationController {
                                RedirectAttributes redirectAttributes) {
         try {
             if (validResult.hasErrors()) {
-                errors = new ArrayList<>() {{
-                    add("Invalid username or password");
-                }};
+                errors.add("Invalid username or password");
             } else {
                 userService.createUser(createUserRequest.getUsername(), createUserRequest.getPassword());
                 return "redirect:/login";
             }
-        } catch (Exception e) {
+        } catch (UserAlreadyExistException e) {
             errors = getExceptionErrors(e);
-            logger.info(e);
-        } finally {
             redirectAttributes.addFlashAttribute("errors", errors);
-            return "redirect:registration";
+            logger.info(e);
+        } catch (Exception e) {
+            logger.warn(e);
         }
+        return "redirect:registration";
     }
 }
