@@ -5,12 +5,12 @@ import com.application.exeptions.TypeNotFoundException;
 import com.application.model.entity.DefaultExpenseTypes;
 import com.application.model.entity.ExpenseType;
 import com.application.model.entity.User;
-import com.application.model.entity.Wallet;
 import com.application.repository.ExpenseRepo;
 import com.application.repository.ExpenseTypeRepo;
 import com.application.repository.UserRepo;
 import com.application.repository.WalletRepo;
 import com.application.service.ExpenseTypeService;
+import com.application.testServices.DefaultTestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +22,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-//@TestPropertySource("/application-test.properties") TODO удали отовсюду
+@TestPropertySource("/application-test.properties")
 public class ExpenseTypeServiceIT {
     private User user;
+
+    @Autowired
+    private DefaultTestService defaultTestService;
 
     @Autowired
     private ExpenseTypeService expenseTypeService;
@@ -50,7 +49,7 @@ public class ExpenseTypeServiceIT {
         expenseRepo.deleteAll();
         userRepo.deleteAll();
         walletRepo.deleteAll();
-        user = createUser("Peter", "9BSYTW8yrv");
+        user = defaultTestService.createUser("Peter", "9BSYTW8yrv");
     }
 
     @Test
@@ -136,14 +135,5 @@ public class ExpenseTypeServiceIT {
         //Assert
         assertThrows(TypeNotFoundException.class,
                 () -> expenseTypeService.deleteExpenseType(user.getId(), type));
-    }
-
-    private User createUser(String username, String password) {
-        Set<ExpenseType> defaultExpenseTypes = new HashSet<>();
-        for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {
-            defaultExpenseTypes.add(expenseTypeRepo.findByType(type.toString()));
-        }
-        Wallet userWallet = walletRepo.save(new Wallet(defaultExpenseTypes));
-        return userRepo.save(new User(username, password, userWallet));
     }
 }

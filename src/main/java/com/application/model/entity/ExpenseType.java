@@ -1,13 +1,6 @@
 package com.application.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -19,11 +12,12 @@ public class ExpenseType {
     @Column
     private Integer id;
 
-    @Column(name = "type", unique = true)
+    @Column(unique = true)
     private String type;
 
     @ManyToMany(mappedBy = "types")
     private List<Wallet> wallets;
+
     @OneToMany(mappedBy = "type")
     private List<Expense> expenses;
 

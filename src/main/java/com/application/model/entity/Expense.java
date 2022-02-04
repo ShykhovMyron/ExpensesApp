@@ -2,20 +2,7 @@ package com.application.model.entity;
 
 import com.application.config.ExpensesConfig;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,11 +15,10 @@ import java.util.Objects;
 public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "date_added")
+    @Column
     private Date dateAdded;
 
     @ManyToOne
@@ -42,9 +28,7 @@ public class Expense {
     )
     private ExpenseType type;
 
-    @NotNull(message = "Amount must not be empty")
-    @Min(value = 0, message = "Amount must be ≧ 0")
-    @Column(name = "amount")
+    @Column
     private BigDecimal amount;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

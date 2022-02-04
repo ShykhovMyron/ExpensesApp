@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class DefaultService {
+public class DefaultTestService {
     @Autowired
     private ExpenseTypeRepo expenseTypeRepo;
     @Autowired
@@ -39,7 +39,6 @@ public class DefaultService {
         return expense;
     }
 
-    //
     public User createUser(String username, String password) {
         Set<ExpenseType> defaultExpenseTypes = new HashSet<>();
         for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {
@@ -49,4 +48,12 @@ public class DefaultService {
         return userRepo.save(new User(username, password, userWallet));
     }
 
+    public Set<ExpenseType> getDefaultExpenseTypes() {
+        Set<ExpenseType> expenseTypes = new HashSet<>();
+        for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {
+            expenseTypes.add(expenseTypeRepo.findByType(type.toString()));
+        }
+
+        return expenseTypes;
+    }
 }

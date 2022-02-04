@@ -1,16 +1,6 @@
 package com.application.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Set;
@@ -22,10 +12,10 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "budget")
+    @Column
     private BigDecimal budget = new BigDecimal(0);
 
-    @Column(name = "balance")
+    @Column
     private BigDecimal balance = new BigDecimal(0);
 
     @ManyToMany(fetch = FetchType.EAGER)

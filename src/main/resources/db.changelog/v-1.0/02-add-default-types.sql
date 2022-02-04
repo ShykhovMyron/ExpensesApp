@@ -1,3 +1,4 @@
+
 insert into types(id, type)
 values (1, 'ENTERTAINMENT'),
        (2, 'RESTAURANTS'),

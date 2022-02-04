@@ -46,9 +46,9 @@ public class RegistrationController {
             }
         } catch (Exception e) {
             errors = getExceptionErrors(e);
+            logger.info(e);
         } finally {
             redirectAttributes.addFlashAttribute("errors", errors);
-            logger.info(errors.toString());
             return "redirect:registration";
         }
     }

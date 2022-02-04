@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public class ExpenseRequestModel extends ExpenseTypeModel {
+public abstract class ExpenseRequestModel extends ExpenseTypeModel {
 
     @NotNull(message = "Amount must not be empty")
     @Min(value = 0, message = "Amount must be ≧ 0")
