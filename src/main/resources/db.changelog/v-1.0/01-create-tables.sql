@@ -45,7 +45,7 @@ create table expenses_types
 
 create table role
 (
-    id   bigint not null,
+    id   bigint       not null,
     role varchar(255) null,
     constraint foreign key (id) references user (id)
 );
