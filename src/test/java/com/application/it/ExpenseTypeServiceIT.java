@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
-public class ExpenseTypeServiceIT {
+class ExpenseTypeServiceIT {
     private User user;
 
     @Autowired
@@ -53,7 +53,7 @@ public class ExpenseTypeServiceIT {
     }
 
     @Test
-    public void getDefaultExpenseTypesTest() {
+    void getDefaultExpenseTypesTest() {
         // Arrange
         Set<String> expected = new HashSet<>();
         for (DefaultExpenseTypes type : DefaultExpenseTypes.values()) {
@@ -67,7 +67,7 @@ public class ExpenseTypeServiceIT {
     }
 
     @Test
-    public void createExpenseTypeTest() throws TypeAlreadyExistException {
+    void createExpenseTypeTest() throws TypeAlreadyExistException {
         //Arrange
         String type = "AAAA";
         //Act
@@ -86,7 +86,7 @@ public class ExpenseTypeServiceIT {
     }
 
     @Test
-    public void createExpenseTypeAlreadyExistTest() {
+    void createExpenseTypeAlreadyExistTest() {
         //Arrange
         String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         //Assert
@@ -95,7 +95,7 @@ public class ExpenseTypeServiceIT {
     }
 
     @Test
-    public void hasExpenseTypeTestTrue() {
+    void hasExpenseTypeTestTrue() {
         //Arrange
         String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         //Act
@@ -105,7 +105,7 @@ public class ExpenseTypeServiceIT {
     }
 
     @Test
-    public void hasExpenseTypeTestFalse() {
+    void hasExpenseTypeTestFalse() {
         //Arrange
         String type = "AAAA";
         //Act
@@ -115,7 +115,7 @@ public class ExpenseTypeServiceIT {
     }
 
     @Test
-    public void deleteExpenseTypeTest() throws TypeNotFoundException {
+    void deleteExpenseTypeTest() throws TypeNotFoundException {
         //Arrange
         String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         //Act
@@ -129,7 +129,7 @@ public class ExpenseTypeServiceIT {
     }
 
     @Test
-    public void deleteExpenseTypeAlreadyExistTest() {
+    void deleteExpenseTypeAlreadyExistTest() {
         //Arrange
         String type = "AAAA";
         //Assert

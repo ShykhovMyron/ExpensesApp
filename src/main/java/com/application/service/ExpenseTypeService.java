@@ -20,7 +20,7 @@ import java.util.Set;
  */
 @Service
 public class ExpenseTypeService {
-    final static Logger logger = Logger.getLogger(ExpenseTypeService.class);
+    static final Logger logger = Logger.getLogger(ExpenseTypeService.class);
 
     private final ExpenseTypeRepo expenseTypeRepo;
     private final UserRepo userRepo;

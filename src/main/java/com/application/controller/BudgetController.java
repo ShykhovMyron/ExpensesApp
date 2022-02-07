@@ -20,7 +20,7 @@ import static com.application.parser.ErrorsParser.getValidErrors;
 
 @Controller
 public class BudgetController {
-    final static Logger logger = Logger.getLogger(BudgetController.class);
+    static final Logger logger = Logger.getLogger(BudgetController.class);
 
     private final WalletService walletService;
 

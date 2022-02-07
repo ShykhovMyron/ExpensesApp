@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
-public class ExpensesServiceIT {
+class ExpensesServiceIT {
     private User user;
 
     @Autowired
@@ -58,7 +58,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void getExpenseTest() throws ExpenseNotFoundException {
+    void getExpenseTest() throws ExpenseNotFoundException {
         // Arrange
         String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         Expense expected = defaultTestService.createExpense(
@@ -73,14 +73,14 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void getExpenseNonexistentIdTest() {
+    void getExpenseNonexistentIdTest() {
         // Assert
         assertThrows(ExpenseNotFoundException.class,
                 () -> expensesService.getExpense(0L));
     }
 
     @Test
-    public void editExpenseTest() throws TypeNotFoundException, ExpenseNotFoundException, ParseException {
+    void editExpenseTest() throws TypeNotFoundException, ExpenseNotFoundException, ParseException {
         // Arrange
         Date date = new Date();
         BigDecimal amount = new BigDecimal("5006.00");
@@ -106,7 +106,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void editExpenseNonexistentExpenseIdTest() {
+    void editExpenseNonexistentExpenseIdTest() {
         // Arrange
         Date date = new Date();
         BigDecimal amount = new BigDecimal("200.00");
@@ -123,7 +123,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void editExpenseNonexistentTypeTest() {
+    void editExpenseNonexistentTypeTest() {
         // Arrange
         Date date = new Date();
         BigDecimal amount = new BigDecimal("200.00");
@@ -144,7 +144,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void editExpenseInvalidDateTest() {
+    void editExpenseInvalidDateTest() {
         // Arrange
         Date date = new Date();
         BigDecimal amount = new BigDecimal("200.00");
@@ -166,7 +166,7 @@ public class ExpensesServiceIT {
 
 
     @Test
-    public void createExpenseTest() throws TypeNotFoundException, ParseException {
+    void createExpenseTest() throws TypeNotFoundException, ParseException {
         // Arrange
         Date date = testExpensesConfig.getFormatter()
                 .parse(testExpensesConfig.getFormatter().format(new Date()));
@@ -186,7 +186,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void createExpenseNonexistentTypeTest() throws ParseException {
+    void createExpenseNonexistentTypeTest() throws ParseException {
         // Arrange
         Date date = testExpensesConfig.getFormatter()
                 .parse(testExpensesConfig.getFormatter().format(new Date()));
@@ -202,7 +202,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void createExpenseInvalidDateTest() throws ParseException {
+    void createExpenseInvalidDateTest() throws ParseException {
         // Arrange
         Date date = testExpensesConfig.getFormatter()
                 .parse(testExpensesConfig.getFormatter().format(new Date()));
@@ -218,7 +218,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void deleteExpenseTest() throws ExpenseNotFoundException {
+    void deleteExpenseTest() throws ExpenseNotFoundException {
         // Arrange
         Long expenseId = defaultTestService.createExpense(
                 user,
@@ -234,7 +234,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void deleteExpenseNonexistentIdTest() {
+    void deleteExpenseNonexistentIdTest() {
         // Assert
         assertThrows(ExpenseNotFoundException.class,
                 () -> expensesService.deleteExpense(0L));
@@ -242,7 +242,7 @@ public class ExpensesServiceIT {
     }
 
     @Test
-    public void deleteExpensesTest() {
+    void deleteExpensesTest() {
         //Arrange
         User user = defaultTestService.createUser("Thomas", "C67cZh7e8G");
         defaultTestService.createExpense(user, 100, "BOOKS", testExpensesConfig.getFormatter());

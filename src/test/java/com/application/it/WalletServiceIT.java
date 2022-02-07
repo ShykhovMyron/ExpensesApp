@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
-public class WalletServiceIT {
+class WalletServiceIT {
     private User user;
 
     @Autowired
@@ -48,7 +48,7 @@ public class WalletServiceIT {
     }
 
     @Test
-    public void getWalletTest() {
+    void getWalletTest() {
         //Arrange
         int budget = 100;
         BigDecimal expectedBudget = new BigDecimal(budget + ".00");
@@ -69,7 +69,7 @@ public class WalletServiceIT {
     }
 
     @Test
-    public void recalculateBalanceWithDefaultParamsTest() {
+    void recalculateBalanceWithDefaultParamsTest() {
         //Arrange
         String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
 
@@ -86,7 +86,7 @@ public class WalletServiceIT {
     }
 
     @Test
-    public void recalculateBalanceWithNewBudgetTest() {
+    void recalculateBalanceWithNewBudgetTest() {
         //Arrange
         String type = Arrays.stream(DefaultExpenseTypes.values()).findAny().get().toString();
         Wallet userWallet = user.getWallet();
@@ -105,7 +105,7 @@ public class WalletServiceIT {
     }
 
     @Test
-    public void changeBudgetTest() {
+    void changeBudgetTest() {
         //Arrange
         String budget = "582";
         BigDecimal expectedBudget = new BigDecimal(budget + ".00");
@@ -123,7 +123,7 @@ public class WalletServiceIT {
     }
 
     @Test
-    public void changeBudgetWithExpensesTest() {
+    void changeBudgetWithExpensesTest() {
         //Arrange
         Wallet wallet = user.getWallet();
         wallet.setBalance(new BigDecimal(-50));
