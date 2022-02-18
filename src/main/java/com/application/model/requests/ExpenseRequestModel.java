@@ -11,7 +11,6 @@ public abstract class ExpenseRequestModel extends ExpenseTypeModel {
     @Min(value = 0, message = "Amount must be ≧ 0")
     private BigDecimal amount;
 
-    @NotNull(message = "Date must not be empty")
     @NotEmpty(message = "Type must not be empty")
     private String dateAdded;
 
