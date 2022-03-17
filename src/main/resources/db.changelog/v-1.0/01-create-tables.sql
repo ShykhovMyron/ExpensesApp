@@ -16,10 +16,10 @@ create table wallet
 create table user
 (
     id        bigint auto_increment primary key,
-    enabled   bit null,
+    enabled   bit          null,
     password  varchar(255) null,
-    username  varchar(255) null,
-    wallet_id bigint null,
+    username  varchar(255) null unique,
+    wallet_id bigint       null,
 
     constraint foreign key (wallet_id) references wallet (id)
 );
@@ -28,7 +28,7 @@ create table expenses
 (
     id         bigint auto_increment primary key,
     amount     decimal(19, 2) not null,
-    date_added datetime       null,
+    date_added date           null,
     user_id    bigint         not null,
 
     constraint foreign key (user_id) references user (id)
@@ -43,13 +43,6 @@ create table expenses_types
     constraint foreign key (type_id) references types (id)
 );
 
-create table role
-(
-    id   bigint       not null,
-    role varchar(255) null,
-    constraint foreign key (id) references user (id)
-);
-
 create table wallet_types
 (
     wallet_id bigint not null,
@@ -58,3 +51,11 @@ create table wallet_types
     constraint foreign key (type_id) references types (id),
     constraint foreign key (wallet_id) references wallet (id)
 );
+
+insert into types(type)
+values ('ENTERTAINMENT'),
+       ('RESTAURANTS'),
+       ('PRODUCTS'),
+       ('CINEMA'),
+       ('BOOKS'),
+       ('FLOWERS');

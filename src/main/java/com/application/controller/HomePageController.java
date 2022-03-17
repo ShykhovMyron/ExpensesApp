@@ -1,6 +1,6 @@
 package com.application.controller;
 
-import com.application.model.entity.User;
+import com.application.security.SecurityUser;
 import com.application.service.WalletService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ public class HomePageController {
 
     @GetMapping({"/", "/home"})
     public String getHomePageInfo(@ModelAttribute("errors") ArrayList<String> errors,
-                                  @AuthenticationPrincipal User user,
+                                  @AuthenticationPrincipal SecurityUser user,
                                   Model model) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("userWallet", walletService.getWallet(user.getId()));

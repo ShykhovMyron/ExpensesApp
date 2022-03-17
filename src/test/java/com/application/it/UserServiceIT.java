@@ -52,6 +52,7 @@ class UserServiceIT {
         userService.createUser(username, password);
         User actual = userRepo.findByUsername(username);
         actual.setId(null);
+        actual.setPassword(password);
         //Assert
         assertEquals(expected, actual);
     }

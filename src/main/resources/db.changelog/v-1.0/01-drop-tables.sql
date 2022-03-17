@@ -1,8 +1,9 @@
+delete
+from types;
+
 drop table expenses_types;
 
 drop table expenses;
-
-drop table role;
 
 drop table user;
 

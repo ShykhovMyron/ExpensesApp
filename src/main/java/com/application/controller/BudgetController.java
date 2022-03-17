@@ -1,7 +1,7 @@
 package com.application.controller;
 
-import com.application.model.entity.User;
 import com.application.model.requests.ChangeBudgetRequest;
+import com.application.security.SecurityUser;
 import com.application.service.WalletService;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +29,7 @@ public class BudgetController {
     }
 
     @GetMapping("/changeBudget")
-    public String changeBudget(@AuthenticationPrincipal User user,
+    public String changeBudget(@AuthenticationPrincipal SecurityUser user,
                                ChangeBudgetRequest request,
                                Model model) {
 
@@ -38,7 +38,7 @@ public class BudgetController {
     }
 
     @PostMapping("/changeBudget")
-    public String changeBudget(@AuthenticationPrincipal User user,
+    public String changeBudget(@AuthenticationPrincipal SecurityUser user,
                                @Valid ChangeBudgetRequest request,
                                BindingResult validResult,
                                @ModelAttribute("errors") ArrayList<String> errors,

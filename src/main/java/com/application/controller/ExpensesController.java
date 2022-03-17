@@ -6,11 +6,11 @@ import com.application.exeptions.TypeAlreadyExistException;
 import com.application.exeptions.TypeNotFoundException;
 import com.application.model.entity.Expense;
 import com.application.model.entity.ExpenseType;
-import com.application.model.entity.User;
 import com.application.model.requests.CreateExpenseRequest;
 import com.application.model.requests.CreateExpenseTypeRequest;
 import com.application.model.requests.DeleteExpenseTypeRequest;
 import com.application.model.requests.EditExpenseRequest;
+import com.application.security.SecurityUser;
 import com.application.service.ExpenseTypeService;
 import com.application.service.ExpensesService;
 import com.application.service.WalletService;
@@ -60,7 +60,7 @@ public class ExpensesController {
 
     @GetMapping("")
     public String expenses(@ModelAttribute("errors") ArrayList<String> errors,
-                           @AuthenticationPrincipal User user,
+                           @AuthenticationPrincipal SecurityUser user,
                            Model model,
                            @PageableDefault(sort = {"dateAdded"},
                                    direction = Sort.Direction.DESC) Pageable pageable
@@ -85,7 +85,7 @@ public class ExpensesController {
     }
 
     @GetMapping("/edit/{expenseId}")
-    public String editExpenseModel(@AuthenticationPrincipal User user,
+    public String editExpenseModel(@AuthenticationPrincipal SecurityUser user,
                                    EditExpenseRequest expense,
                                    @PathVariable Long expenseId,
                                    Model model,
@@ -114,7 +114,7 @@ public class ExpensesController {
     }
 
     @PostMapping("/edit/{expenseId}")
-    public String editExpense(@AuthenticationPrincipal User user,
+    public String editExpense(@AuthenticationPrincipal SecurityUser user,
                               @Valid EditExpenseRequest expense,
                               BindingResult validResult,
                               @PathVariable Long expenseId,
@@ -144,7 +144,7 @@ public class ExpensesController {
     }
 
     @PostMapping("/delete/{expenseId}")
-    public String deleteExpense(@AuthenticationPrincipal User user,
+    public String deleteExpense(@AuthenticationPrincipal SecurityUser user,
                                 @PathVariable Long expenseId,
                                 @ModelAttribute("errors") ArrayList<String> errors,
                                 RedirectAttributes redirectAttributes) {
@@ -162,7 +162,7 @@ public class ExpensesController {
     }
 
     @GetMapping("/create/expense")
-    public String createExpenseModel(@AuthenticationPrincipal User user,
+    public String createExpenseModel(@AuthenticationPrincipal SecurityUser user,
                                      CreateExpenseRequest expense,
                                      Model model) {
         Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
@@ -176,7 +176,7 @@ public class ExpensesController {
     }
 
     @PostMapping("/create/expense")
-    public String createExpense(@AuthenticationPrincipal User user,
+    public String createExpense(@AuthenticationPrincipal SecurityUser user,
                                 @Valid CreateExpenseRequest expense,
                                 BindingResult validResult,
                                 @ModelAttribute("errors") ArrayList<String> errors,
@@ -203,7 +203,7 @@ public class ExpensesController {
     }
 
     @PostMapping("/deleteAll")
-    public String deleteAllExpenses(@AuthenticationPrincipal User user,
+    public String deleteAllExpenses(@AuthenticationPrincipal SecurityUser user,
                                     @ModelAttribute("errors") ArrayList<String> errors,
                                     RedirectAttributes redirectAttributes) {
         try {
@@ -222,7 +222,7 @@ public class ExpensesController {
     }
 
     @PostMapping("/create/type")
-    public String createExpenseType(@AuthenticationPrincipal User user,
+    public String createExpenseType(@AuthenticationPrincipal SecurityUser user,
                                     @Valid CreateExpenseTypeRequest expenseType,
                                     BindingResult validResult,
                                     @ModelAttribute("errors") ArrayList<String> errors,
@@ -244,7 +244,7 @@ public class ExpensesController {
     }
 
     @GetMapping("/delete/type")
-    public String deleteExpenseTypeModel(@AuthenticationPrincipal User user,
+    public String deleteExpenseTypeModel(@AuthenticationPrincipal SecurityUser user,
                                          DeleteExpenseTypeRequest expenseType,
                                          Model model) {
         Set<ExpenseType> expenseTypes = walletService.getWallet(user.getId()).getTypes();
@@ -254,7 +254,7 @@ public class ExpensesController {
     }
 
     @PostMapping("/delete/type")
-    public String deleteExpenseType(@AuthenticationPrincipal User user,
+    public String deleteExpenseType(@AuthenticationPrincipal SecurityUser user,
                                     @Valid DeleteExpenseTypeRequest expenseType,
                                     BindingResult validResult,
                                     @ModelAttribute("errors") ArrayList<String> errors,
